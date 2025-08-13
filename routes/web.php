@@ -1,0 +1,86 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AgencyService;
+use App\Http\Controllers\EngginerController;
+use App\Http\Controllers\OtpController;
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::get('/project', [ProjectController::class, 'project'])->name('project');
+
+Route::get('/get-sub-categories', [ProjectController::class, 'getSubCategories']);
+Route::get('/get-project-types', [ProjectController::class, 'getProjectTypes']);
+
+// Route::post('/storeproject', [ProjectController::class, 'storeproject'])->name('storeproject');
+Route::post('/submit-project', [ProjectController::class, 'storeproject'])->name('project.store');
+
+Route::get('/project-details', [ProjectController::class, 'project_details'])->name('project_details');
+
+Route::post('/project_details_save', [ProjectController::class, 'project_details_save'])->name('project_details_save');
+
+
+Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer_dashboard');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+// Route::get('/vendor', [VendorController::class, 'vendor'])->name('vendor');
+// Route::post('/registerServiceProvider', [VenderController::class, 'registerServiceProvider'])->name('registerServiceProvider');
+// Route::get('/types_of_agency', [VenderController::class, 'types_of_agency'])->name('types_of_agency');
+
+
+Route::get('/vendor', [VendorController::class, 'vendor'])->name('vendor');
+Route::post('/registerServiceProvider', [VendorController::class, 'registerServiceProvider'])->name('registerServiceProvider');
+Route::get('/types-of-agency', [VendorController::class, 'types_of_agency'])->name('types_of_agency');
+
+Route::post('/save-agency-services', [VendorController::class, 'save_agency_services'])->name('save.agency.services');
+Route::get('/about_business', [VendorController::class, 'about_business'])->name('about_business');
+Route::get('/get-services/{agency_id}', [VendorController::class, 'getServices']);
+Route::post('/business-store', [VendorController::class, 'business_store'])->name('business.store');
+Route::get('/vendor_confiermetion', [VendorController::class, 'vendor_confiermetion'])->name('vendor_confiermetion');
+Route::get('/vendor_likes_project', [VendorController::class, 'vendor_likes_project'])->name('vendor_likes_project');
+Route::get('/vender/list-of-projects', [VendorController::class, 'showListPage'])->name('projects.list.page');
+Route::get('/vendor_dashboard', [VendorController::class, 'vendor_dashboard'])->name('vendor_dashboard');
+
+Route::get('/vender/projects-data', [VendorController::class, 'projectsData']);
+Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojectsData']);
+Route::post('/business/upload-file', [VendorController::class, 'uploadFile'])->name('business.uploadFile');
+Route::get('/project-details-vendor/{id}', [VendorController::class, 'projectshow']);
+Route::post('/project-likes', [VendorController::class, 'projectlikes']);
+//  Route::post('/engineer/tender-documents', [VendorController::class, 'storeTenderDocuments']);
+Route::post('/engineer/tender-documents', [VendorController::class, 'storeTenderDocuments'])
+    ->name('engineer.tender.store');
+Route::post('/engineer/tender-upload-file', [VendorController::class, 'uploadFiletenderdocuments'])
+    ->name('engineer.tender.upload');
+Route::get('/admin_dashboard', [AdminController::class, 'admin_dashboard'])->name('admin_dashboard');
+
+Route::get('/vendor_approve_form', [AdminController::class, 'vender_approve_form'])->name('vender_approve_form');
+Route::get('/vender_approve_data', [AdminController::class, 'vender_approve_data'])->name('vender_approve_data');
+Route::get('/vender_reject_data', [AdminController::class, 'vender_reject_data'])->name('vender_reject_data');
+Route::post('/admin/vendors/{id}/update-status', [VendorController::class, 'updateStatus'])->name('vendor.updateStatus');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+ Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
+ Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
+
+Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
+Route::post('/engineer/project/update-remarks', [EngginerController::class, 'updateRemarks']);
+       Route::get('/Add-New-Project-Boq', [EngginerController::class, 'NewProjectBoq'])->name('NewProjectBoq');
+Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadBOQ']);
+//  Route::post('/engineer/project/tender', [EngginerController::class, 'storetender']);
+
+Route::post('/engineer/project/tender', [EngginerController::class, 'storetender'])
+    ->name('engineer.project.tender');
+
+    Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
+Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
