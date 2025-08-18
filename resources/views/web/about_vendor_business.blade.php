@@ -7,8 +7,31 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Business Registration Form</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 
 <style>
+/* Tweak Select2 single select to match .form-select height */
+.select2-container .select2-selection--single {
+  height: calc(2.5rem + 2px);
+  border: 1px solid #ced4da;
+  border-radius: .375rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 2.4rem;
+  padding-left: .75rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: calc(2.5rem + 2px);
+  right: .5rem;
+}
+</style>
+
+<style>
+   #valueInWords {
+      margin-top: 5px;
+      color: black;
+      font-style: italic;
+    }
   .form-wrapper {
     background-color: #fff;
     padding: 2.5rem;
@@ -80,14 +103,30 @@
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <label class="form-label">Service Coverage Area *</label>
           <input type="text" id="service_coverage_area" name="service_coverage_area" class="form-control" placeholder="City/State (e.g., Mumbai, Maharashtra)">
+        </div> -->
+        <div class="col-md-6">
+          <label class="form-label">Service Coverage Area *</label>
+          <select id="service_coverage_area" name="service_coverage_area[]" class="form-select" multiple required>
+
+            <option value="">-- Select Service Coverage Area --</option>
+
+        
+          </select>
         </div>
+
+        <!-- <div class="col-md-6">
+          <label class="form-label">Accepting projects of minimum value (₹) *</label>
+          <input type="number" id="min_project_value" name="min_project_value" class="form-control" placeholder="₹ Minimum project value">
+        </div> -->
         <div class="col-md-6">
           <label class="form-label">Accepting projects of minimum value (₹) *</label>
           <input type="number" id="min_project_value" name="min_project_value" class="form-control" placeholder="₹ Minimum project value">
+          <div id="valueInWords"></div>
         </div>
+
       </div>
     </div>
 
@@ -112,11 +151,17 @@
         </div>
         <div class="col-md-6 mt-3" id="aadhar_section" style="display: none;">
           <label class="form-label">Aadhar Card No</label>
-          <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" placeholder="Enter Aadhar number">
+          <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" maxlength="12" placeholder="Enter Aadhar number">
+          <div id="aadhar_error" style="color: red; display: none;">Please enter a valid 12-digit Aadhar number.</div>
         </div>
-        <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
+        <!-- <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
           <label class="form-label">CIN No</label>
           <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number">
+        </div> -->
+        <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
+          <label class="form-label">CIN No</label>
+          <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number" maxlength="21" style="text-transform: uppercase;">
+          <div id="cin_error" style="color: red; display: none;">Please enter a valid 21-character CIN number.</div>
         </div>
         <div class="col-md-6 mt-3" id="llpin" style="display: none;">
           <label class="form-label">LLPIN No</label>
@@ -134,27 +179,35 @@
           <label class="form-label">Contact Person Designation *</label>
           <input type="text" id="contact_person_designation" name="contact_person_designation" class="form-control">
         </div>
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <label class="form-label">GST Number *</label>
           <input type="text" id="gst_number" name="gst_number" class="form-control">
+        </div> -->
+        <div class="col-md-6">
+          <label class="form-label">GST Number *</label>
+          <input type="text" id="gst_number" name="gst_number" class="form-control" maxlength="15">
+          <div id="gst_error" style="color: red; display: none;">GST number must be exactly 15 characters.</div>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">PAN Number *</label>
-          <input type="text" id="pan_number" name="pan_number" class="form-control">
+          <input type="text" id="pan_number" name="pan_number" class="form-control" maxlength="10" style="text-transform: uppercase;">
+          <div id="pan_error" style="color: red; display: none;">Please enter a valid PAN number.</div>
         </div>
         <div class="col-md-6">
-          <label class="form-label">TAN Number</label>
-          <input type="text" id="tan_number" name="tan_number" class="form-control">
+          <label class="form-label">TAN Number *</label>
+          <input type="text" id="tan_number" name="tan_number" class="form-control" maxlength="10" style="text-transform: uppercase;">
+          <div id="tan_error" style="color: red; display: none;">Please enter a valid TAN number.</div>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">ESIC Number</label>
-          <input type="text" id="esic_number" name="esic_number" class="form-control">
+          <label class="form-label">ESIC Number </label>
+          <input type="text" id="esic_number" name="esic_number" class="form-control" maxlength="17">
+          <div id="esic_error" style="color: red; display: none;">Please enter a valid 17-digit ESIC number.</div>
         </div>
         <div class="col-md-6">
           <label class="form-label">PF No</label>
@@ -223,14 +276,28 @@
           <label class="form-label">IFSC Code *</label>
           <input type="text" id="ifsc_code" name="ifsc_code" class="form-control">
         </div>
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <label class="form-label">Type of Account *</label>
           <select class="form-select" id="account_type" name="account_type">
             <option>Select account type</option>
             <option value="1">Savings</option>
             <option value="2">Current</option>
           </select>
+        </div> -->
+        <div class="col-md-6">
+          <label class="form-label">Type of Account *</label>
+          <select class="form-select" id="account_type" name="account_type" required>
+            <option value="">Select account type</option>
+            <option value="1">Savings</option>
+            <option value="2">Current</option>
+            <option value="3">Salary</option>
+            <option value="4">Fixed Deposit</option>
+            <option value="5">Recurring Deposit</option>
+            <option value="6">NRO (Non-Resident Ordinary)</option>
+            <option value="7">NRE (Non-Resident External)</option>
+          </select>
         </div>
+
       </div>
       <div class="mb-3">
         <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy *</label>
@@ -283,9 +350,10 @@
     <button type="submit" class="btn btn-primary">Submit for Verification</button>
   </form>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js"></script>
 
 <script>
   // Entity toggles
@@ -514,5 +582,260 @@
     });
   });
 </script>
+<script>
+$(function () {
+  // If this select was already enhanced, destroy and re-init (prevents "no search" bugs)
+  if ($('#service_coverage_area').data('select2')) {
+    $('#service_coverage_area').select2('destroy');
+  }
 
+  $('#service_coverage_area').select2({
+    width: '100%',
+    placeholder: '-- Select Service Coverage Area --',
+    allowClear: true,
+    minimumResultsForSearch: 0,
+    dropdownParent: $(document.body),
+
+    // Group-aware matcher: matches option text OR group label.
+    matcher: function (params, data) {
+      const term = $.trim(params.term || '').toLowerCase();
+      if (term === '') return data;  // show all when no search
+
+      // If this is a group (has children)
+      if (data.children && data.children.length) {
+        const groupLabel = (data.text || '').toLowerCase();
+
+        // 1) If group label matches, return whole group unchanged
+        if (groupLabel.includes(term)) {
+          return data;
+        }
+
+        // 2) Otherwise, filter children by their text
+        const filteredChildren = [];
+        for (let i = 0; i < data.children.length; i++) {
+          const child = data.children[i];
+          if ((child.text || '').toLowerCase().includes(term)) {
+            // Clone the child so Select2 can render it
+            filteredChildren.push($.extend(true, {}, child));
+          }
+        }
+
+        if (filteredChildren.length) {
+          const modifiedData = $.extend(true, {}, data);
+          modifiedData.children = filteredChildren;
+          return modifiedData;
+        }
+        // No children matched → hide this group
+        return null;
+      }
+
+      // Regular option
+      if ((data.text || '').toLowerCase().includes(term)) {
+        return data;
+      }
+
+      // As a fallback, try to match option's parent <optgroup> label
+      const el = data.element;
+      const groupLabel = el && el.parentElement && el.parentElement.label
+        ? el.parentElement.label.toLowerCase()
+        : '';
+      if (groupLabel.includes(term)) {
+        return data;
+      }
+
+      return null;
+    }
+  });
+});
+</script>
+
+<script>
+fetch('/get-service-areas')
+  .then(res => res.json())
+  .then(data => {
+    const select = document.getElementById('service_coverage_area');
+    select.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = '-- Select Service Coverage Area --';
+    defaultOption.value = '';
+    select.appendChild(defaultOption);
+
+    data.forEach(group => {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = group.region;
+
+      group.areas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        option.textContent = area;
+        optgroup.appendChild(option);
+      });
+
+      select.appendChild(optgroup);
+    });
+  });
+</script>
+<script>
+  document.getElementById("min_project_value").addEventListener("input", function() {
+    const num = parseInt(this.value);
+    const valueInWords = document.getElementById("valueInWords");
+
+    if (!num || isNaN(num)) {
+      valueInWords.innerText = "";
+      return;
+    }
+
+    valueInWords.innerText = "In words: " + numberToWords(num);
+  });
+
+  function numberToWords(num) {
+    const a = [
+      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+      'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+      'seventeen', 'eighteen', 'nineteen'
+    ];
+    const b = [
+      '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy',
+      'eighty', 'ninety'
+    ];
+
+    if (num === 0) return 'zero';
+    if (num > 999999) return 'Number too large';
+
+    function inWords(n) {
+      if (n < 20) return a[n];
+      if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+      if (n < 1000) return a[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + inWords(n % 100) : "");
+      if (n < 100000) return inWords(Math.floor(n / 1000)) + " thousand" + (n % 1000 ? " " + inWords(n % 1000) : "");
+      return inWords(Math.floor(n / 100000)) + " lakh" + (n % 100000 ? " " + inWords(n % 100000) : "");
+    }
+
+    let words = inWords(num);
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+</script>
+
+<script>
+  const gstInput = document.getElementById('gst_number');
+  const gstError = document.getElementById('gst_error');
+
+  gstInput.addEventListener('blur', () => {
+    const gstValue = gstInput.value.trim();
+    if (gstValue.length !== 15) {
+      gstError.style.display = 'block';
+      gstInput.classList.add('is-invalid');
+    } else {
+      gstError.style.display = 'none';
+      gstInput.classList.remove('is-invalid');
+    }
+  });
+</script>
+
+<script>
+  const panInput = document.getElementById('pan_number');
+  const panError = document.getElementById('pan_error');
+
+  function isValidPAN(pan) {
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    return panRegex.test(pan.toUpperCase());
+  }
+
+  panInput.addEventListener('blur', () => {
+    const panValue = panInput.value.trim().toUpperCase();
+    panInput.value = panValue; // convert to uppercase
+    if (!isValidPAN(panValue)) {
+      panError.style.display = 'block';
+      panInput.classList.add('is-invalid');
+    } else {
+      panError.style.display = 'none';
+      panInput.classList.remove('is-invalid');
+    }
+  });
+</script>
+<script>
+  const tanInput = document.getElementById('tan_number');
+  const tanError = document.getElementById('tan_error');
+
+  function isValidTAN(tan) {
+    const tanRegex = /^[A-Z]{4}[0-9]{5}[A-Z]{1}$/;
+    return tanRegex.test(tan.toUpperCase());
+  }
+
+  tanInput.addEventListener('blur', () => {
+    const tanValue = tanInput.value.trim().toUpperCase();
+    tanInput.value = tanValue; // convert to uppercase
+    if (!isValidTAN(tanValue)) {
+      tanError.style.display = 'block';
+      tanInput.classList.add('is-invalid');
+    } else {
+      tanError.style.display = 'none';
+      tanInput.classList.remove('is-invalid');
+    }
+  });
+</script>
+<script>
+  const esicInput = document.getElementById('esic_number');
+  const esicError = document.getElementById('esic_error');
+
+  function isValidESIC(esic) {
+    const esicRegex = /^\d{17}$/;
+    return esicRegex.test(esic);
+  }
+
+  esicInput.addEventListener('blur', () => {
+    const esicValue = esicInput.value.trim();
+    if (esicValue !== "" && !isValidESIC(esicValue)) {
+      esicError.style.display = 'block';
+      esicInput.classList.add('is-invalid');
+    } else {
+      esicError.style.display = 'none';
+      esicInput.classList.remove('is-invalid');
+    }
+  });
+</script>
+<script>
+  const cinInput = document.getElementById('cin_no');
+  const cinError = document.getElementById('cin_error');
+
+ 
+
+  function isValidCIN(cin) {
+  const cinRegex = /^[LU]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/;
+  return cinRegex.test(cin.toUpperCase());
+}
+
+
+  cinInput.addEventListener('blur', () => {
+    const cinValue = cinInput.value.trim().toUpperCase();
+    cinInput.value = cinValue; // auto uppercase
+    if (cinValue !== "" && !isValidCIN(cinValue)) {
+      cinError.style.display = 'block';
+      cinInput.classList.add('is-invalid');
+    } else {
+      cinError.style.display = 'none';
+      cinInput.classList.remove('is-invalid');
+    }
+  });
+</script>
+<script>
+  const aadharInput = document.getElementById('aadhar_card_no');
+  const aadharError = document.getElementById('aadhar_error');
+
+  function isValidAadhar(aadhar) {
+    const aadharRegex = /^\d{12}$/;
+    return aadharRegex.test(aadhar);
+  }
+
+  aadharInput.addEventListener('blur', () => {
+    const aadharValue = aadharInput.value.trim();
+    if (aadharValue !== "" && !isValidAadhar(aadharValue)) {
+      aadharError.style.display = 'block';
+      aadharInput.classList.add('is-invalid');
+    } else {
+      aadharError.style.display = 'none';
+      aadharInput.classList.remove('is-invalid');
+    }
+  });
+</script>
 @endsection

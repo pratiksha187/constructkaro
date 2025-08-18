@@ -243,4 +243,25 @@ class AdminController extends Controller
         ));
     }
 
+   public function get_service_areas()
+{
+    $regions = DB::table('coverage_regions')
+        ->join('coverage_areas', 'coverage_regions.id', '=', 'coverage_areas.region_id')
+        ->select('coverage_regions.id as region_id', 'coverage_regions.name as region_name', 'coverage_areas.name as area_name')
+        ->orderBy('coverage_regions.name')
+        ->orderBy('coverage_areas.name')
+        ->get()
+        ->groupBy('region_name');
+
+    $result = [];
+
+    foreach ($regions as $region => $areas) {
+        $result[] = [
+            'region' => $region,
+            'areas' => $areas->pluck('area_name')->values()
+        ];
+    }
+
+    return response()->json($result);
+}
 }

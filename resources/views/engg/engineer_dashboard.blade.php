@@ -1,4 +1,3 @@
-{{-- resources/views/engineer/dashboard.blade.php --}}
 @extends('layouts.engineer.app')
 @section('title','Dashboard')
 
@@ -11,31 +10,95 @@
     --ck-blue:#2949E9;
     --ck-bg:#F5F7FB;
     --ck-card:#FFFFFF;
+    --ck-muted:#6B7A90;
+    --ck-success:#16a34a;
+    --ck-warning:#f59e0b;
   }
-  body{ background: radial-gradient(1200px 800px at 10% -10%, #eef3ff 0%, rgba(238,243,255,0) 60%),
-                    radial-gradient(1200px 800px at 110% 10%, #fef3e9 0%, rgba(254,243,233,0) 60%),
-                    var(--ck-bg); }
 
-  .card{ border:1px solid #e9eef7; border-radius:1rem; box-shadow:0 8px 24px rgba(12,33,72,.06); }
-  .card-header{ background:linear-gradient(180deg,rgba(255,102,0,.06),rgba(41,73,233,.06)); border-bottom:1px solid #e9eef7; }
-  .kpi{ position:relative; overflow:hidden; background:var(--ck-card); }
-  .kpi::before{ content:""; position:absolute; inset:-60% -60% auto; height:150%;
-    background:conic-gradient(from 180deg at 50% 0%, rgba(255,102,0,.15), rgba(41,73,233,.15), rgba(255,102,0,.15));
-    filter:blur(40px); opacity:.35; }
-  .kpi .value{ font-size:2rem; font-weight:800; color:var(--ck-navy); line-height:1; }
-  .kpi .label{ color:#6B7A90; font-weight:600; }
-  .kpi .chip{ font-size:.8rem; font-weight:600; color:var(--ck-blue); }
+  /* Page backdrop */
+  body{
+    background:
+      radial-gradient(1200px 800px at 10% -10%, #eef3ff 0%, rgba(238,243,255,0) 60%),
+      radial-gradient(1200px 800px at 110% 10%, #fef3e9 0%, rgba(254,243,233,0) 60%),
+      var(--ck-bg);
+  }
 
-  .btn-primary{ --bs-btn-bg:var(--ck-orange); --bs-btn-border-color:var(--ck-orange);
-                --bs-btn-hover-bg:#e65c00; --bs-btn-hover-border-color:#e65c00; }
-  .btn-outline-primary{ --bs-btn-color:var(--ck-orange); --bs-btn-border-color:var(--ck-orange); }
+  /* Cards */
+  .card{
+    border:1px solid #e9eef7;
+    border-radius:1rem;
+    box-shadow:0 10px 28px rgba(12,33,72,.06);
+    overflow:hidden;
+    background:var(--ck-card);
+  }
+  .card-header{
+    background:linear-gradient(180deg,rgba(255,102,0,.05),rgba(41,73,233,.05));
+    border-bottom:1px solid #e9eef7;
+  }
+  .hover-lift{transition:transform .2s ease, box-shadow .2s ease}
+  .hover-lift:hover{transform:translateY(-3px); box-shadow:0 14px 34px rgba(12,33,72,.12)}
 
-  .table > :not(caption) > * > * { padding:.9rem .75rem; }
-  .badge-soft { background:rgba(41,73,233,.12); color:var(--ck-blue); }
-  .badge-dim  { background:rgba(11,34,64,.08); color:var(--ck-navy); }
-  .progress{ height:8px; border-radius:10px; background:#eef2f8; }
-  .progress-bar{ background:var(--ck-blue); }
-  .quick-action .bi{ font-size:1.1rem; }
+  /* Buttons */
+  .btn-primary{
+    --bs-btn-bg:var(--ck-orange);
+    --bs-btn-border-color:var(--ck-orange);
+    --bs-btn-hover-bg:#e65c00;
+    --bs-btn-hover-border-color:#e65c00;
+    --bs-btn-active-bg:#cc5200;
+    --bs-btn-active-border-color:#cc5200;
+  }
+  .btn-outline-primary{
+    --bs-btn-color:var(--ck-orange);
+    --bs-btn-border-color:var(--ck-orange);
+    --bs-btn-hover-bg:rgba(255,102,0,.08);
+    --bs-btn-hover-color:var(--ck-orange);
+    --bs-btn-active-bg:rgba(255,102,0,.14);
+  }
+  .btn-icon{width:38px;height:38px;display:inline-grid;place-items:center;border-radius:.75rem}
+
+  /* KPI tiles */
+  .kpi{position:relative; overflow:hidden; background:var(--ck-card)}
+  .kpi::before{
+    content:""; position:absolute; inset:-60% -60% auto; height:150%;
+    background:conic-gradient(from 180deg at 50% 0%, rgba(255,102,0,.15), rgba(41,73,233,.18), rgba(255,102,0,.15));
+    filter:blur(42px); opacity:.35;
+  }
+  .kpi .value{font-size:2rem;font-weight:800;color:var(--ck-navy);line-height:1}
+  .kpi .label{color:var(--ck-muted);font-weight:600}
+  .kpi .chip{font-size:.8rem;font-weight:700;color:var(--ck-blue)}
+  .kpi-icon{
+    width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+    background:linear-gradient(135deg, rgba(41,73,233,.12), rgba(255,102,0,.12));
+    color:var(--ck-blue);
+    border:1px solid #e9eef7;
+  }
+
+  /* Badges & status dots */
+  .badge-soft { background:rgba(41,73,233,.12); color:var(--ck-blue); border:1px solid rgba(41,73,233,.22) }
+  .badge-dim  { background:rgba(11,34,64,.08); color:var(--ck-navy); border:1px solid rgba(11,34,64,.18) }
+  .status-dot{width:.55rem;height:.55rem;border-radius:999px;display:inline-block;margin-right:.4rem;vertical-align:middle}
+  .dot-success{background:var(--ck-success)}
+  .dot-warning{background:var(--ck-warning)}
+  .dot-muted{background:#9aa7bd}
+
+  /* Progress */
+  .progress{height:8px;border-radius:10px;background:#eef2f8}
+  .progress-bar{background:var(--ck-blue); animation:progressPulse 2s ease-in-out infinite}
+  @keyframes progressPulse{
+    0%,100%{filter:brightness(1)}
+    50%{filter:brightness(1.15)}
+  }
+
+  /* Table */
+  .table-modern thead th{
+    font-weight:700;color:#3a4861;border-bottom:1px solid #e9eef7;background:#f9fbff;position:sticky;top:0;z-index:1
+  }
+  .table-modern tbody tr{transition:background .15s ease}
+  .table-modern tbody tr:hover{background:rgba(41,73,233,.03)}
+
+  /* Utilities */
+  .text-muted-2{color:var(--ck-muted)}
+  .soft-divider{height:1px;background:linear-gradient(90deg,transparent,#e9eef7,transparent)}
 </style>
 @endpush
 
@@ -44,12 +107,15 @@
 
   {{-- Heading + actions --}}
   <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3 gap-2">
-    <h3 class="mb-0">Engineer Dashboard</h3>
+    <div>
+      <h3 class="mb-1">Engineer Dashboard</h3>
+      <div class="text-muted-2 small">Welcome back • {{ now()->format('D, d M Y') }}</div>
+    </div>
     <div class="d-flex gap-2">
-      <a href="" class="btn btn-primary">
+      <a href="" class="btn btn-primary hover-lift">
         <i class="bi bi-plus-lg me-1"></i> New Project
       </a>
-      <a href="" class="btn btn-outline-primary">
+      <a href="" class="btn btn-outline-primary hover-lift">
         <i class="bi bi-table me-1"></i> BOQ
       </a>
     </div>
@@ -58,46 +124,61 @@
   {{-- KPIs --}}
   <div class="row g-4">
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card kpi p-3">
+      <div class="card kpi p-3 hover-lift">
         <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="value">{{ $stats['assigned_projects'] ?? 6 }}</div>
-            <div class="label mt-1">Assigned Projects</div>
+          <div class="d-flex gap-3">
+            <div class="kpi-icon"><i class="bi bi-diagram-3"></i></div>
+            <div>
+              <div class="value">{{ $stats['assigned_projects'] ?? 6 }}</div>
+              <div class="label mt-1">Assigned Projects</div>
+            </div>
           </div>
           <span class="chip"><i class="bi bi-clipboard-check me-1"></i>{{ $stats['assigned_delta'] ?? '+2' }}</span>
         </div>
       </div>
     </div>
+
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card kpi p-3">
+      <div class="card kpi p-3 hover-lift">
         <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="value">{{ $stats['active_tenders'] ?? 3 }}</div>
-            <div class="label mt-1">Active Tenders</div>
+          <div class="d-flex gap-3">
+            <div class="kpi-icon"><i class="bi bi-briefcase"></i></div>
+            <div>
+              <div class="value">{{ $stats['active_tenders'] ?? 3 }}</div>
+              <div class="label mt-1">Active Tenders</div>
+            </div>
           </div>
           <span class="chip"><i class="bi bi-activity me-1"></i>{{ $stats['tenders_delta'] ?? '⚡' }}</span>
         </div>
       </div>
     </div>
+
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card kpi p-3">
+      <div class="card kpi p-3 hover-lift">
         <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="value">{{ $stats['pending_boqs'] ?? 4 }}</div>
-            <div class="label mt-1">BOQs Pending</div>
+          <div class="d-flex gap-3">
+            <div class="kpi-icon"><i class="bi bi-list-check"></i></div>
+            <div>
+              <div class="value">{{ $stats['pending_boqs'] ?? 4 }}</div>
+              <div class="label mt-1">BOQs Pending</div>
+            </div>
           </div>
           <span class="chip"><i class="bi bi-hourglass-split me-1"></i>Due</span>
         </div>
       </div>
     </div>
+
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card kpi p-3">
+      <div class="card kpi p-3 hover-lift">
         <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="value">{{ $stats['deadlines_this_week'] ?? 2 }}</div>
-            <div class="label mt-1">Deadlines this week</div>
+          <div class="d-flex gap-3">
+            <div class="kpi-icon"><i class="bi bi-calendar-week"></i></div>
+            <div>
+              <div class="value">{{ $stats['deadlines_this_week'] ?? 2 }}</div>
+              <div class="label mt-1">Deadlines this week</div>
+            </div>
           </div>
-          <span class="chip"><i class="bi bi-calendar-week me-1"></i>Focus</span>
+          <span class="chip"><i class="bi bi-lightning-charge me-1"></i>Focus</span>
         </div>
       </div>
     </div>
@@ -107,22 +188,23 @@
   <div class="row g-4 mt-1">
     {{-- Recent projects --}}
     <div class="col-12 col-xl-8">
-      <div class="card">
+      <div class="card hover-lift">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Recent Projects</h5>
           <div class="d-flex gap-2">
-            <a class="btn btn-outline-primary btn-sm" href="">
+            <a class="btn btn-outline-primary btn-sm hover-lift" href="">
               <i class="bi bi-grid-3x3-gap me-1"></i>All Projects
             </a>
-            <a class="btn btn-primary btn-sm" href="">
+            <a class="btn btn-primary btn-sm hover-lift" href="">
               <i class="bi bi-upload me-1"></i>Upload Tender
             </a>
           </div>
         </div>
+
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table align-middle mb-0">
-              <thead class="table-light">
+            <table class="table table-modern align-middle mb-0">
+              <thead>
                 <tr>
                   <th>Project</th>
                   <th>Client</th>
@@ -134,47 +216,54 @@
               </thead>
               <tbody>
                 @forelse(($projects ?? []) as $p)
+                  @php $status = strtolower($p->status ?? 'queued'); @endphp
                   <tr>
                     <td class="fw-semibold">{{ $p->name }}</td>
                     <td class="text-muted small">{{ $p->client ?? '—' }}</td>
                     <td>₹ {{ number_format($p->budget ?? 0) }}</td>
                     <td>{{ $p->timeline ?? '—' }}</td>
                     <td>
-                      @php $status = strtolower($p->status ?? 'queued'); @endphp
-                      @if($status === 'in progress')
+                      @if($status === 'in progress' || $status === 'in-progress')
+                        <span class="status-dot dot-success"></span>
                         <span class="badge bg-success-subtle text-success border border-success-subtle">In Progress</span>
                       @elseif($status === 'bidding')
+                        <span class="status-dot dot-warning"></span>
                         <span class="badge badge-soft rounded-pill">Bidding</span>
                       @else
+                        <span class="status-dot dot-muted"></span>
                         <span class="badge badge-dim rounded-pill">Queued</span>
                       @endif
                     </td>
                     <td class="text-end">
-                      <a href="" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-eye"></i>
-                      </a>
-                      <a href="" class="btn btn-sm btn-primary">
-                        <i class="bi bi-pencil-square"></i>
-                      </a>
+                      <a href="" class="btn btn-sm btn-outline-primary btn-icon" title="View" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
+                      <a href="" class="btn btn-sm btn-primary btn-icon" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i></a>
                     </td>
                   </tr>
                 @empty
                   <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No recent projects.</td>
+                    <td colspan="6" class="text-center text-muted py-5">
+                      <div class="mb-2"><i class="bi bi-inboxes"></i></div>
+                      No recent projects.
+                      <div class="mt-3">
+                        <a href="" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Create Project</a>
+                      </div>
+                    </td>
                   </tr>
                 @endforelse
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
     </div>
 
-    {{-- Right column: tasks & quick actions --}}
+    {{-- Right column --}}
     <div class="col-12 col-xl-4">
-      <div class="card mb-4">
-        <div class="card-header">
+      <div class="card mb-4 hover-lift">
+        <div class="card-header d-flex justify-content-between align-items-center">
           <h6 class="mb-0">My Tasks</h6>
+          <span class="text-muted-2 small"><i class="bi bi-clock-history me-1"></i>Auto-updates</span>
         </div>
         <div class="card-body">
           @php
@@ -195,30 +284,53 @@
               </div>
             </div>
           @endforeach
+          <div class="soft-divider my-3"></div>
           <a href="" class="small">View all tasks</a>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card hover-lift">
         <div class="card-header">
           <h6 class="mb-0">Quick Actions</h6>
         </div>
         <div class="card-body">
-          <div class="d-grid gap-2">
-            <a href="" class="btn btn-outline-primary quick-action">
-              <i class="bi bi-file-earmark-arrow-up me-1"></i> Upload Tender Docs
-            </a>
-            <a href="" class="btn btn-outline-primary quick-action">
-              <i class="bi bi-plus-square-dotted me-1"></i> Create BOQ
-            </a>
-            <a href="" class="btn btn-outline-primary quick-action">
-              <i class="bi bi-folder2-open me-1"></i> My Documents
-            </a>
+          <div class="row g-2">
+            <div class="col-12">
+              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                <span class="btn-icon"><i class="bi bi-file-earmark-arrow-up"></i></span>
+                <span>Upload Tender Docs</span>
+              </a>
+            </div>
+            <div class="col-12">
+              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                <span class="btn-icon"><i class="bi bi-plus-square-dotted"></i></span>
+                <span>Create BOQ</span>
+              </a>
+            </div>
+            <div class="col-12">
+              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                <span class="btn-icon"><i class="bi bi-folder2-open"></i></span>
+                <span>My Documents</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
 </div>
 @endsection
+
+@push('scripts')
+<script>
+  // Enable Bootstrap tooltips if available
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.bootstrap) {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      tooltipTriggerList.map(el => new bootstrap.Tooltip(el))
+    }
+  })
+</script>
+@endpush

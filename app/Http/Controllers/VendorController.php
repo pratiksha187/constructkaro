@@ -24,14 +24,19 @@ class VendorController extends Controller
 
     public function registerServiceProvider(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:15|unique:service_provider,mobile',
-            'email' => 'required|email|unique:service_provider,email',
-            'password' => 'required|string|min:6|confirmed',
-            'location' => 'required|string|max:255',
-            'business_name' => 'nullable|string|max:255',
-            'gst_number' => 'nullable|string|max:50',
+       
+         $validator = Validator::make($request->all(), [
+            'name'                  => ['required','string','max:255'],
+            'mobile'                => ['required','digits:10','unique:service_provider,mobile'],
+            'email'                 => ['required','email:rfc,dns','unique:service_provider,email'],
+            'business_name'         => ['nullable','string','max:255'],
+            'gst_number'            => ['nullable','string','max:50'],
+            'location'              => ['required','max:255'],
+            'password'              => ['required','confirmed','min:8'],
+        ],[
+            'mobile.unique'         => 'This mobile number is already registered.',
+            'email.unique'          => 'This email is already registered.',
+            'password.confirmed'    => 'Passwords do not match.',
         ]);
 
         if ($validator->fails()) {
@@ -46,7 +51,9 @@ class VendorController extends Controller
             'email' => $request->email,
             'business_name' => $request->business_name,
             'gst_number' => $request->gst_number,
-            'location' => $request->location,
+            // 'location' => $request->location,
+            'location' => json_encode($request->location),
+
             'password' => Hash::make($request->password),
         ]);
 

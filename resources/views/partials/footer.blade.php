@@ -4,6 +4,15 @@
     width: 214px;
     object-fit: contain;
 }
+
+@media (min-width: 768px) {
+    .col-md-2 {
+        flex: 1 0 auto;
+        width: 16.66666667%;
+    }
+}
+
+
 </style>
 <footer class="custom-footer">
          <div class="container-xl">
@@ -26,12 +35,12 @@
                   </div>
                </div>
                <div class="col-md-2">
-                  <h5 class="footer-heading">Services</h5>
+                  <h5 class="footer-heading">Education</h5>
                   <div class="footer-links">
-                     <a href="#" class="footer-link">Architecture</a>
-                     <a href="#" class="footer-link">Construction</a>
-                     <a href="#" class="footer-link">Renovation</a>
-                     <a href="#" class="footer-link">Interior Design</a>
+                     <a href="#" class="footer-link">Education for Customer</a>
+                     <a href="#" class="footer-link">Education for Vendor</a>
+                     <!-- <a href="#" class="footer-link">Renovation</a>
+                     <a href="#" class="footer-link">Interior Design</a> -->
                   </div>
                </div>
                <div class="col-md-2">

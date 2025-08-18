@@ -74,6 +74,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
  Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
 
 Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
+Route::post('/quality', [EngginerController::class, 'quality'])->name('quality');
+
+Route::post('/safety', [EngginerController::class, 'safety'])->name('safety');
+
+Route::post('/hr', [EngginerController::class, 'hr'])->name('hr');
+Route::post('/billing', [EngginerController::class, 'billing'])->name('billing');
+
+
 Route::post('/engineer/project/update-remarks', [EngginerController::class, 'updateRemarks']);
        Route::get('/Add-New-Project-Boq', [EngginerController::class, 'NewProjectBoq'])->name('NewProjectBoq');
 Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadBOQ']);
@@ -82,5 +90,9 @@ Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadB
 Route::post('/engineer/project/tender', [EngginerController::class, 'storetender'])
     ->name('engineer.project.tender');
 
-    Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
+Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
 Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
+
+
+
+Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])->name('get_service_areas');

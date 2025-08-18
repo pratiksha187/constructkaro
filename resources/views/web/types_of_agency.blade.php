@@ -47,35 +47,25 @@
         </div>
     </form>
 </div>
-
-<!-- Script -->
 <script>
-    let agencyLocked = false;
-
     document.getElementById('agencyType').addEventListener('change', function () {
-        const errorBox = document.getElementById('agencyError');
-
-        if (agencyLocked) {
-            errorBox.classList.remove('hidden');
-            this.value = agencyLocked;
-            return;
-        } else {
-            errorBox.classList.add('hidden');
-        }
-
         const agencyId = this.value;
         if (!agencyId) return;
 
-        agencyLocked = agencyId;
-
         const servicesContainer = document.getElementById('servicesContainer');
         const checkboxList = document.getElementById('checkboxList');
+        const errorBox = document.getElementById('agencyError');
+
+        // Always hide error box (since we're allowing changes)
+        errorBox.classList.add('hidden');
+
+        // Clear previous checkboxes
+        checkboxList.innerHTML = "";
+        document.getElementById('othersTextboxContainer').classList.add('hidden');
 
         fetch(`/get-services/${agencyId}`)
             .then(response => response.json())
             .then(data => {
-                checkboxList.innerHTML = '';
-
                 if (Object.keys(data).length > 0) {
                     servicesContainer.classList.remove('hidden');
 
@@ -87,24 +77,39 @@
                         checkboxWrapper.className = 'flex items-center space-x-2';
 
                         checkboxWrapper.innerHTML = `
-                            <input type="checkbox" id="${checkboxId}" name="services[]" value="${id}" class="text-blue-600 focus:ring-blue-500 rounded">
+                            <input type="checkbox" id="${checkboxId}" name="services[]" value="${id}" class="service-checkbox text-blue-600 focus:ring-blue-500 rounded">
                             <label for="${checkboxId}" class="text-gray-700">${name}</label>
                         `;
 
                         checkboxList.appendChild(checkboxWrapper);
 
                         if (isOthers) {
-                            const textboxContainer = document.getElementById('othersTextboxContainer');
-                            textboxContainer.classList.add('hidden');
-
+                            const othersCheckbox = () => document.getElementById(checkboxId);
                             setTimeout(() => {
-                                const othersCheckbox = document.getElementById(checkboxId);
-                                othersCheckbox.addEventListener('change', function () {
-                                    textboxContainer.classList.toggle('hidden', !this.checked);
+                                othersCheckbox().addEventListener('change', function () {
+                                    document.getElementById('othersTextboxContainer').classList.toggle('hidden', !this.checked);
                                 });
                             }, 0);
                         }
                     }
+
+                    // ✅ Add listener to limit checkbox selection
+                    setTimeout(() => {
+                        const checkboxes = document.querySelectorAll('.service-checkbox');
+
+                        checkboxes.forEach(checkbox => {
+                            checkbox.addEventListener('change', function () {
+                                const selected = Array.from(checkboxes).filter(cb => cb.checked);
+                                if (selected.length >= 3) {
+                                    checkboxes.forEach(cb => {
+                                        if (!cb.checked) cb.disabled = true;
+                                    });
+                                } else {
+                                    checkboxes.forEach(cb => cb.disabled = false);
+                                }
+                            });
+                        });
+                    }, 0);
                 } else {
                     servicesContainer.classList.add('hidden');
                 }
@@ -134,7 +139,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert(data.message || 'Saved successfully');
+                // alert(data.message || 'Saved successfully');
                 window.location.href = '{{ route("about_business") }}';
             } else {
                 alert(data.message || 'Save failed');
@@ -146,7 +151,6 @@
     });
 
     document.getElementById('resetBtn').addEventListener('click', function () {
-        agencyLocked = false;
         document.getElementById('agencyType').value = "";
         document.getElementById('agencyError').classList.add('hidden');
         document.getElementById('checkboxList').innerHTML = "";
@@ -154,4 +158,5 @@
         document.getElementById('othersTextboxContainer').classList.add('hidden');
     });
 </script>
+
 @endsection

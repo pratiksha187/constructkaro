@@ -26,21 +26,20 @@
       </div>
 
       <!-- Search Bar -->
-      <div class="search-container d-none d-md-flex flex-grow-1 mx-4">
-         <div class="position-relative w-100">
-            <i data-lucide="search" class="search-icon"></i>
-            <input type="text" class="form-control search-input" placeholder="Search for services, professionals, or projects..." id="searchInput">
-         </div>
-      </div>
+     
+   <nav class="navbar-nav d-none d-lg-flex flex-row align-items-center">
+      <a href="{{ url('/') }}" class="nav-link">Home</a>
+      <a href="" class="nav-link">About Us</a>
+      <a href="" class="nav-link">Education for Customers</a>
+      <a href="" class="nav-link">Education for Vendors</a>
+      <a href="" class="nav-link">Contact Us</a>
 
-      <nav class="navbar-nav d-none d-lg-flex flex-row">
-         <!-- <a href="{{route('project')}}" class="nav-link">Projects</a> -->
-         <a href="{{route('login')}}" class="nav-link">login</a>
-         <button type="button" class="btn btn-primary ms-3" onclick="window.location='{{ route('project') }}'">
-            Post Project
-         </button>
-
-      </nav>
+      <a href="{{ route('login') }}" class="nav-link">Login</a>
+      <button type="button" class="btn btn-primary ms-3" onclick="window.location='{{ route('project') }}'">
+        Post Project
+      </button>
+    </nav>
+   
 
       <!-- Mobile menu button -->
       <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

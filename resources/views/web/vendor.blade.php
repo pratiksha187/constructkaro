@@ -3,6 +3,24 @@
 @section('title', 'Join as Service Provider | ConstructKaro')
 
 @section('content')
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+<style>
+/* Tweak Select2 single select to match .form-select height */
+.select2-container .select2-selection--single {
+  height: calc(2.5rem + 2px);
+  border: 1px solid #ced4da;
+  border-radius: .375rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 2.4rem;
+  padding-left: .75rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: calc(2.5rem + 2px);
+  right: .5rem;
+}
+</style>
 <style>
     .register-wrapper {
         min-height: 100vh;
@@ -154,7 +172,12 @@
                 </div>
                 <div class="col-md-6">
                     <label>City / Location *</label>
-                    <input type="text" name="location" class="form-control" required>
+                    <select id="location" name="location[]" class="form-select" multiple required>
+
+                        <option value="">-- Select Service Coverage Area --</option>
+
+                    
+                    </select>
                 </div>
                 <div class="col-md-6">
                     <label>Password *</label>
@@ -173,6 +196,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const emailInput = document.getElementById("email");
@@ -256,45 +280,154 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
 <script>
+
     $(document).ready(function () {
-        $('#serviceprovider').on('submit', function (e) {
-            e.preventDefault();
-            let formData = new FormData(this);
+    $('#serviceprovider').on('submit', function (e) {
+        e.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
 
-            $.ajax({
-                url: "{{ route('registerServiceProvider') }}",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function () {
-                    window.location.href = "{{ route('types_of_agency') }}";
-                },
-                error: function (xhr) {
-                    let errors = xhr.responseJSON?.errors;
-                    let errorMessage = "";
+        // Clear old errors
+        $(form).find('.is-invalid').removeClass('is-invalid');
+        $(form).find('.invalid-feedback').remove();
 
-                    if (errors) {
-                        $.each(errors, function (key, value) {
-                            errorMessage += `<div>${value[0]}</div>`;
-                        });
-                    } else {
-                        errorMessage = "An unexpected error occurred.";
-                    }
+        $.ajax({
+        url: "{{ route('registerServiceProvider') }}",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function () {
+            window.location.href = "{{ route('types_of_agency') }}";
+        },
+        error: function (xhr) {
+            if (xhr.status === 422 && xhr.responseJSON?.errors) {
+            const errors = xhr.responseJSON.errors;
 
-                    $('body').prepend(`
-                        <div class="alert alert-danger alert-dismissible fade show mx-auto mt-3" style="max-width: 600px;" role="alert">
-                          ${errorMessage}
-                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
+            Object.keys(errors).forEach(function (field) {
+                const message = errors[field][0];
+                const $field = $(form).find(`[name="${field}"]`);
+
+                if ($field.length) {
+                $field.addClass('is-invalid');
+
+                // Insert the error right after the field
+                const $feedback = $(`<div class="invalid-feedback">${message}</div>`);
+                if ($field.next().length && $field.next().attr('id') === 'suggestions') {
+                    $field.next().after($feedback); // special case for email suggestions
+                } else {
+                    $field.after($feedback);
+                }
                 }
             });
+            } else {
+            // fallback if server error not validation related
+            alert("An unexpected error occurred. Please try again.");
+            }
+        }
         });
     });
+    });
 </script>
+
+<script>
+$(function () {
+  // If this select was already enhanced, destroy and re-init (prevents "no search" bugs)
+  if ($('#location').data('select2')) {
+    $('#location').select2('destroy');
+  }
+
+  $('#location').select2({
+    width: '100%',
+    placeholder: '-- Select Service Coverage Area --',
+    allowClear: true,
+    minimumResultsForSearch: 0,
+    dropdownParent: $(document.body),
+
+    // Group-aware matcher: matches option text OR group label.
+    matcher: function (params, data) {
+      const term = $.trim(params.term || '').toLowerCase();
+      if (term === '') return data;  // show all when no search
+
+      // If this is a group (has children)
+      if (data.children && data.children.length) {
+        const groupLabel = (data.text || '').toLowerCase();
+
+        // 1) If group label matches, return whole group unchanged
+        if (groupLabel.includes(term)) {
+          return data;
+        }
+
+        // 2) Otherwise, filter children by their text
+        const filteredChildren = [];
+        for (let i = 0; i < data.children.length; i++) {
+          const child = data.children[i];
+          if ((child.text || '').toLowerCase().includes(term)) {
+            // Clone the child so Select2 can render it
+            filteredChildren.push($.extend(true, {}, child));
+          }
+        }
+
+        if (filteredChildren.length) {
+          const modifiedData = $.extend(true, {}, data);
+          modifiedData.children = filteredChildren;
+          return modifiedData;
+        }
+        // No children matched → hide this group
+        return null;
+      }
+
+      // Regular option
+      if ((data.text || '').toLowerCase().includes(term)) {
+        return data;
+      }
+
+      // As a fallback, try to match option's parent <optgroup> label
+      const el = data.element;
+      const groupLabel = el && el.parentElement && el.parentElement.label
+        ? el.parentElement.label.toLowerCase()
+        : '';
+      if (groupLabel.includes(term)) {
+        return data;
+      }
+
+      return null;
+    }
+  });
+});
+</script>
+
+<script>
+fetch('/get-service-areas')
+  .then(res => res.json())
+  .then(data => {
+    const select = document.getElementById('location');
+    select.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = '-- Select Service Coverage Area --';
+    defaultOption.value = '';
+    select.appendChild(defaultOption);
+
+    data.forEach(group => {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = group.region;
+
+      group.areas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        option.textContent = area;
+        optgroup.appendChild(option);
+      });
+
+      select.appendChild(optgroup);
+    });
+  });
+</script>
+
 @endsection
