@@ -116,7 +116,7 @@
           <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                alt="Rajesh Kumar" class="rounded-circle me-2" width="40" height="40">
           <div class="d-none d-md-block">
-            <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;">{{ session('user')->full_name }}</p>
+            <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;"></p>
             <p class="mb-0 text-muted" style="font-size: 0.75rem;">Customer</p>
           </div>
         </a>

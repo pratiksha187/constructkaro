@@ -33,7 +33,7 @@
                            <h2 class="mb-2" style="font-size: 1.875rem; font-weight: 700; color: var(--slate-900);">
                                 Welcome back, 
                                 
-                                <span id="welcomeName">{{ session('user')->full_name }}
+                                <span id="welcomeName">
 
                                 
                                 </span>!
@@ -45,11 +45,11 @@
                             <div class="d-flex flex-wrap" style="gap: 1rem;">
                                 <div class="contact-chip">
                                     <i data-lucide="mail" style="width: 1rem; height: 1rem; color: var(--slate-600);"></i>
-                                    <span style="color: var(--slate-700);" id="userEmail">{{ session('user')->email }}</span>
+                                    <span style="color: var(--slate-700);" id="userEmail"></span>
                                 </div>
                                 <div class="contact-chip">
                                     <i data-lucide="phone" style="width: 1rem; height: 1rem; color: var(--slate-600);"></i>
-                                    <span style="color: var(--slate-700);" id="userPhone">{{ session('user')->phone_number }}</span>
+                                    <span style="color: var(--slate-700);" id="userPhone"></span>
                                 </div>
                                 <!-- <div class="contact-chip">
                                     <i data-lucide="map-pin" style="width: 1rem; height: 1rem; color: var(--slate-600);"></i>

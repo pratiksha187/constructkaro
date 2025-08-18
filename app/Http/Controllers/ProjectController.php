@@ -158,6 +158,7 @@ class ProjectController extends Controller
     }
 
     public function customer_dashboard(){
-        return view('web.customer_dashboard');
+        $session = session('current_project_id');
+        return view('web.customer_dashboard',compact('session'));
     }
 }

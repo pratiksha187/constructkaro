@@ -109,56 +109,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                         <input type="text" id="full_name" name="full_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Enter your full name">
                      </div>
-                     <!-- <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                        <input type="tel" id="phone_number" name="phone_number" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Enter your phone number">
-                        </div>
-                        <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                        <input id="email" name="email" type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Enter your email address" autocomplete="off">
-                        <div id="suggestions" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg hidden max-h-60 overflow-auto"></div>
-                        </div> -->
-                     <!-- <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                        <div class="flex gap-2">
-                           <input type="tel" id="phone_number" name="phone_number" required
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all"
-                              placeholder="Enter your phone number">
-                           <button type="button" id="sendPhoneOtpBtn"
-                              class="px-3 py-2 rounded bg-custom-blue text-white">Send Code</button>
-                        </div>
-                        <div id="phoneOtpWrap" class="mt-2 hidden">
-                           <div class="flex gap-2 items-center">
-                              <input id="phoneOtp" maxlength="6"
-                                 class="w-40 px-3 py-2 border rounded" placeholder="Enter code">
-                              <button type="button" id="verifyPhoneOtpBtn"
-                                 class="px-3 py-2 rounded bg-green-600 text-white">Verify</button>
-                              <span id="phoneOtpStatus" class="text-sm ml-2"></span>
-                           </div>
-                        </div>
-                     </div>
-                   
-                     <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                        <div class="flex gap-2">
-                           <input id="email" name="email" type="email" required
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all"
-                              placeholder="Enter your email address" autocomplete="off">
-                           <button type="button" id="sendEmailOtpBtn"
-                              class="px-3 py-2 rounded bg-custom-blue text-white">Send Code</button>
-                        </div>
-                        <div id="emailOtpWrap" class="mt-2 hidden">
-                           <div class="flex gap-2 items-center">
-                              <input id="emailOtp" maxlength="6"
-                                 class="w-40 px-3 py-2 border rounded" placeholder="Enter code">
-                              <button type="button" id="verifyEmailOtpBtn"
-                                 class="px-3 py-2 rounded bg-green-600 text-white">Verify</button>
-                              <span id="emailOtpStatus" class="text-sm ml-2"></span>
-                           </div>
-                        </div>
-                        <div id="suggestions" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg hidden max-h-60 overflow-auto"></div>
-                     </div> -->
-                     <!-- PHONE -->
+                    
                   <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
 
@@ -171,18 +122,18 @@
                         placeholder="Enter your phone number"
                         class="flex-1 px-3 py-2 outline-none border-0 text-gray-900 placeholder-gray-400"
                      />
-                     <button
+                     <!-- <button
                         type="button"
                         id="sendPhoneOtpBtn"
                         class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium bg-custom-blue hover:bg-blue-600 text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Send OTP"
                      >
                         Send OTP
-                     </button>
+                     </button> -->
                   </div>
 
                   <!-- OTP entry (shown after send) -->
-                  <div id="phoneOtpWrap" class="mt-2 hidden">
+                  <!-- <div id="phoneOtpWrap" class="mt-2 hidden">
                      <div class="flex items-stretch rounded-md border border-gray-300 overflow-hidden">
                         <input
                         id="phoneOtp"
@@ -199,7 +150,7 @@
                         </button>
                         <span id="phoneOtpStatus" class="self-center ml-2 text-xs sm:text-sm"></span>
                      </div>
-                  </div>
+                  </div> -->
                   </div>
 
                   <!-- EMAIL -->
@@ -216,18 +167,18 @@
                         autocomplete="off"
                         class="flex-1 px-3 py-2 outline-none border-0 text-gray-900 placeholder-gray-400"
                      />
-                     <button
+                     <!-- <button
                         type="button"
                         id="sendEmailOtpBtn"
                         class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium bg-custom-blue hover:bg-blue-600 text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Send OTP"
                      >
                         Send OTP
-                     </button>
+                     </button> -->
                   </div>
 
                   <!-- OTP entry (shown after send) -->
-                  <div id="emailOtpWrap" class="mt-2 hidden">
+                  <!-- <div id="emailOtpWrap" class="mt-2 hidden">
                      <div class="flex items-stretch rounded-md border border-gray-300 overflow-hidden">
                         <input
                         id="emailOtp"
@@ -244,7 +195,7 @@
                         </button>
                         <span id="emailOtpStatus" class="self-center ml-2 text-xs sm:text-sm"></span>
                      </div>
-                  </div>
+                  </div> -->
 
                   <!-- keep your suggestions dropdown if you use it -->
                   <div id="suggestions" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg hidden max-h-60 overflow-auto"></div>
@@ -621,13 +572,13 @@
       }
       
       // ---------- your AJAX submit (unchanged except we gate OTP verified) ----------
-      let phoneVerified=false, emailVerified=false;
+      // let phoneVerified=false, emailVerified=false;
       $('form').on('submit', function(e){
         e.preventDefault();
         const form=this;
-        if(!validateForm(form)) return;
-        if(!phoneVerified){ setError(document.getElementById('phone_number'),'Please verify your mobile number.'); return; }
-        if(!emailVerified){ setError(document.getElementById('email'),'Please verify your email.'); return; }
+      //   if(!validateForm(form)) return;
+      //   if(!phoneVerified){ setError(document.getElementById('phone_number'),'Please verify your mobile number.'); return; }
+      //   if(!emailVerified){ setError(document.getElementById('email'),'Please verify your email.'); return; }
       
         const formData = new FormData(form);
         $.ajax({
@@ -661,79 +612,79 @@
       }
       
       // ---------- OTP JS (robust + CSRF safe) ----------
-      document.addEventListener('DOMContentLoaded', function(){
-        const CSRF = (document.querySelector('meta[name="csrf-token"]')?.content) || '{{ csrf_token() }}';
-        function toast(el,msg,ok=true){ if(!el) return; el.textContent=msg; el.className='text-sm ml-2 '+(ok?'text-green-700':'text-red-600'); }
+      // document.addEventListener('DOMContentLoaded', function(){
+      //   const CSRF = (document.querySelector('meta[name="csrf-token"]')?.content) || '{{ csrf_token() }}';
+      //   function toast(el,msg,ok=true){ if(!el) return; el.textContent=msg; el.className='text-sm ml-2 '+(ok?'text-green-700':'text-red-600'); }
       
-        const btnSendPhone = document.getElementById('sendPhoneOtpBtn');
-        const btnVerifyPhone = document.getElementById('verifyPhoneOtpBtn');
-        const btnSendEmail = document.getElementById('sendEmailOtpBtn');
-        const btnVerifyEmail = document.getElementById('verifyEmailOtpBtn');
+      //   const btnSendPhone = document.getElementById('sendPhoneOtpBtn');
+      //   const btnVerifyPhone = document.getElementById('verifyPhoneOtpBtn');
+      //   const btnSendEmail = document.getElementById('sendEmailOtpBtn');
+      //   const btnVerifyEmail = document.getElementById('verifyEmailOtpBtn');
       
-        // send phone otp
-        btnSendPhone?.addEventListener('click', function(){
-          const raw=document.getElementById('phone_number').value.trim();
-          const digits=raw.replace(/\D/g,''); if(!/^[6-9]\d{9}$/.test(digits)){ alert('Enter a valid Indian mobile number.'); return; }
-          this.disabled=true;
-          fetch(`{{ route('otp.send') }}`,{
-            method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-            body: JSON.stringify({ type:'phone', recipient: digits })
-          }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
-            .then(({ok,j})=>{
-              this.disabled=false;
-              if(!ok){ alert(j.message||'Failed to send code'); return; }
-              document.getElementById('phoneOtpWrap')?.classList.remove('hidden');
-              toast(document.getElementById('phoneOtpStatus'),'Code sent. Check SMS.');
-            }).catch(()=>{ this.disabled=false; alert('Network error'); });
-        });
+      //   // send phone otp
+      //   btnSendPhone?.addEventListener('click', function(){
+      //     const raw=document.getElementById('phone_number').value.trim();
+      //     const digits=raw.replace(/\D/g,''); if(!/^[6-9]\d{9}$/.test(digits)){ alert('Enter a valid Indian mobile number.'); return; }
+      //     this.disabled=true;
+      //     fetch(`{{ route('otp.send') }}`,{
+      //       method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+      //       body: JSON.stringify({ type:'phone', recipient: digits })
+      //     }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
+      //       .then(({ok,j})=>{
+      //         this.disabled=false;
+      //         if(!ok){ alert(j.message||'Failed to send code'); return; }
+      //         document.getElementById('phoneOtpWrap')?.classList.remove('hidden');
+      //         toast(document.getElementById('phoneOtpStatus'),'Code sent. Check SMS.');
+      //       }).catch(()=>{ this.disabled=false; alert('Network error'); });
+      //   });
       
-        // verify phone otp
-        btnVerifyPhone?.addEventListener('click', function(){
-          const digits=document.getElementById('phone_number').value.trim().replace(/\D/g,'');
-          const code=document.getElementById('phoneOtp').value.trim(); if(!/^\d{6}$/.test(code)){ alert('Enter 6-digit code'); return; }
-          fetch(`{{ route('otp.verify') }}`,{
-            method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-            body: JSON.stringify({ type:'phone', recipient: digits, code })
-          }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
-            .then(({ok,j})=>{
-              if(!ok){ toast(document.getElementById('phoneOtpStatus'), j.message||'Invalid code', false); return; }
-              phoneVerified=true; document.getElementById('phone_number')?.setAttribute('readonly','readonly');
-              btnSendPhone.disabled=true; toast(document.getElementById('phoneOtpStatus'),'Verified ✓');
-            }).catch(()=> toast(document.getElementById('phoneOtpStatus'),'Network error',false));
-        });
+      //   // verify phone otp
+      //   btnVerifyPhone?.addEventListener('click', function(){
+      //     const digits=document.getElementById('phone_number').value.trim().replace(/\D/g,'');
+      //     const code=document.getElementById('phoneOtp').value.trim(); if(!/^\d{6}$/.test(code)){ alert('Enter 6-digit code'); return; }
+      //     fetch(`{{ route('otp.verify') }}`,{
+      //       method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+      //       body: JSON.stringify({ type:'phone', recipient: digits, code })
+      //     }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
+      //       .then(({ok,j})=>{
+      //         if(!ok){ toast(document.getElementById('phoneOtpStatus'), j.message||'Invalid code', false); return; }
+      //         phoneVerified=true; document.getElementById('phone_number')?.setAttribute('readonly','readonly');
+      //         btnSendPhone.disabled=true; toast(document.getElementById('phoneOtpStatus'),'Verified ✓');
+      //       }).catch(()=> toast(document.getElementById('phoneOtpStatus'),'Network error',false));
+      //   });
       
-        // send email otp
-        btnSendEmail?.addEventListener('click', function(){
-          const email=document.getElementById('email').value.trim();
-          if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Enter a valid email'); return; }
-          this.disabled=true;
-          fetch(`{{ route('otp.send') }}`,{
-            method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-            body: JSON.stringify({ type:'email', recipient: email })
-          }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
-            .then(({ok,j})=>{
-              this.disabled=false;
-              if(!ok){ alert(j.message||'Failed to send code'); return; }
-              document.getElementById('emailOtpWrap')?.classList.remove('hidden');
-              toast(document.getElementById('emailOtpStatus'),'Code sent. Check your inbox.');
-            }).catch(()=>{ this.disabled=false; alert('Network error'); });
-        });
+      //   // send email otp
+      //   btnSendEmail?.addEventListener('click', function(){
+      //     const email=document.getElementById('email').value.trim();
+      //     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Enter a valid email'); return; }
+      //     this.disabled=true;
+      //     fetch(`{{ route('otp.send') }}`,{
+      //       method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+      //       body: JSON.stringify({ type:'email', recipient: email })
+      //     }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
+      //       .then(({ok,j})=>{
+      //         this.disabled=false;
+      //         if(!ok){ alert(j.message||'Failed to send code'); return; }
+      //         document.getElementById('emailOtpWrap')?.classList.remove('hidden');
+      //         toast(document.getElementById('emailOtpStatus'),'Code sent. Check your inbox.');
+      //       }).catch(()=>{ this.disabled=false; alert('Network error'); });
+      //   });
       
-        // verify email otp
-        btnVerifyEmail?.addEventListener('click', function(){
-          const email=document.getElementById('email').value.trim();
-          const code=document.getElementById('emailOtp').value.trim(); if(!/^\d{6}$/.test(code)){ alert('Enter 6-digit code'); return; }
-          fetch(`{{ route('otp.verify') }}`,{
-            method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-            body: JSON.stringify({ type:'email', recipient: email, code })
-          }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
-            .then(({ok,j})=>{
-              if(!ok){ toast(document.getElementById('emailOtpStatus'), j.message||'Invalid code', false); return; }
-              emailVerified=true; document.getElementById('email')?.setAttribute('readonly','readonly');
-              btnSendEmail.disabled=true; toast(document.getElementById('emailOtpStatus'),'Verified ✓');
-            }).catch(()=> toast(document.getElementById('emailOtpStatus'),'Network error',false));
-        });
-      });
+      //   // verify email otp
+      //   btnVerifyEmail?.addEventListener('click', function(){
+      //     const email=document.getElementById('email').value.trim();
+      //     const code=document.getElementById('emailOtp').value.trim(); if(!/^\d{6}$/.test(code)){ alert('Enter 6-digit code'); return; }
+      //     fetch(`{{ route('otp.verify') }}`,{
+      //       method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+      //       body: JSON.stringify({ type:'email', recipient: email, code })
+      //     }).then(async r=>({ok:r.ok,j:await r.json().catch(()=>({}))}))
+      //       .then(({ok,j})=>{
+      //         if(!ok){ toast(document.getElementById('emailOtpStatus'), j.message||'Invalid code', false); return; }
+      //         emailVerified=true; document.getElementById('email')?.setAttribute('readonly','readonly');
+      //         btnSendEmail.disabled=true; toast(document.getElementById('emailOtpStatus'),'Verified ✓');
+      //       }).catch(()=> toast(document.getElementById('emailOtpStatus'),'Network error',false));
+      //   });
+      // });
       
       // password eye toggle
       function togglePassword(){
