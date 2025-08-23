@@ -1,98 +1,114 @@
 <?php
-// app/Http/Controllers/OtpController.php
 namespace App\Http\Controllers;
 
-use App\Mail\OtpMail;
-use App\Models\OtpCode;
-use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
+use Aws\Sns\SnsClient;
+use App\Models\MobOtp;
+use App\Services\SmsService;
+use Twilio\Rest\Client;
+use App\Services\TwilioService;
+use Illuminate\Support\Facades\Log;
+use App\Models\EmailOtp;
+use Carbon\Carbon;
+
+use Illuminate\Support\Str;
 
 class OtpController extends Controller
 {
-    public function send(Request $request, SmsService $sms)
+     private TwilioService $twilio;
+
+    public function __construct(TwilioService $twilio)
     {
-        $data = $request->validate([
-            'type'      => ['required', Rule::in(['phone','email'])],
-            'recipient' => ['required','string','max:191'],
-        ]);
+        $this->twilio = $twilio;
+    }
+    public function sendEmailOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
 
-        // Simple validation on frontend format (server-side fallback)
-        if ($data['type'] === 'phone' && !preg_match('/^[6-9]\d{9}$/', preg_replace('/\D/','',$data['recipient']))) {
-            return response()->json(['message' => 'Enter a valid Indian mobile number.'], 422);
+        $otp = rand(100000, 999999);
+
+        // Store OTP in database
+        EmailOtp::updateOrCreate(
+            ['email' => $request->email],
+            [
+                'otp' => $otp,
+                'expires_at' => Carbon::now()->addMinutes(5)
+            ]
+        );
+
+        try {
+            Mail::raw("Your OTP code is: $otp", function ($message) use ($request) {
+                $message->to($request->email)
+                        ->subject('Your Email OTP');
+            });
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
-        if ($data['type'] === 'email' && !filter_var($data['recipient'], FILTER_VALIDATE_EMAIL)) {
-            return response()->json(['message' => 'Enter a valid email address.'], 422);
-        }
-
-        // Rate-limit: block resend within 60s for same recipient/type
-        $recent = OtpCode::where('type',$data['type'])
-            ->where('recipient',$data['recipient'])
-            ->whereNull('consumed_at')
-            ->where('created_at','>=',now()->subSeconds(60))
-            ->first();
-        if ($recent) {
-            return response()->json(['message' => 'Please wait before requesting a new code.'], 429);
-        }
-
-        $code = (string) random_int(100000, 999999);
-        $otp = OtpCode::create([
-            'type'       => $data['type'],
-            'recipient'  => $data['recipient'],
-            'code'       => $code,
-            'expires_at' => now()->addMinutes(10),
-            'session_id' => $request->session()->getId(),
-        ]);
-
-        if ($data['type'] === 'email') {
-            Mail::to($data['recipient'])->send(new OtpMail($code));
-        } else {
-            $sms->send($data['recipient'], "Your ConstructKaro code is {$code}. It expires in 10 minutes.");
-        }
-
-        return response()->json(['message' => 'Verification code sent.']);
     }
 
-    public function verify(Request $request)
+    public function verifyEmailOtp(Request $request)
     {
-        $data = $request->validate([
-            'type'      => ['required', Rule::in(['phone','email'])],
-            'recipient' => ['required','string','max:191'],
-            'code'      => ['required','digits:6'],
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|digits:6',
         ]);
 
-        $otp = OtpCode::where('type',$data['type'])
-            ->where('recipient',$data['recipient'])
-            ->where('session_id',$request->session()->getId())
-            ->orderByDesc('id')
-            ->first();
+        $record = EmailOtp::where('email', $request->email)
+                        ->where('otp', $request->otp)
+                        ->where('expires_at', '>', now())
+                        ->first();
 
-        if (!$otp || $otp->isExpired() || $otp->isConsumed()) {
-            return response()->json(['message' => 'Code expired or not found.'], 422);
+        if ($record) {
+            $record->delete(); // Optional: delete after successful verification
+            return response()->json(['status' => 'success']);
         }
 
-        // Optional: limit attempts
-        if ($otp->attempts >= 5) {
-            return response()->json(['message' => 'Too many attempts. Request new code.'], 429);
-        }
-
-        $otp->increment('attempts');
-
-        if ($otp->code !== $data['code']) {
-            return response()->json(['message' => 'Invalid code.'], 422);
-        }
-
-        $otp->update(['consumed_at' => now()]);
-
-        // Mark verified in session for your final submit check
-        if ($data['type'] === 'email') {
-            session(['verified_email' => $data['recipient']]);
-        } else {
-            session(['verified_phone' => preg_replace('/\D/','',$data['recipient'])]);
-        }
-
-        return response()->json(['message' => 'Verified successfully.']);
+        return response()->json(['status' => 'error', 'message' => 'Invalid or expired OTP']);
     }
+
+
+      public function sendOtp(Request $request)
+    {
+        $mobile = $request->input('phone_number');
+        $otp = rand(100000, 999999); // generate 6-digit OTP
+
+            // ✅ Correct way
+        $sid   = env('TWILIO_SID');
+        $token = env('TWILIO_TOKEN');
+        $from  = env('TWILIO_FROM_SMS');
+
+        $client = new Client($sid, $token);
+
+        // try {
+            $message = $client->messages->create(
+                $mobile, // receiver phone number
+                [
+                    'from' => '18145262956', // your Twilio number
+                    'body' => "Your OTP is: $otp"
+                ]
+            );
+ dd($message);
+            // Save OTP in session (or DB for verification)
+            session(['phone_otp' => $otp]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP sent to ' . $mobile
+            ]);
+
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => $e->getMessage()
+        //     ], 500);
+        // }
+    }
+   
+    
 }
-

@@ -152,10 +152,20 @@
                     <label>Full Name *</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <label>Mobile Number *</label>
                     <input type="text" name="mobile" class="form-control" required>
+                </div> -->
+                <div class="col-md-6">
+                    <label>Mobile Number *</label>
+                    <input type="text" 
+                            name="mobile" 
+                            class="form-control" 
+                            required
+                            pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$"
+                            title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
                 </div>
+
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" autocomplete="off" required>

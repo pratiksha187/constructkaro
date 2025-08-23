@@ -208,7 +208,7 @@
     
     <!-- Animated Logo -->
     <div class="flex justify-center mb-6">
-      <img src="https://placehold.co/100x100?text=Logo" alt="Logo" class="w-20 h-20 animate-bounce" />
+      <img src="logo/bg.png" alt="Logo" class="w-20 h-20 animate-bounce" />
     </div>
 
     <!-- Heading -->

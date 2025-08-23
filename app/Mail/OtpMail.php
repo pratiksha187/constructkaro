@@ -1,5 +1,5 @@
-<?php 
-// app/Mail/OtpMail.php
+<?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -12,10 +12,9 @@ class OtpMail extends Mailable
 
     public function __construct(public string $code) {}
 
-    public function build()
+    public function build(): self
     {
-        return $this->subject('Your ConstructKaro Verification Code')
-            ->view('emails.otp')
-            ->with(['code' => $this->code]);
+        return $this->subject('Your Verification Code')
+            ->markdown('emails.otp', ['code' => $this->code]);
     }
 }

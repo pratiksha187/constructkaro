@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+   'twilio' => [
+        'sid'      => env('TWILIO_SID'),
+        'token'    => env('TWILIO_TOKEN'),
+        'from_sms' => env('TWILIO_FROM_SMS'),
+    ],
+'aws' => [
+  'region' => env('AWS_DEFAULT_REGION', 'ap-south-1'),
+],
+'leegality' => [
+    'base_url'     => env('LEEGALITY_BASE_URL'),
+    'auth_token'   => env('LEEGALITY_AUTH_TOKEN'),
+    'private_salt' => env('LEEGALITY_PRIVATE_SALT'),
+],
+
+
+
+
+
 ];

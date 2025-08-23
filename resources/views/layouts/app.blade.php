@@ -853,7 +853,7 @@
    {
    icon: 'zap',
    title: 'Electrical',
-   count: '90+ Electricians',
+   count: '90+ MEP CONSULTANTS',
    color: 'linear-gradient(135deg, #eab308, #ca8a04)',
    bgColor: '#fefce8',
    textColor: '#ca8a04',
@@ -861,8 +861,8 @@
    },
    {
    icon: 'shield',
-   title: 'Security Systems',
-   count: '60+ Specialists',
+   title: 'ROADS',
+   count: 'INFRASTRUCTURE CONTRACTORS',
    color: 'linear-gradient(135deg, #ef4444, #dc2626)',
    bgColor: '#fef2f2',
    textColor: '#dc2626',

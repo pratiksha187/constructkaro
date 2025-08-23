@@ -9,12 +9,30 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgencyService;
 use App\Http\Controllers\EngginerController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\testController;
+
+// routes/web.php
+use App\Http\Controllers\LeegalityController;
+
+Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
+Route::post('/esign/create', [LeegalityController::class, 'createInvite'])->name('esign.create');
+
+// Leegality will POST webhooks here (configure in dashboard)
+Route::post('/webhooks/leegality', [LeegalityController::class, 'webhook'])->name('leegality.webhook');
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+Route::post('/otp/sms/send', [testController::class, 'sendSmsOtp'])->name('otp.sms.send');
+Route::get('/test', [AdminController::class, 'test'])->name('test');
+Route::post('/otp/sms/verify', [testController::class, 'verifySmsOtp'])->name('otp.sms.verify');
+
+
+Route::post('/otp/email/send',   [testController::class, 'sendEmailOtp'])->name('otp.email.send');
+Route::post('/otp/email/verify', [testController::class, 'verifyEmailOtp'])->name('otp.email.verify');
 
 Route::get('/project', [ProjectController::class, 'project'])->name('project');
 
@@ -90,9 +108,16 @@ Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadB
 Route::post('/engineer/project/tender', [EngginerController::class, 'storetender'])
     ->name('engineer.project.tender');
 
-Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
-Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
 
+
+// routes/web.php or routes/api.php
+Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp']);
+Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp']);
 
 Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])->name('get_service_areas');
+// Route::post('/send-phone-otp', [OtpController::class, 'send']);
+// Route::post('/verify-phone-otp', [OtpController::class, 'verify']);
+
+Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('send.otp');
+

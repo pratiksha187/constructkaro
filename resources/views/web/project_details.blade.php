@@ -1018,8 +1018,27 @@
                               </div>
                            </div>
                         </div>
+                        
                      </div>
-                     <div class="col-lg-6">
+                      <div class="col-lg-6">
+                        <!-- File Selector -->
+                        <label class="form-label mt-2">
+                           <div class="form-label-icon icon-green">
+                              <i data-lucide="paperclip" class="text-white" style="width: 1rem; height: 1rem;"></i>
+                           </div>
+                           <span>Attach Project Files (optional)</span>
+                        </label>
+                        <input 
+                           type="file" 
+                           id="file_path" 
+                           name="file_path[]" 
+                           class="form-control" 
+                           multiple 
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           >
+                        <small class="form-text text-muted">You can attach multiple files (PDF, DOC, JPG, PNG). Max 10MB each.</small>
+                     </div>
+                     <!-- <div class="col-lg-6">
                         <div class="form-field-group">
                            <label class="form-label">
                               <div class="form-label-icon icon-blue">
@@ -1039,10 +1058,8 @@
                               </div>
                            </div>
                         </div>
-                     </div>
-                  </div>
-                  <div class="row g-4 mb-4">
-                     <div class="col-lg-6">
+                     </div> -->
+                       <!-- <div class="col-lg-6">
                         <div class="form-field-group">
                            <label class="form-label">
                               <div class="form-label-icon icon-green">
@@ -1062,8 +1079,11 @@
                               </div>
                            </div>
                         </div>
-                     </div>
-                     <div class="col-lg-6">
+                     </div> -->
+                  </div>
+                  <div class="row g-4 mb-4">
+                     
+                     <!-- <div class="col-lg-6">
                         <div class="form-field-group">
                            <label class="form-label">
                               <div class="form-label-icon icon-purple">
@@ -1080,10 +1100,10 @@
                               <option value="2plus">2+ years</option>
                            </select>
                         </div>
-                     </div>
+                     </div> -->
                   </div>
                   <div class="row g-4 mb-4">
-                     <div class="col-lg-6">
+                     <div class="col-lg-12">
                         <label class="form-label">
                            <div class="form-label-icon icon-indigo">
                               <i data-lucide="file-text" class="text-white" style="width: 1rem; height: 1rem;"></i>
@@ -1096,24 +1116,7 @@
                            placeholder="Tell us more about your project vision, specific requirements, architectural preferences, or any special features you have in mind..."
                            ></textarea>
                      </div>
-                     <div class="col-lg-6">
-                        <!-- File Selector -->
-                        <label class="form-label mt-2">
-                           <div class="form-label-icon icon-green">
-                              <i data-lucide="paperclip" class="text-white" style="width: 1rem; height: 1rem;"></i>
-                           </div>
-                           <span>Attach Project Files (optional)</span>
-                        </label>
-                        <input 
-                           type="file" 
-                           id="file_path" 
-                           name="file_path[]" 
-                           class="form-control" 
-                           multiple 
-                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                           >
-                        <small class="form-text text-muted">You can attach multiple files (PDF, DOC, JPG, PNG). Max 10MB each.</small>
-                     </div>
+                  
                   </div>
                   <div class="d-flex justify-content-between">
                      <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
@@ -1369,18 +1372,18 @@
                <strong>Project Name</strong><br>
                <span id="modalProjectName">-</span>
                </div>
-               <div>
+               <!-- <div>
                <strong>Location</strong><br>
                <span id="modalProjectLocation">-</span>
-               </div>
-               <div>
+               </div> -->
+               <!-- <div>
                <strong>Budget</strong><br>
                <span id="modalBudget">-</span>
-               </div>
-               <div>
+               </div> -->
+               <!-- <div>
                <strong>Timeline</strong><br>
                <span id="modalTimeline">-</span>
-               </div>
+               </div> -->
                <div style="grid-column: span 2;">
                <strong>Description</strong><br>
                <span id="modalDescription">-</span>
@@ -1412,9 +1415,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content p-4">
       <div class="modal-body text-center" id="thankYouSection">
-        <div class="mb-3">
-          <img src="/assets/celebrate-icon.png" alt="Success Icon" style="width: 60px;">
-        </div>
+       
         <h4 class="fw-bold">Thank you! Your request has been submitted.</h4>
         <p>Your project has been received and is now under review by the <strong>Constructkaro</strong> team.</p>
 
