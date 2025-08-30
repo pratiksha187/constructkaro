@@ -12,7 +12,9 @@ class AdminController extends Controller
     public function test(){
         return view('test');
     }
-
+    public function contactus(){
+        return view('web.contact');
+    }
     public function admin_dashboard(){
         return view('admin.admin_dashboard');
     }
@@ -268,4 +270,26 @@ class AdminController extends Controller
 
     return response()->json($result);
 }
+
+ public function contactus_submit(Request $request)
+    {
+        $data = $request->validate([
+            'name'    => ['required','string','max:120'],
+            'email'   => ['required','email','max:160'],
+            'phone'   => ['required','string','max:20'],
+            'message' => ['required','string','max:2000'],
+            'company' => ['nullable','size:0'], // honeypot must stay empty
+        ]);
+
+        DB::table('contact_us')->insert([
+            'name'       => $data['name'],
+            'email'      => $data['email'],
+            'phone'      => $data['phone'],
+            'message'    => $data['message'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Thanks! Your message has been received. We’ll get back to you shortly.');
+    }
 }

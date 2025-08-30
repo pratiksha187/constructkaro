@@ -80,7 +80,8 @@ Route::post('/engineer/tender-documents', [VendorController::class, 'storeTender
 Route::post('/engineer/tender-upload-file', [VendorController::class, 'uploadFiletenderdocuments'])
     ->name('engineer.tender.upload');
 Route::get('/admin_dashboard', [AdminController::class, 'admin_dashboard'])->name('admin_dashboard');
-
+Route::get('/contactus', [AdminController::class, 'contactus'])->name('contactus');
+Route::post('/contact', [AdminController::class, 'contactus_submit'])->name('contact.submit');
 Route::get('/vendor_approve_form', [AdminController::class, 'vender_approve_form'])->name('vender_approve_form');
 Route::get('/vender_approve_data', [AdminController::class, 'vender_approve_data'])->name('vender_approve_data');
 Route::get('/vender_reject_data', [AdminController::class, 'vender_reject_data'])->name('vender_reject_data');

@@ -103,10 +103,7 @@
         </div>
       </div>
       <div class="row mb-3">
-        <!-- <div class="col-md-6">
-          <label class="form-label">Service Coverage Area *</label>
-          <input type="text" id="service_coverage_area" name="service_coverage_area" class="form-control" placeholder="City/State (e.g., Mumbai, Maharashtra)">
-        </div> -->
+     
         <div class="col-md-6">
           <label class="form-label">Service Coverage Area *</label>
           <select id="service_coverage_area" name="service_coverage_area[]" class="form-select" multiple required>
@@ -117,15 +114,13 @@
           </select>
         </div>
 
-        <!-- <div class="col-md-6">
-          <label class="form-label">Accepting projects of minimum value (₹) *</label>
-          <input type="number" id="min_project_value" name="min_project_value" class="form-control" placeholder="₹ Minimum project value">
-        </div> -->
+      
         <div class="col-md-6">
           <label class="form-label">Accepting projects of minimum value (₹) *</label>
           <input type="number" id="min_project_value" name="min_project_value" class="form-control" placeholder="₹ Minimum project value">
-          <div id="valueInWords"></div>
+          <div id="valueInWords" class="mt-2 text-muted"></div>
         </div>
+
 
       </div>
     </div>
@@ -154,10 +149,7 @@
           <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" maxlength="12" placeholder="Enter Aadhar number">
           <div id="aadhar_error" style="color: red; display: none;">Please enter a valid 12-digit Aadhar number.</div>
         </div>
-        <!-- <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
-          <label class="form-label">CIN No</label>
-          <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number">
-        </div> -->
+       
         <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
           <label class="form-label">CIN No</label>
           <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number" maxlength="21" style="text-transform: uppercase;">
@@ -179,10 +171,7 @@
           <label class="form-label">Contact Person Designation *</label>
           <input type="text" id="contact_person_designation" name="contact_person_designation" class="form-control">
         </div>
-        <!-- <div class="col-md-6">
-          <label class="form-label">GST Number *</label>
-          <input type="text" id="gst_number" name="gst_number" class="form-control">
-        </div> -->
+       
         <div class="col-md-6">
           <label class="form-label">GST Number *</label>
           <input type="text" id="gst_number" name="gst_number" class="form-control" maxlength="15">
@@ -276,14 +265,7 @@
           <label class="form-label">IFSC Code *</label>
           <input type="text" id="ifsc_code" name="ifsc_code" class="form-control">
         </div>
-        <!-- <div class="col-md-6">
-          <label class="form-label">Type of Account *</label>
-          <select class="form-select" id="account_type" name="account_type">
-            <option>Select account type</option>
-            <option value="1">Savings</option>
-            <option value="2">Current</option>
-          </select>
-        </div> -->
+       
         <div class="col-md-6">
           <label class="form-label">Type of Account *</label>
           <select class="form-select" id="account_type" name="account_type" required>
@@ -677,44 +659,155 @@ fetch('/get-service-areas')
   });
 </script>
 <script>
-  document.getElementById("min_project_value").addEventListener("input", function() {
-    const num = parseInt(this.value);
-    const valueInWords = document.getElementById("valueInWords");
+  // document.getElementById("min_project_value").addEventListener("input", function() {
+  //   const num = parseInt(this.value);
+  //   const valueInWords = document.getElementById("valueInWords");
 
-    if (!num || isNaN(num)) {
-      valueInWords.innerText = "";
+  //   if (!num || isNaN(num)) {
+  //     valueInWords.innerText = "";
+  //     return;
+  //   }
+
+  //   valueInWords.innerText = "In words: " + numberToWords(num);
+  // });
+
+  // function numberToWords(num) {
+  //   const a = [
+  //     '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+  //     'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+  //     'seventeen', 'eighteen', 'nineteen'
+  //   ];
+  //   const b = [
+  //     '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy',
+  //     'eighty', 'ninety'
+  //   ];
+
+  //   if (num === 0) return 'zero';
+  //   if (num > 999999) return 'Number too large';
+
+  //   function inWords(n) {
+  //     if (n < 20) return a[n];
+  //     if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+  //     if (n < 1000) return a[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + inWords(n % 100) : "");
+  //     if (n < 100000) return inWords(Math.floor(n / 1000)) + " thousand" + (n % 1000 ? " " + inWords(n % 1000) : "");
+  //     return inWords(Math.floor(n / 100000)) + " lakh" + (n % 100000 ? " " + inWords(n % 100000) : "");
+  //   }
+
+  //   let words = inWords(num);
+  //   return words.charAt(0).toUpperCase() + words.slice(1);
+  // }
+</script>
+<script>
+  const inputEl = document.getElementById("min_project_value");
+  const outEl = document.getElementById("valueInWords");
+
+  inputEl.addEventListener("input", function () {
+    const num = Number(this.value);
+    if (!num || isNaN(num) || num < 0) {
+      outEl.innerHTML = "";
       return;
     }
 
-    valueInWords.innerText = "In words: " + numberToWords(num);
+    const words = numberToIndianWords(num);
+    // const short = formatIndianNumberExtended(num);          // e.g., 5.26 Neel
+    // const withCommas = formatWithIndianCommas(num);         // e.g., 52,58,55,26,55,68,48
+
+    outEl.innerHTML = `
+      <strong>In words:</strong> ${words}
+     
+      
+    `;
   });
 
-  function numberToWords(num) {
-    const a = [
-      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-      'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
-      'seventeen', 'eighteen', 'nineteen'
-    ];
-    const b = [
-      '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy',
-      'eighty', 'ninety'
+  // ---- Number → Words (Indian system up to Shankh) ----
+  function numberToIndianWords(num) {
+    if (num === 0) return "Zero";
+
+    const ONES = ["","one","two","three","four","five","six","seven","eight","nine","ten",
+      "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+    const TENS = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+
+    // Largest to smallest Indian units
+    const UNITS = [
+      { value: 1e17, name: "shankh" },
+      { value: 1e15, name: "padma" },
+      { value: 1e13, name: "neel" },
+      { value: 1e11, name: "kharab" },
+      { value: 1e9,  name: "arab" },
+      { value: 1e7,  name: "crore" },
+      { value: 1e5,  name: "lakh" },
+      { value: 1e3,  name: "thousand" }
+      // hundreds handled below 1000
     ];
 
-    if (num === 0) return 'zero';
-    if (num > 999999) return 'Number too large';
-
-    function inWords(n) {
-      if (n < 20) return a[n];
-      if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
-      if (n < 1000) return a[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + inWords(n % 100) : "");
-      if (n < 100000) return inWords(Math.floor(n / 1000)) + " thousand" + (n % 1000 ? " " + inWords(n % 1000) : "");
-      return inWords(Math.floor(n / 100000)) + " lakh" + (n % 100000 ? " " + inWords(n % 100000) : "");
+    function belowThousand(n) {
+      let str = "";
+      if (n >= 100) {
+        str += ONES[Math.floor(n/100)] + " hundred";
+        n = n % 100;
+        if (n) str += " ";
+      }
+      if (n >= 20) {
+        str += TENS[Math.floor(n/10)];
+        if (n % 10) str += " " + ONES[n % 10];
+      } else if (n > 0) {
+        str += ONES[n];
+      }
+      return str;
     }
 
-    let words = inWords(num);
-    return words.charAt(0).toUpperCase() + words.slice(1);
+    function convert(n) {
+      let parts = [];
+      for (const u of UNITS) {
+        if (n >= u.value) {
+          const q = Math.floor(n / u.value);
+          parts.push(convert(q) + " " + u.name);
+          n = n % u.value;
+        }
+      }
+      if (n > 0) {
+        parts.push(belowThousand(n));
+      }
+      return parts.join(" ");
+    }
+
+    const out = convert(num).trim();
+    return out.charAt(0).toUpperCase() + out.slice(1);
+  }
+
+  // ---- Short scale formatter (K, Lakh, Cr, Arab, Kharab, Neel, Padma, Shankh) ----
+  function formatIndianNumberExtended(num) {
+    const SCALES = [
+      { value: 1e17, label: "Shankh" },
+      { value: 1e15, label: "Padma" },
+      { value: 1e13, label: "Neel" },
+      { value: 1e11, label: "Kharab" },
+      { value: 1e9,  label: "Arab" },
+      { value: 1e7,  label: "Cr" },
+      { value: 1e5,  label: "Lakh" },
+      { value: 1e3,  label: "K" }
+    ];
+    for (const s of SCALES) {
+      if (num >= s.value) return (num / s.value).toFixed(2) + " " + s.label;
+    }
+    return String(num);
+  }
+
+  // ---- Indian comma formatting (e.g., 52,58,55,26,55,68,48) ----
+  function formatWithIndianCommas(num) {
+    // Intl is reliable for Indian grouping
+    try {
+      return new Intl.NumberFormat('en-IN').format(num);
+    } catch {
+      // simple fallback
+      const str = String(num);
+      const last3 = str.slice(-3);
+      const other = str.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+      return other ? other + "," + last3 : last3;
+    }
   }
 </script>
+
 
 <script>
   const gstInput = document.getElementById('gst_number');
