@@ -51,10 +51,7 @@
                                     <i data-lucide="phone" style="width: 1rem; height: 1rem; color: var(--slate-600);"></i>
                                     <span style="color: var(--slate-700);" id="userPhone"></span>
                                 </div>
-                                <!-- <div class="contact-chip">
-                                    <i data-lucide="map-pin" style="width: 1rem; height: 1rem; color: var(--slate-600);"></i>
-                                    <span style="color: var(--slate-700);" id="userLocation">Mumbai, Maharashtra</span>
-                                </div> -->
+                            
                             </div>
                         </div>
                     </div>

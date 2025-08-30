@@ -37,9 +37,6 @@
   }
 }
 
-  /* .table td, .table th {
-    vertical-align: middle;
-  } */
 
   h3.text-primary {
     color: #FF6600 !important;

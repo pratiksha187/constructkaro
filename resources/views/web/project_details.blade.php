@@ -1372,18 +1372,7 @@
                <strong>Project Name</strong><br>
                <span id="modalProjectName">-</span>
                </div>
-               <!-- <div>
-               <strong>Location</strong><br>
-               <span id="modalProjectLocation">-</span>
-               </div> -->
-               <!-- <div>
-               <strong>Budget</strong><br>
-               <span id="modalBudget">-</span>
-               </div> -->
-               <!-- <div>
-               <strong>Timeline</strong><br>
-               <span id="modalTimeline">-</span>
-               </div> -->
+            
                <div style="grid-column: span 2;">
                <strong>Description</strong><br>
                <span id="modalDescription">-</span>
@@ -1450,85 +1439,6 @@
     });
 
 
-// $('#projectForm').on('submit', function (e) {
-//     e.preventDefault();
-
-//     // Get form values
-//     const projectName = $('#project_name').val().trim();
-//     const projectLocation = $('#project_location').val().trim();
-//     const budget = $('#budget_range').val().trim();
-//     const timeline = $('#expectedTimeline').val().trim();
-
-//     // Validation flag
-//     let isValid = true;
-
-//     // Find first invalid field to focus
-//     if (!projectName) {
-//         $('#project_name').addClass('is-invalid').focus();
-//         isValid = false;
-//     } else {
-//         $('#project_name').removeClass('is-invalid');
-//     }
-
-//     if (isValid && !projectLocation) {
-//         $('#project_location').addClass('is-invalid').focus();
-//         isValid = false;
-//     } else {
-//         $('#project_location').removeClass('is-invalid');
-//     }
-
-//     if (isValid && !budget) {
-//         $('#budget_range').addClass('is-invalid').focus();
-//         isValid = false;
-//     } else {
-//         $('#budget_range').removeClass('is-invalid');
-//     }
-
-//     if (isValid && !timeline) {
-//         $('#expectedTimeline').addClass('is-invalid').focus();
-//         isValid = false;
-//     } else {
-//         $('#expectedTimeline').removeClass('is-invalid');
-//     }
-
-//     // Stop if form is not valid
-//     if (!isValid) return;
-
-//     // Fill modal with form data
-//     $('#modalProjectName').text(projectName);
-//     $('#modalProjectLocation').text(projectLocation);
-//     $('#modalBudget').text(budget);
-//     $('#modalTimeline').text(timeline);
-//     $('#modalDescription').text($('#project_description').val().trim());
-
-//     // Show modal
-//     $('#projectConfirmModal').modal('show');
-// });
-
-// $('#confirmSubmitBtn').on('click', function () {
-//     let formData = new FormData($('#projectForm')[0]);
-
-//     $.ajax({
-//         url: '/project_details_save',
-//         type: 'POST',
-//         data: formData,
-//         contentType: false,
-//         processData: false,
-//         success: function (response) {
-//             $('#projectConfirmModal').modal('hide');
-//             $('#goToDashboardBtn').on('click', function () {
-//     window.location.href = "/dashboard"; // Adjust path as needed
-// });
-
-//             // window.location.href = '/project_details';
-//         },
-//         error: function (xhr) {
-//             console.error(xhr.responseText);
-//             alert('Error submitting form. Please check console.');
-//         }
-//     });
-// });
-// $(document).ready(function () {
 
   // Form submission (before AJAX)
   $('#projectForm').on('submit', function (e) {

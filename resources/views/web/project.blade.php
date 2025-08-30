@@ -344,10 +344,7 @@
           </h2>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- <div class="relative">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Expected Start Date</label>
-              <input type="date" id="expected_start" name="expected_start" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all">
-            </div> -->
+          
             <div class="relative">
               <label class="block text-sm font-medium text-gray-700 mb-2">Expected Start Date</label>
               <input type="date" id="expected_start" name="expected_start"

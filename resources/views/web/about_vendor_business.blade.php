@@ -709,9 +709,7 @@ fetch('/get-service-areas')
     }
 
     const words = numberToIndianWords(num);
-    // const short = formatIndianNumberExtended(num);          // e.g., 5.26 Neel
-    // const withCommas = formatWithIndianCommas(num);         // e.g., 52,58,55,26,55,68,48
-
+  
     outEl.innerHTML = `
       <strong>In words:</strong> ${words}
      

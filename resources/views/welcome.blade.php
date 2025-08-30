@@ -202,31 +202,31 @@
             </div>
          </div>
       </section>
-  <!-- ✅ Login Modal -->
-<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-  <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md transition-all duration-500 ease-out animate-fadeInUp relative">
-    
-    <!-- Animated Logo -->
-    <div class="flex justify-center mb-6">
-      <img src="logo/bg.png" alt="Logo" class="w-20 h-20 animate-bounce" />
-    </div>
+      <!-- ✅ Login Modal -->
+      <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+      <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md transition-all duration-500 ease-out animate-fadeInUp relative">
+         
+         <!-- Animated Logo -->
+         <div class="flex justify-center mb-6">
+            <img src="logo/bg.png" alt="Logo" class="w-20 h-20 animate-bounce" />
+         </div>
 
-    <!-- Heading -->
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to ConstructKaro</h2>
-    <p class="text-center text-gray-500 mb-6">Login as:</p>
+         <!-- Heading -->
+         <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to ConstructKaro</h2>
+         <p class="text-center text-gray-500 mb-6">Login as:</p>
 
-    <!-- Buttons -->
-    <div class="flex flex-col space-y-4">
-      <a href="" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-semibold transition">
-        Vendor/Customer
-      </a>
-     
-    </div>
+         <!-- Buttons -->
+         <div class="flex flex-col space-y-4">
+            <a href="" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-semibold transition">
+            Vendor/Customer
+            </a>
+         
+         </div>
 
-    <!-- Close Button -->
-    <button onclick="closeLoginModal()" class="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
-  </div>
-</div>
+         <!-- Close Button -->
+         <button onclick="closeLoginModal()" class="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+      </div>
+      </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
