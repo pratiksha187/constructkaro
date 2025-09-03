@@ -18,6 +18,10 @@ class AdminController extends Controller
     public function about_us(){
         return view('web.aboutus');
     }
+
+    public function privacy(){
+        return view('web.privacy');
+    }
     
     public function admin_dashboard(){
         return view('admin.admin_dashboard');

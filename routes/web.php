@@ -119,6 +119,7 @@ Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp']);
 
 Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])->name('get_service_areas');
 Route::get('about_us', [AdminController::class, 'about_us'])->name('about_us');
+Route::get('Privacy-Policy', [AdminController::class, 'privacy'])->name('privacy.policy');
 
 // Route::post('/send-phone-otp', [OtpController::class, 'send']);
 // Route::post('/verify-phone-otp', [OtpController::class, 'verify']);
