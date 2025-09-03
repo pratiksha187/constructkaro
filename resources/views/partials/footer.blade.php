@@ -104,12 +104,7 @@
         </div>
       </div>
 
-      <!-- Footer with Download -->
-      <div class="modal-footer">
-        <a href="{{ url('pdfs/logo/Privacy.pdf') }}" download class="btn btn-success">
-  ⬇ Download PDF
-</a>
-
+    
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
 
