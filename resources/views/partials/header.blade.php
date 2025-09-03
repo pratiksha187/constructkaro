@@ -17,14 +17,14 @@
 <header class="navbar navbar-expand-lg custom-header">
   <div class="container-fluid">
     <div class="navbar-brand">
-      <a class="d-flex align-items-center" href="#">
+      <a class="d-flex align-items-center" href="{{ route('home') }}">
         <img src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo">
       </a>
     </div>
 
     <nav class="navbar-nav d-none d-lg-flex flex-row align-items-center">
-      <a href="{{ url('/') }}" class="nav-link">Home</a>
-      <a href="" class="nav-link">About Us</a>
+      <a href="{{ route('home') }}" class="nav-link">Home</a>
+      <a href="{{route('about_us')}}" class="nav-link">About Us</a>
 
       <!-- These two trigger the modal -->
       <a href="#" class="nav-link soon-link"

@@ -15,6 +15,10 @@ class AdminController extends Controller
     public function contactus(){
         return view('web.contact');
     }
+    public function about_us(){
+        return view('web.aboutus');
+    }
+    
     public function admin_dashboard(){
         return view('admin.admin_dashboard');
     }
@@ -158,7 +162,7 @@ class AdminController extends Controller
         $subcategories = DB::table('construction_sub_categories')
             ->select('construction_sub_categories.*')
             ->orderBy('construction_sub_categories.id', 'asc')
-            ->paginate(10); // Enable pagination (10 items per page)
+            ->paginate(10); 
 
         return view('admin.const_sub_cat', compact('subcategories'));
     }
@@ -240,7 +244,7 @@ class AdminController extends Controller
                 'construction_sub_categories.name as sub_category'
             )
             ->paginate(10);
-            // ->get();
+            
         return view('admin.proj_const_sub_cat', compact(
             'categories',
             'project_types',
@@ -278,7 +282,7 @@ class AdminController extends Controller
             'email'   => ['required','email','max:160'],
             'phone'   => ['required','string','max:20'],
             'message' => ['required','string','max:2000'],
-            'company' => ['nullable','size:0'], // honeypot must stay empty
+            'company' => ['nullable','size:0'], 
         ]);
 
         DB::table('contact_us')->insert([

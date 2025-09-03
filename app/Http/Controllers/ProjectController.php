@@ -48,154 +48,100 @@ class ProjectController extends Controller
         return response()->json($types);
     }
 
-    // public function storeproject(Request $request)
-    // {
-    //     // Validate form
-    //     $validated = $request->validate([
-    //         'full_name' => 'required|string|max:255',
-    //         'phone_number' => 'required|string|max:20',
-    //         'email' => 'required|email|max:255',
-    //         'password' => 'required|string|min:6',
-    //         'role_id' => 'required|integer',
-    //         'construction_type_id' => 'required|integer',
-    //         'project_type_id' => 'required|integer',
-    //         'expected_start' => 'nullable|date',
-    //         'land_area' => 'nullable|numeric',
-    //     ]);
 
-    //     // Handle optional file upload
-    //     $filePath = null;
-    //     if ($request->hasFile('boq_file')) {
-    //         $filePath = $request->file('boq_file')->store('boq_files', 'public');
-    //     }
-    //     $subCategories = is_array($request->sub_categories) ? implode(',', $request->sub_categories) : null;
+    public function storeproject(Request $request)
+    {
+        // Validate form (added rules for arch_drawings + arch_files)
+        $validated = $request->validate([
+            'full_name'            => 'required|string|max:255',
+            'phone_number'         => ['required','string','max:20'],
+            'email'                => 'required|email|max:255',
+            'password'             => 'required|string|min:6|confirmed', // expects password_confirmation
+            'role_id'              => 'required|integer',
+            'construction_type_id' => 'required|integer',
+            'project_type_id'      => 'required|integer',
+            'expected_start'       => 'nullable|date',
+            'land_area'            => 'nullable|numeric',
 
-    //     // Create the project
-    //     $project = Project::create([
-    //         'full_name' => $request->full_name,
-    //         'phone_number' => $request->phone_number,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //         'role_id' => $request->role_id,
-    //         'construction_type_id' => $request->construction_type_id,
-    //         'project_type_id' => $request->project_type_id,
-    //         'site_ready' => $request->has('site_ready'),
-    //         'sub_categories' =>$subCategories,
-    //         'land_location' => $request->land_location,
-    //         'survey_number' => $request->survey_number,
-    //         'land_type' => $request->land_type,
-    //         'land_area' => $request->land_area,
-    //         'land_unit' => $request->land_unit,
-    //         'arch_drawings' => $request->has('arch_drawings'),
-    //         'struct_drawings' => $request->has('struct_drawings'),
-    //         'has_boq' => $request->has('has_boq'),
-    //         'boq_file' => $filePath,
-    //         'expected_start' => $request->expected_start,
-    //         'project_duration' => $request->project_duration,
-    //         'budget_range' => $request->budget_range,
-    //     ]);
+            // NEW: drawings toggle + multi-pdf uploads
+            'arch_drawings'        => 'nullable',
+            'arch_files'           => 'required_if:arch_drawings,1|array',
+            'arch_files.*'         => 'file|mimetypes:application/pdf|max:10240', // 10 MB per file
 
-    //      session(['current_project_id' => $project->id]);
-
-    //     // return redirect()->back()->with('success', 'Project saved successfully!');
-    //     return response()->json([
-    //         'success' => true,
-    //         'redirect' => route('project_details') // we will define this route
-    //         ]);
-    // }
-public function storeproject(Request $request)
-{
-    // Validate form (added rules for arch_drawings + arch_files)
-    $validated = $request->validate([
-        'full_name'            => 'required|string|max:255',
-        'phone_number'         => ['required','string','max:20'],
-        'email'                => 'required|email|max:255',
-        'password'             => 'required|string|min:6|confirmed', // expects password_confirmation
-        'role_id'              => 'required|integer',
-        'construction_type_id' => 'required|integer',
-        'project_type_id'      => 'required|integer',
-        'expected_start'       => 'nullable|date',
-        'land_area'            => 'nullable|numeric',
-
-        // NEW: drawings toggle + multi-pdf uploads
-        'arch_drawings'        => 'nullable',
-        'arch_files'           => 'required_if:arch_drawings,1|array',
-        'arch_files.*'         => 'file|mimetypes:application/pdf|max:10240', // 10 MB per file
-
-        'struct_drawings'  => 'nullable',
-        'struct_files'     => 'required_if:struct_drawings,1|array',
-        'struct_files.*'   => 'file|mimetypes:application/pdf|max:10240', // 10MB per file
+            'struct_drawings'  => 'nullable',
+            'struct_files'     => 'required_if:struct_drawings,1|array',
+            'struct_files.*'   => 'file|mimetypes:application/pdf|max:10240', // 10MB per file
 
 
-        // Optional (if you send as array from UI)
-        'sub_categories'       => 'nullable|array',
-        'sub_categories.*'     => 'nullable|string'
-    ]);
+            // Optional (if you send as array from UI)
+            'sub_categories'       => 'nullable|array',
+            'sub_categories.*'     => 'nullable|string'
+        ]);
 
-    // Handle optional BOQ upload (existing)
-    $boqPath = null;
-    if ($request->hasFile('boq_file')) {
-        $boqPath = $request->file('boq_file')->store('boq_files', 'public');
-    }
-
-    // Handle multiple Architectural Drawing PDFs (NEW)
-    $archPaths = [];
-    if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
-        foreach ($request->file('arch_files') as $file) {
-            // stored at storage/app/public/arch_drawings/...
-            $archPaths[] = $file->store('arch_drawings', 'public');
+        // Handle optional BOQ upload (existing)
+        $boqPath = null;
+        if ($request->hasFile('boq_file')) {
+            $boqPath = $request->file('boq_file')->store('boq_files', 'public');
         }
-    }
-    // Handle multiple Structural Drawing PDFs
-    $structPaths = [];
-    if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
-        foreach ($request->file('struct_files') as $file) {
-            $structPaths[] = $file->store('struct_drawings', 'public'); // storage/app/public/struct_drawings
+
+        // Handle multiple Architectural Drawing PDFs (NEW)
+        $archPaths = [];
+        if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
+            foreach ($request->file('arch_files') as $file) {
+                // stored at storage/app/public/arch_drawings/...
+                $archPaths[] = $file->store('arch_drawings', 'public');
+            }
         }
+        // Handle multiple Structural Drawing PDFs
+        $structPaths = [];
+        if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
+            foreach ($request->file('struct_files') as $file) {
+                $structPaths[] = $file->store('struct_drawings', 'public'); // storage/app/public/struct_drawings
+            }
+        }
+
+        // Sub-categories (array -> CSV if you want to keep old field)
+        $subCategoriesCsv = is_array($request->sub_categories)
+            ? implode(',', $request->sub_categories)
+            : null;
+
+        // Create the project
+        $project = Project::create([
+            'full_name'            => $request->full_name,
+            'phone_number'         => $request->phone_number,
+            'email'                => $request->email,
+            'password'             => Hash::make($request->password),
+            'role_id'              => $request->role_id,
+            'construction_type_id' => $request->construction_type_id,
+            'project_type_id'      => $request->project_type_id,
+
+            'site_ready'           => $request->has('site_ready'),
+            'sub_categories'       => $subCategoriesCsv,      // if your column is a string
+            'land_location'        => $request->land_location,
+            'survey_number'        => $request->survey_number,
+            'land_type'            => $request->land_type,
+            'land_area'            => $request->land_area,
+            'land_unit'            => $request->land_unit,
+
+            'arch_drawings'        => $request->has('arch_drawings'),
+            'struct_drawings'      => $request->has('struct_drawings'),
+            'has_boq'              => $request->has('has_boq'),
+            'boq_file'             => $boqPath,
+            'expected_start'       => $request->expected_start,
+            'project_duration'     => $request->project_duration,
+            'budget_range'         => $request->budget_range,
+
+            // Save the drawings file paths (JSON recommended)
+            'arch_files'           => !empty($archPaths) ? json_encode($archPaths) : null,
+        ]);
+
+        session(['current_project_id' => $project->id]);
+
+        return response()->json([
+            'success'  => true,
+            'redirect' => route('project_details'),
+        ]);
     }
-
-    // Sub-categories (array -> CSV if you want to keep old field)
-    $subCategoriesCsv = is_array($request->sub_categories)
-        ? implode(',', $request->sub_categories)
-        : null;
-
-    // Create the project
-    $project = Project::create([
-        'full_name'            => $request->full_name,
-        'phone_number'         => $request->phone_number,
-        'email'                => $request->email,
-        'password'             => Hash::make($request->password),
-        'role_id'              => $request->role_id,
-        'construction_type_id' => $request->construction_type_id,
-        'project_type_id'      => $request->project_type_id,
-
-        'site_ready'           => $request->has('site_ready'),
-        'sub_categories'       => $subCategoriesCsv,      // if your column is a string
-        'land_location'        => $request->land_location,
-        'survey_number'        => $request->survey_number,
-        'land_type'            => $request->land_type,
-        'land_area'            => $request->land_area,
-        'land_unit'            => $request->land_unit,
-
-        'arch_drawings'        => $request->has('arch_drawings'),
-        'struct_drawings'      => $request->has('struct_drawings'),
-        'has_boq'              => $request->has('has_boq'),
-        'boq_file'             => $boqPath,
-        'expected_start'       => $request->expected_start,
-        'project_duration'     => $request->project_duration,
-        'budget_range'         => $request->budget_range,
-
-        // Save the drawings file paths (JSON recommended)
-        'arch_files'           => !empty($archPaths) ? json_encode($archPaths) : null,
-    ]);
-
-    session(['current_project_id' => $project->id]);
-
-    return response()->json([
-        'success'  => true,
-        'redirect' => route('project_details'),
-    ]);
-}
 
     public function project_details(){
         $projectId = session('current_project_id');
@@ -214,9 +160,6 @@ public function storeproject(Request $request)
         $projectId = session('current_project_id');
         $request->validate([
             'project_name' => 'required|string',
-            // 'project_location' => 'required|string',
-            // 'budget_range' => 'nullable|string',
-            // 'expected_timeline' => 'nullable|string',
             'project_description' => 'nullable|string',
             'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
         ]);
@@ -239,11 +182,9 @@ public function storeproject(Request $request)
             'project_id' => $projectId,
             'submission_id' =>$submission_id ,
             'project_name' => $request->project_name,
-            // 'project_location' => $request->project_location,
-            // 'budget_range' => $request->budget_range,
-            // 'expected_timeline' => $request->expected_timeline,
+           
             'project_description' => $request->project_description,
-            'file_path' => !empty($filePaths) ? json_encode($filePaths) : null, // store as JSON
+            'file_path' => !empty($filePaths) ? json_encode($filePaths) : null, 
             'created_at' => now(),
             'updated_at' => now(),
         ]);

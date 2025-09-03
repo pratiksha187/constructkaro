@@ -15,6 +15,7 @@ use App\Http\Controllers\testController;
 use App\Http\Controllers\LeegalityController;
 
 Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
+
 Route::post('/esign/create', [LeegalityController::class, 'createInvite'])->name('esign.create');
 
 // Leegality will POST webhooks here (configure in dashboard)
@@ -117,6 +118,8 @@ Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp']);
 Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp']);
 
 Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])->name('get_service_areas');
+Route::get('about_us', [AdminController::class, 'about_us'])->name('about_us');
+
 // Route::post('/send-phone-otp', [OtpController::class, 'send']);
 // Route::post('/verify-phone-otp', [OtpController::class, 'verify']);
 

@@ -4,15 +4,14 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
+      <link rel="icon" type="image/png" href="{{ asset('logo/bg.png') }}">
       <title>CONSTRUCTKARO - Dashboard</title>
       <!-- Bootstrap 5 CSS -->
       <script src="https://cdn.tailwindcss.com"></script>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
       <!-- Lucide Icons -->
       <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-      <!-- Custom CSS -->
-      <!-- <link rel="stylesheet" href="styles.css"> -->
-      <link href="{{ asset('styles.css') }}" rel="stylesheet">
+     
       <style>
          /* Custom CSS Variables */
          :root {

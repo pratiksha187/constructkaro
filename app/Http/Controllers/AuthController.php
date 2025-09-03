@@ -49,13 +49,13 @@ class AuthController extends Controller
         }
 
         $user = DB::table('projects')->where('email', $request->email)->first();
-// dd($user->id);
+
         if ($user && $user->login_id == 3 && Hash::check($request->password, $user->password)) {
-            // $project_data = DB::table('projects_details')->where('project_id', $user->id)->first();
+            
             $project_data = DB::table('projects_details')
                             ->where('project_id', $user->id)
                             ->get();
-                            // dd($project_data);
+                            
             $totalProjects = DB::table('projects_details')
                             ->where('project_id', $user->id)
                             ->count();

@@ -67,8 +67,6 @@ class LeegalityController extends Controller
             'status'       => 'created',
         ]);
 
-        // 3) Build payload for Leegality “Run Workflow” (low-code flow)
-        // NOTE: Replace keys below with your actual Workflow schema
         $payload = [
             'workflowId' => 'wf_xxxxxxxxxxxxx', // your Workflow ID from Leegality
             'document'   => [
@@ -98,9 +96,7 @@ class LeegalityController extends Controller
             // Webhook is configured in dashboard; we still can add per-invite headers if allowed
         ];
 
-        // 4) Call Leegality
-        // Endpoints vary by plan; “Run Workflow” is documented in their knowledge base.
-        // Example path (replace with your provided API path):
+    
         $resp = $this->client()->post('/v1/workflows/run', ['json' => $payload]);
         $json = json_decode((string) $resp->getBody(), true);
 
@@ -116,14 +112,9 @@ class LeegalityController extends Controller
             'meta'   => $json,
         ]);
 
-        // Option A: redirect your user to your own “Sent” page
-        // Option B: if you get a signer link, you can display/copy it for manual sending
         return redirect()->route('esign.new')->with('ok', 'Invite created and sent for eSign.');
     }
 
-    /**
-     * Webhook receiver – verifies MAC using Private Salt and updates packet status.
-     */
     public function webhook(Request $request)
     {
         $payload = $request->getContent();
@@ -145,7 +136,7 @@ class LeegalityController extends Controller
         }
 
         // Process event
-        $event  = $request->input('event');            // e.g., invitation.completed, signer.completed, document.stamped, etc.
+        $event  = $request->input('event');            
         $extId  = $request->input('runId') ?? $request->input('packetId');
         $status = $request->input('status') ?? $request->input('state');
 
@@ -159,7 +150,6 @@ class LeegalityController extends Controller
             }
         }
 
-        // You can also fetch/download signed PDF here if webhook includes a download URL.
         return response()->noContent();
     }
 }

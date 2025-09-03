@@ -105,325 +105,148 @@ class VendorController extends Controller
         return response()->json($services);
     }
 
-   public function uploadFile(Request $request)
+    public function uploadFile(Request $request)
     {
         $request->validate([
             'file'  => 'required|file|mimes:pdf|max:20480', // 20 MB (change if needed)
             'field' => 'required|string'
         ]);
 
-        // store to public disk so it’s accessible via /storage
-        // run once: php artisan storage:link
         $path = $request->file('file')->store('vendor_docs', 'public');
 
         return response()->json(['path' => $path], 200);
     }
  
-    //   public function business_store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'experience_years' => 'required|string',
-    //         'team_size' => 'required|string',
-    //         'service_coverage_area' => 'required|string',
-    //         'min_project_value' => 'required|numeric',
-    //         'company_name' => 'required|string',
-    //         'entity_type' => 'required|string',
-    //         'registered_address' => 'required|string',
-    //         'contact_person_designation' => 'required|string',
-    //         'gst_number' => 'required|string',
-    //         'pan_number' => 'required|string',
-    //         'tan_number' => 'nullable|string',
-    //         'esic_number' => 'nullable|string',
-    //         'pf_code' => 'nullable|string',
-    //         'msme_registered' => 'required|string',
-    //         // 'pan_aadhar_seeded' => 'required|string',
-    //         'bank_name' => 'required|string',
-    //         'account_number' => 'required|string',
-    //         'ifsc_code' => 'required|string',
-    //         'account_type' => 'required|string',
-    //         'cancelled_cheque_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'pan_card_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'aadhaar_card_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'certificate_of_incorporation_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'itr_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'turnover_certificate_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'work_completion_certificates_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'pf_esic_documents_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'company_profile_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'portfolio_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'past_work_photos_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'license_certificate_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'aadhar_section' =>'nullable',
-    //         'cin_section' => 'nullable',
-    //         'llpin_no' => 'nullable|string',
-    //         'uploadadharpanFile' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-    //         'agreed_declaration' => 'nullable',
 
-    //     ]);
-       
-    //     $vendor_id = session('vendor_id');
-    //     $approved = 0;
-    //     $validated['user_id'] = $vendor_id;
-    //     $validated['approved'] = $approved;
-       
-       
-    //     $fileFields = [
-    //             'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
-    //             'certificate_of_incorporation_file', 'itr_file', 'turnover_certificate_file',
-    //             'work_completion_certificates_file', 'pf_esic_documents_file',
-    //             'company_profile_file', 'portfolio_file', 'past_work_photos_file',
-    //             'license_certificate_file', 'uploadadharpanFile'
-    //         ];
+    public function business_store(Request $request)
+    {
+        // 1) Validate
+        $validated = $request->validate([
+            'experience_years'              => 'required',
+            'team_size'                     => 'required',
+            'service_coverage_area'         => 'required', // may be array from multiselect
+            'min_project_value'             => 'required|numeric',
+            'company_name'                  => 'required|string',
+            'entity_type'                   => 'required', // select -> int/string
+            'registered_address'            => 'required|string',
+            'contact_person_designation'    => 'required|string',
+            'gst_number'                    => 'required|string',
+            'pan_number'                    => 'required|string',
+            'tan_number'                    => 'nullable|string',
+            'esic_number'                   => 'nullable|string',
+            'pf_code'                       => 'nullable|string',
+            'msme_registered'               => ['required', Rule::in(['yes','no'])],
+            'bank_name'                     => 'required|string',
+            'account_number'                => 'required|string',
+            'ifsc_code'                     => 'required|string',
+            'account_type'                  => 'required', // select
+            'agreed_declaration'            => 'nullable', // checkbox
+            'aadhar_section'                => 'nullable',
+            'cin_section'                   => 'nullable',
+            'llpin_no'                      => 'nullable|string',
 
+            // optional direct uploads (single file each)
+            'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
+            'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
+            'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
+            'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
+            'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
+            'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
+            'work_completion_certificates_file'   => 'nullable|file|mimes:pdf|max:40960',
+            'pf_esic_documents_file'              => 'nullable|file|mimes:pdf|max:20480',
+            'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
+            'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
+            'past_work_photos_file'               => 'nullable|file|mimes:pdf|max:40960',
+            'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
+            'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
 
-    //     foreach ($fileFields as $field) {
-    //         if ($request->hasFile($field)) {
-    //             $validated[$field] = $request->file($field)->store('documents', 'public');
-    //         }
-    //     }
+            // paths coming from your sequential uploader (JSON object)
+            'uploaded_paths'                      => 'nullable|string',
+        ]);
 
-    //     BusinessRegistration::create($validated);
+        // 2) Vendor + default flags
+        $validated['user_id']  = session('vendor_id');
+        $validated['approved'] = 0;
 
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Business registration data saved successfully!'
-    //     ]);
-    // }
-//  public function business_store(Request $request)
-//     {
-//         // ---- VALIDATION (non-file fields) ----
-//         $validated = $request->validate([
-//             'experience_years'          => 'required|string',
-//             'team_size'                 => 'required|string',
-//             'service_coverage_area'     => 'required|string',
-//             'min_project_value'         => 'required|numeric',
-//             'company_name'              => 'required|string',
-//             'entity_type'               => 'required|string',
-//             'registered_address'        => 'required|string',
-//             'contact_person_designation'=> 'required|string',
-//             'gst_number'                => 'required|string',
-//             'pan_number'                => 'required|string',
-//             'tan_number'                => 'nullable|string',
-//             'esic_number'               => 'nullable|string',
-//             'pf_code'                   => 'nullable|string',
-//             'msme_registered'           => ['required', Rule::in(['yes','no'])],
-//             'bank_name'                 => 'required|string',
-//             'account_number'            => 'required|string',
-//             'ifsc_code'                 => 'required|string',
-//             'account_type'              => 'required|string',
-//             // if you want the checkbox mandatory, change to 'accepted'
-//             'agreed_declaration'        => 'nullable',
-//             // optional UI flags
-//             'aadhar_section'            => 'nullable',
-//             'cin_section'               => 'nullable',
-//             'llpin_no'                  => 'nullable|string',
+        // 3) Collect paths from JSON map (sequential uploader)
+        $pathsFromJson = json_decode($request->input('uploaded_paths', '{}'), true) ?: [];
 
-//             // OPTIONAL: if you still allow direct uploads in this final POST,
-//             // keep these rules as PDF-only:
-//             'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
-//             'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
-//             'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
-//             'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
-//             'itr_file'                            => 'nullable|file|mimes:pdf|max:40960', // 40MB (ITR can be big)
-//             'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
-//             'work_completion_certificates_file'   => 'nullable|file|mimes:pdf|max:40960',
-//             'pf_esic_documents_file'              => 'nullable|file|mimes:pdf|max:20480',
-//             'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
-//             'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
-//             'past_work_photos_file'               => 'nullable|file|mimes:pdf|max:40960',
-//             'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
-//             'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
-
-//             // Sequential upload map (JSON)
-//             'uploaded_paths'             => 'nullable|string'
-//         ]);
-
-//         // ---- VENDOR + APPROVAL ----
-//         $vendor_id = session('vendor_id');
-//         $validated['user_id'] = $vendor_id;
-//         $validated['approved'] = 0;
-
-//         // ---- COLLECT FILE PATHS ----
-//         // 1) Paths from sequential uploads (uploaded_paths JSON)
-//         $pathsFromJson = json_decode($request->input('uploaded_paths', '{}'), true) ?: [];
-
-//         // 2) Also support direct uploads on this same request (backward compatible)
-//         $fileFields = [
-//             'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
-//             'certificate_of_incorporation_file', 'itr_file', 'turnover_certificate_file',
-//             'work_completion_certificates_file', 'pf_esic_documents_file',
-//             'company_profile_file', 'portfolio_file', 'past_work_photos_file',
-//             'license_certificate_file', 'uploadadharpanFile'
-//         ];
-
-//         foreach ($fileFields as $field) {
-//             if ($request->hasFile($field)) {
-//                 // store direct file as PDF only (already validated above)
-//                 $stored = $request->file($field)->store('vendor_docs', 'public');
-//                 $pathsFromJson[$field] = $stored;
-//             }
-//         }
-
-//         // (Optional) If msme_registered === 'yes' and you have msme_file from UI:
-//         if ($request->hasFile('msme_file')) {
-//             $request->validate([
-//                 'msme_file' => 'file|mimes:pdf|max:20480'
-//             ]);
-//             $pathsFromJson['msme_file'] = $request->file('msme_file')->store('vendor_docs', 'public');
-//         }
-
-//         // Extra safety: ensure all provided paths are PDFs
-//         foreach ($pathsFromJson as $field => $relPath) {
-//             if (!is_string($relPath) || !str_ends_with(strtolower($relPath), '.pdf')) {
-//                 return response()->json([
-//                     'status' => false,
-//                     'errors' => ["$field" => ["$field must be a PDF."]]
-//                 ], 422);
-//             }
-//         }
-
-//         // Merge file paths into $validated so they’re persisted in columns
-//         // If your DB columns are named exactly like the field keys, this works directly.
-//         $validated = array_merge($validated, $pathsFromJson);
-
-//         // ---- SAVE ----
-//         BusinessRegistration::create($validated);
-
-//         return response()->json([
-//             'status'  => true,
-//             'message' => 'Business registration data saved successfully!'
-//         ], 200);
-//     }
-
-public function business_store(Request $request)
-{
-    // 1) Validate
-    $validated = $request->validate([
-        'experience_years'              => 'required',
-        'team_size'                     => 'required',
-        'service_coverage_area'         => 'required', // may be array from multiselect
-        'min_project_value'             => 'required|numeric',
-        'company_name'                  => 'required|string',
-        'entity_type'                   => 'required', // select -> int/string
-        'registered_address'            => 'required|string',
-        'contact_person_designation'    => 'required|string',
-        'gst_number'                    => 'required|string',
-        'pan_number'                    => 'required|string',
-        'tan_number'                    => 'nullable|string',
-        'esic_number'                   => 'nullable|string',
-        'pf_code'                       => 'nullable|string',
-        'msme_registered'               => ['required', Rule::in(['yes','no'])],
-        'bank_name'                     => 'required|string',
-        'account_number'                => 'required|string',
-        'ifsc_code'                     => 'required|string',
-        'account_type'                  => 'required', // select
-        'agreed_declaration'            => 'nullable', // checkbox
-        'aadhar_section'                => 'nullable',
-        'cin_section'                   => 'nullable',
-        'llpin_no'                      => 'nullable|string',
-
-        // optional direct uploads (single file each)
-        'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
-        'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
-        'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
-        'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
-        'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
-        'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
-        'work_completion_certificates_file'   => 'nullable|file|mimes:pdf|max:40960',
-        'pf_esic_documents_file'              => 'nullable|file|mimes:pdf|max:20480',
-        'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
-        'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
-        'past_work_photos_file'               => 'nullable|file|mimes:pdf|max:40960',
-        'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
-        'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
-
-        // paths coming from your sequential uploader (JSON object)
-        'uploaded_paths'                      => 'nullable|string',
-    ]);
-
-    // 2) Vendor + default flags
-    $validated['user_id']  = session('vendor_id');
-    $validated['approved'] = 0;
-
-    // 3) Collect paths from JSON map (sequential uploader)
-    $pathsFromJson = json_decode($request->input('uploaded_paths', '{}'), true) ?: [];
-
-    // 4) Also support direct uploads in this request
-    $fileFields = [
-        'cancelled_cheque_file','pan_card_file','aadhaar_card_file',
-        'certificate_of_incorporation_file','itr_file','turnover_certificate_file',
-        'work_completion_certificates_file','pf_esic_documents_file',
-        'company_profile_file','portfolio_file','past_work_photos_file',
-        'license_certificate_file','uploadadharpanFile'
-    ];
-    foreach ($fileFields as $field) {
-        if ($request->hasFile($field)) {
-            $pathsFromJson[$field] = $request->file($field)->store('vendor_docs', 'public'); // "public/vendor_docs/..."
+        // 4) Also support direct uploads in this request
+        $fileFields = [
+            'cancelled_cheque_file','pan_card_file','aadhaar_card_file',
+            'certificate_of_incorporation_file','itr_file','turnover_certificate_file',
+            'work_completion_certificates_file','pf_esic_documents_file',
+            'company_profile_file','portfolio_file','past_work_photos_file',
+            'license_certificate_file','uploadadharpanFile'
+        ];
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $pathsFromJson[$field] = $request->file($field)->store('vendor_docs', 'public'); // "public/vendor_docs/..."
+            }
         }
-    }
-    // Optional MSME file
-    if ($request->hasFile('msme_file')) {
-        $request->validate(['msme_file' => 'file|mimes:pdf|max:20480']);
-        $pathsFromJson['msme_file'] = $request->file('msme_file')->store('vendor_docs', 'public');
-    }
-
-    // 5) Normalize data to scalars (avoid array-to-string)
-    // service_coverage_area can be multiselect -> array
-    $serviceCoverage = $request->input('service_coverage_area', []);
-    if (is_array($serviceCoverage)) {
-        // store as comma-separated; OR use json_encode($serviceCoverage)
-        $serviceCoverage = implode(',', array_filter($serviceCoverage, fn($v) => $v !== null && $v !== ''));
-    }
-
-    // checkbox to boolean (1/0)
-    $agreed = $request->boolean('agreed_declaration') ? 1 : 0;
-
-    // Ensure all file path values are strings (flatten if any array sneaks in)
-    foreach ($pathsFromJson as $k => $v) {
-        if (is_array($v)) {
-            $pathsFromJson[$k] = implode(',', $v); // or pick first: $v[0] ?? null
+        // Optional MSME file
+        if ($request->hasFile('msme_file')) {
+            $request->validate(['msme_file' => 'file|mimes:pdf|max:20480']);
+            $pathsFromJson['msme_file'] = $request->file('msme_file')->store('vendor_docs', 'public');
         }
+
+        // 5) Normalize data to scalars (avoid array-to-string)
+        // service_coverage_area can be multiselect -> array
+        $serviceCoverage = $request->input('service_coverage_area', []);
+        if (is_array($serviceCoverage)) {
+            // store as comma-separated; OR use json_encode($serviceCoverage)
+            $serviceCoverage = implode(',', array_filter($serviceCoverage, fn($v) => $v !== null && $v !== ''));
+        }
+
+        // checkbox to boolean (1/0)
+        $agreed = $request->boolean('agreed_declaration') ? 1 : 0;
+
+        // Ensure all file path values are strings (flatten if any array sneaks in)
+        foreach ($pathsFromJson as $k => $v) {
+            if (is_array($v)) {
+                $pathsFromJson[$k] = implode(',', $v); // or pick first: $v[0] ?? null
+            }
+        }
+
+        // 6) Build insert payload (only scalar values)
+        $payload = [
+            'experience_years'                => (string)$validated['experience_years'],
+            'team_size'                       => (string)$validated['team_size'],
+            'service_coverage_area'           => $serviceCoverage,
+            'min_project_value'               => $validated['min_project_value'],
+            'company_name'                    => $validated['company_name'],
+            'entity_type'                     => (string)$validated['entity_type'],
+            'registered_address'              => $validated['registered_address'],
+            'contact_person_designation'      => $validated['contact_person_designation'],
+            'gst_number'                      => $validated['gst_number'],
+            'pan_number'                      => $validated['pan_number'],
+            'tan_number'                      => $validated['tan_number'] ?? null,
+            'esic_number'                     => $validated['esic_number'] ?? null,
+            'pf_code'                         => $validated['pf_code'] ?? null,
+            'msme_registered'                 => $validated['msme_registered'],   // 'yes'|'no' stored as text; or map to 1/0
+            'bank_name'                       => $validated['bank_name'],
+            'account_number'                  => $validated['account_number'],
+            'ifsc_code'                       => $validated['ifsc_code'],
+            'account_type'                    => (string)$validated['account_type'],
+            'agreed_declaration'              => $agreed,
+            'llpin_no'                        => $validated['llpin_no'] ?? null,
+            'user_id'                         => $validated['user_id'],
+            'approved'                        => 0,
+            'created_at'                      => now(),
+            'updated_at'                      => now(),
+        ];
+
+        // merge stored file paths (strings) into payload
+        $payload = array_merge($payload, $pathsFromJson);
+
+        // 7) Insert (Query Builder; no model)
+        DB::table('business_registrations')->insert($payload);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Business registration data saved successfully!'
+        ], 200);
     }
-
-    // 6) Build insert payload (only scalar values)
-    $payload = [
-        'experience_years'                => (string)$validated['experience_years'],
-        'team_size'                       => (string)$validated['team_size'],
-        'service_coverage_area'           => $serviceCoverage,
-        'min_project_value'               => $validated['min_project_value'],
-        'company_name'                    => $validated['company_name'],
-        'entity_type'                     => (string)$validated['entity_type'],
-        'registered_address'              => $validated['registered_address'],
-        'contact_person_designation'      => $validated['contact_person_designation'],
-        'gst_number'                      => $validated['gst_number'],
-        'pan_number'                      => $validated['pan_number'],
-        'tan_number'                      => $validated['tan_number'] ?? null,
-        'esic_number'                     => $validated['esic_number'] ?? null,
-        'pf_code'                         => $validated['pf_code'] ?? null,
-        'msme_registered'                 => $validated['msme_registered'],   // 'yes'|'no' stored as text; or map to 1/0
-        'bank_name'                       => $validated['bank_name'],
-        'account_number'                  => $validated['account_number'],
-        'ifsc_code'                       => $validated['ifsc_code'],
-        'account_type'                    => (string)$validated['account_type'],
-        'agreed_declaration'              => $agreed,
-        'llpin_no'                        => $validated['llpin_no'] ?? null,
-        'user_id'                         => $validated['user_id'],
-        'approved'                        => 0,
-        'created_at'                      => now(),
-        'updated_at'                      => now(),
-    ];
-
-    // merge stored file paths (strings) into payload
-    $payload = array_merge($payload, $pathsFromJson);
-
-    // 7) Insert (Query Builder; no model)
-    DB::table('business_registrations')->insert($payload);
-
-    return response()->json([
-        'status'  => true,
-        'message' => 'Business registration data saved successfully!'
-    ], 200);
-}
 
     public function vendor_confiermetion()
     {
@@ -527,111 +350,45 @@ public function business_store(Request $request)
             'expected_timeline' => $project->expected_timeline,
         ]);
     }
-//   public function storeTenderDocuments(Request $request)
-//     {
-//         $vendor_id = session('vendor_id'); // get vendor_id from session
 
-//         $request->validate([
-//             'project_id' => 'required|exists:projects_details,id',
-//             'emd_receipt' => 'nullable|file|mimes:pdf|max:2048',
-//             'company_profile' => 'nullable|file|mimes:pdf|max:2048',
-//             'address_proof' => 'nullable|file|mimes:pdf|max:2048',
-//             'gst_certificate' => 'nullable|file|mimes:pdf|max:2048',
-//             'work_experience' => 'nullable|file|mimes:pdf|max:2048',
-//             'financial_capacity' => 'nullable|file|mimes:pdf|max:2048',
-//             'declaration' => 'nullable|file|mimes:pdf|max:2048',
-//             'boq_file' => 'nullable|file|mimes:xls,xlsx|max:20480'
-            
-//         ]);
-
-//         $paths = [];
-
-//         // Store each uploaded file
-//         foreach ($request->allFiles() as $field => $file) {
-//             $paths[$field] = $file->store('tender_docs', 'public');
-//         }
-
-//         // Merge and create
-//         TenderDocument::create(array_merge([
-//             'project_id' => $request->project_id,
-//             'vendor_id' => $vendor_id, 
-//             'vendor_cost' => $request->vendor_cost,
-//         ], $paths));
-
-//         return response()->json(['message' => 'Tender documents uploaded successfully!']);
-//     }
-
-    //  public function uploadFiletenderdocuments(Request $request)
-    // {
-    //     $request->validate([
-    //         'field' => 'required|string',
-    //         'file'  => 'required|file', // we validate mimes by field below
-    //     ]);
-
-    //     $field = $request->string('field');
-
-    //     // Field-specific validation (PDF-only except BOQ)
-    //     $rules = [
-    //         'emd_receipt'        => 'file|mimes:pdf|max:20480',  // 20 MB
-    //         'company_profile'    => 'file|mimes:pdf|max:40960',
-    //         'address_proof'      => 'file|mimes:pdf|max:20480',
-    //         'gst_certificate'    => 'file|mimes:pdf|max:20480',
-    //         'work_experience'    => 'file|mimes:pdf|max:40960',
-    //         'financial_capacity' => 'file|mimes:pdf|max:40960',
-    //         'declaration'        => 'file|mimes:pdf|max:20480',
-    //         'boq_file'           => 'file|mimes:xls,xlsx|max:51200', // 50 MB
-    //     ];
-
-    //     $request->validate([
-    //         'file' => $rules[$field] ?? 'file|mimes:pdf|max:20480',
-    //     ]);
-
-    //     // Decide storage dir per field
-    //     $dir = ($field === 'boq_file') ? 'tenders/boq' : 'tenders/pdfs';
-
-    //     // Store on public disk (php artisan storage:link)
-    //     $path = $request->file('file')->store($dir, 'public');
-
-    //     return response()->json(['field' => $field, 'path' => $path], 200);
-    // }
     public function uploadFiletenderdocuments(Request $request)
-{
-    // Basic presence
-    $request->validate([
-        'field' => 'required',
-        'file'  => 'required|file',
-    ]);
+    {
+        // Basic presence
+        $request->validate([
+            'field' => 'required',
+            'file'  => 'required|file',
+        ]);
 
-    // Make sure $field is a plain string (not Stringable/array)
-    $field = (string) $request->input('field');
+        // Make sure $field is a plain string (not Stringable/array)
+        $field = (string) $request->input('field');
 
-    // Only allow known fields
-    $allowed = [
-        'emd_receipt'        => 'file|mimes:pdf|max:20480',
-        'company_profile'    => 'file|mimes:pdf|max:40960',
-        'address_proof'      => 'file|mimes:pdf|max:20480',
-        'gst_certificate'    => 'file|mimes:pdf|max:20480',
-        'work_experience'    => 'file|mimes:pdf|max:40960',
-        'financial_capacity' => 'file|mimes:pdf|max:40960',
-        'declaration'        => 'file|mimes:pdf|max:20480',
-        'boq_file'           => 'file|mimes:xls,xlsx|max:51200',
-    ];
+        // Only allow known fields
+        $allowed = [
+            'emd_receipt'        => 'file|mimes:pdf|max:20480',
+            'company_profile'    => 'file|mimes:pdf|max:40960',
+            'address_proof'      => 'file|mimes:pdf|max:20480',
+            'gst_certificate'    => 'file|mimes:pdf|max:20480',
+            'work_experience'    => 'file|mimes:pdf|max:40960',
+            'financial_capacity' => 'file|mimes:pdf|max:40960',
+            'declaration'        => 'file|mimes:pdf|max:20480',
+            'boq_file'           => 'file|mimes:xls,xlsx|max:51200',
+        ];
 
-    if (! array_key_exists($field, $allowed)) {
-        return response()->json(['message' => 'Invalid field name.'], 422);
+        if (! array_key_exists($field, $allowed)) {
+            return response()->json(['message' => 'Invalid field name.'], 422);
+        }
+
+        // Validate the file using the rule for this field
+        $request->validate(['file' => $allowed[$field]]);
+
+        // Choose directory
+        $dir  = $field === 'boq_file' ? 'tenders/boq' : 'tenders/pdfs';
+        $path = $request->file('file')->store($dir, 'public'); // php artisan storage:link
+
+        return response()->json(['field' => $field, 'path' => $path], 200);
     }
-
-    // Validate the file using the rule for this field
-    $request->validate(['file' => $allowed[$field]]);
-
-    // Choose directory
-    $dir  = $field === 'boq_file' ? 'tenders/boq' : 'tenders/pdfs';
-    $path = $request->file('file')->store($dir, 'public'); // php artisan storage:link
-
-    return response()->json(['field' => $field, 'path' => $path], 200);
-}
     
-public function storeTenderDocuments(Request $request)
+    public function storeTenderDocuments(Request $request)
     {
         $vendor_id = session('vendor_id') ?? auth()->id();
 

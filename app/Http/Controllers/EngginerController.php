@@ -23,9 +23,9 @@ class EngginerController extends Controller
             ->join('projects', 'projects_details.project_id', '=', 'projects.id')
             ->select('projects.*', 'projects_details.*')
             ->orderBy('projects.id', 'desc')
-            ->paginate(10); // Adjust the number as needed
-//             echo"<pre>";
-// print_r($projects);die;
+            ->paginate(10); 
+
+
         return view('engg.allprojectdata', compact('projects'));
     }
 
@@ -39,8 +39,8 @@ class EngginerController extends Controller
                         'projects_details.*'
                     )
                     ->get();
-//                      echo"<pre>";
-// print_r($projects);die;
+
+
         return view('engg.projectboq', compact('projects'));
 
     }
@@ -88,13 +88,13 @@ public function uploadBOQ(Request $request)
 
     $get_project_info_id = DB::table('projects_details')
         ->where('id', $request->project_id)
-        ->first(); // use first() instead of get()
+        ->first(); 
 
     DB::table('projects_details')
         ->where('id', $request->project_id)
         ->update(['boq_status' => 1]); 
 
-    DB::table('project_information') // fixed table name
+    DB::table('project_information') 
         ->where('id', $get_project_info_id->project_id)
         ->update(['boqFile' => $filePath]); 
 
