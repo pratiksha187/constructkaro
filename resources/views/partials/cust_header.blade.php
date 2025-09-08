@@ -65,6 +65,7 @@
 
 
 </style>
+<!--  -->
 <header class="navbar fixed-top navbar-expand-lg custom-header">
   <div class="container-fluid justify-content-between">
 
@@ -75,57 +76,33 @@
       </a>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-container d-none d-md-flex flex-grow-1 mx-4">
-      <div class="position-relative w-100">
-        <i data-lucide="search" class="search-icon"></i>
-        <input type="text" class="form-control search-input" placeholder="Search for services, professionals, or projects..." id="searchInput">
-      </div>
-    </div>
-
-    <!-- Right Side: Notifications + Profile -->
+    <!-- Right Side: Profile Dropdown -->
     <div class="navbar-right d-none d-lg-flex">
-      
-      <!-- Notification Bell -->
-      <div class="position-relative">
-        <button class="btn btn-light position-relative" id="notificationBtn">
-          <i data-lucide="bell" style="width: 1.25rem; height: 1.25rem;"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge">2</span>
-        </button>
-
-        <!-- Dropdown (Hidden by default) -->
-        <div class="dropdown-menu dropdown-menu-end shadow-sm p-3 mt-2" id="notificationsDropdown" style="min-width: 300px; display: none;">
-          <div class="notification-header mb-2">
-            <h6 class="mb-1 fw-semibold">Notifications</h6>
-            <p class="mb-0 text-muted small">3 unread notifications</p>
-          </div>
-          <div class="notifications-list" id="notificationsList">
-            <!-- JS will populate this -->
-          </div>
-          <div class="pt-2 border-top">
-            <button class="btn btn-link w-100 text-decoration-none text-orange-600 p-0" style="font-size: 0.875rem;">
-              View All Notifications
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile Dropdown -->
       <div class="dropdown">
-        <a class="d-flex align-items-center text-decoration-none" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-               alt="Rajesh Kumar" class="rounded-circle me-2" width="40" height="40">
+        <!-- 🔹 Profile image acts as toggle -->
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+           href="#" id="profileDropdown" 
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <!-- <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+               alt="" class="rounded-circle me-2" width="40" height="40"> -->
           <div class="d-none d-md-block">
-            <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;"></p>
-            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Customer</p>
+            <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;">{{ $cust_details->full_name }}</p>
+            <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $cust_details->phone_number }}</p>
           </div>
         </a>
-        <ul class="dropdown-menu dropdown-menu-end">
+
+        <!-- 🔹 Dropdown menu -->
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
           <li><a class="dropdown-item" href="#">Profile</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
+         
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()">
-            <i data-lucide="log-out" class="me-1"></i> Logout</a></li>
+         
+           <li class="px-3">
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-danger w-100">Log out</button>
+          </form>
+        </li>
         </ul>
       </div>
     </div>
@@ -137,6 +114,7 @@
 
   </div>
 </header>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   document.getElementById('notificationBtn')?.addEventListener('click', function () {

@@ -1493,7 +1493,7 @@
 
   // Redirect to Dashboard
   $('#goToDashboardBtn').on('click', function () {
-    window.location.href = "/customer_dashboard";
+    window.location.href = "{{route('Partner_Bids')}}";
   });
 
 });

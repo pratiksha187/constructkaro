@@ -48,7 +48,7 @@ Route::get('/project-details', [ProjectController::class, 'project_details'])->n
 Route::post('/project_details_save', [ProjectController::class, 'project_details_save'])->name('project_details_save');
 
 
-Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer_dashboard');
+Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer.dashboard');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -72,6 +72,8 @@ Route::get('/vendor_dashboard', [VendorController::class, 'vendor_dashboard'])->
 
 Route::get('/vender/projects-data', [VendorController::class, 'projectsData']);
 Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojectsData']);
+
+Route::post('/proceed-vendor', [ProjectController::class, 'proceedVendor'])->name('proceed.vendor');
 Route::post('/business/upload-file', [VendorController::class, 'uploadFile'])->name('business.uploadFile');
 Route::get('/project-details-vendor/{id}', [VendorController::class, 'projectshow']);
 Route::post('/project-likes', [VendorController::class, 'projectlikes']);
@@ -126,3 +128,5 @@ Route::get('Privacy-Policy', [AdminController::class, 'privacy'])->name('privacy
 
 Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('send.otp');
 
+
+Route::get('Verified-Partner-Bids', [ProjectController::class, 'Partner_Bids'])->name('Partner_Bids');

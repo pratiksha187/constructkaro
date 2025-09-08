@@ -22,48 +22,96 @@ class VendorController extends Controller
         return view('web.vendor'); // View file created below
     }
 
-    public function registerServiceProvider(Request $request)
-    {
+    // public function registerServiceProvider(Request $request)
+    // {
        
-         $validator = Validator::make($request->all(), [
-            'name'                  => ['required','string','max:255'],
-            'mobile'                => ['required','digits:10','unique:service_provider,mobile'],
-            'email'                 => ['required','email:rfc,dns','unique:service_provider,email'],
-            'business_name'         => ['nullable','string','max:255'],
-            'gst_number'            => ['nullable','string','max:50'],
-            'location'              => ['required','max:255'],
-            'password'              => ['required','confirmed','min:8'],
-        ],[
-            'mobile.unique'         => 'This mobile number is already registered.',
-            'email.unique'          => 'This email is already registered.',
-            'password.confirmed'    => 'Passwords do not match.',
-        ]);
+    //     $validator = Validator::make($request->all(), [
+    //         'name'                  => ['required','string','max:255'],
+    //         'mobile'                => ['required','digits:10','unique:service_provider,mobile'],
+    //         'email'                 => ['required','email:rfc,dns','unique:service_provider,email'],
+    //         'business_name'         => ['nullable','string','max:255'],
+    //         'gst_number'            => ['nullable','string','max:50'],
+    //         'location'              => ['required','max:255'],
+    //         'password'              => ['required','confirmed','min:8'],
+    //     ],[
+    //         'mobile.unique'         => 'This mobile number is already registered.',
+    //         'email.unique'          => 'This email is already registered.',
+    //         'password.confirmed'    => 'Passwords do not match.',
+    //     ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
 
-        $vendor = ServiceProvider::create([
-            'name' => $request->name,
-            'mobile' => $request->mobile,
-            'email' => $request->email,
-            'business_name' => $request->business_name,
-            'gst_number' => $request->gst_number,
-            // 'location' => $request->location,
-            'location' => json_encode($request->location),
+    //     $vendor = ServiceProvider::create([
+    //         'name' => $request->name,
+    //         'mobile' => $request->mobile,
+    //         'email' => $request->email,
+    //         'business_name' => $request->business_name,
+    //         'gst_number' => $request->gst_number,
+    //         // 'location' => $request->location,
+    //         'location' => json_encode($request->location),
 
-            'password' => Hash::make($request->password),
-        ]);
+    //         'password' => Hash::make($request->password),
+    //     ]);
 
-        session(['vendor_id' => $vendor->id]);
+    //     session(['vendor_id' => $vendor->id]);
 
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Registration successful.'
+    //     ], 200);
+    // }
+public function registerServiceProvider(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name'          => ['required','string','max:255'],
+        'mobile'        => ['required','digits:10','unique:service_provider,mobile'],
+        'email'         => ['required','email:rfc,dns','unique:service_provider,email'],
+        'business_name' => ['nullable','string','max:255'],
+        'gst_number'    => ['nullable','string','max:50'],
+        'location'      => ['required','max:255'],
+        'password'      => ['required','confirmed','min:8'],
+    ],[
+        'mobile.unique'      => 'This mobile number is already registered.',
+        'email.unique'       => 'This email is already registered.',
+        'password.confirmed' => 'Passwords do not match.',
+    ]);
+
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Registration successful.'
-        ], 200);
+            'errors' => $validator->errors()
+        ], 422);
     }
+
+    // Create vendor first
+    $vendor = ServiceProvider::create([
+        'name'          => $request->name,
+        'mobile'        => $request->mobile,
+        'email'         => $request->email,
+        'business_name' => $request->business_name,
+        'gst_number'    => $request->gst_number,
+        'location'      => json_encode($request->location),
+        'password'      => Hash::make($request->password),
+    ]);
+
+    // Generate vendor code: SP/YYYY/ID
+    $vendorCode = 'SP/' . date('Y') . '/' . str_pad($vendor->id, 2, '0', STR_PAD_LEFT);
+
+    // Save vendor code back to DB
+    $vendor->update(['vendor_code' => $vendorCode]);
+
+    // Store in session
+    session(['vendor_id' => $vendor->id, 'vendor_code' => $vendorCode]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Registration successful.',
+        'vendor_code' => $vendorCode
+    ], 200);
+}
 
     public function types_of_agency()
     {
@@ -285,8 +333,9 @@ class VendorController extends Controller
 
      public function likeprojectsData(Request $request)
     {
+        // dd($request);
         $vendorId = session('vendor_id');
-
+// dd($vendorId);
         // Join with projects_details table to get project information
         $query = DB::table('project_likes')
             ->join('projects_details', 'project_likes.project_id', '=', 'projects_details.id')
@@ -297,9 +346,6 @@ class VendorController extends Controller
                 'projects_details.expected_timeline',
                 'projects_details.id'
             );
-//             echo"<pre>";
-// print_r($query);die;
-        // Optional: add filters if needed
         if ($request->project_name) {
             $query->where('projects_details.project_name', 'like', '%' . $request->project_name . '%');
         }
@@ -311,8 +357,17 @@ class VendorController extends Controller
         return DataTables::of($query)->make(true);
     }
 
-    public function vendor_dashboard(){
-        return view('web.vendor_dashboard');
+    // public function vendor_dashboard(){
+    //     $vendor_id = session('vendor_id');
+    //     $data =  DB::table('service_provider')
+    //             ->where('id', $vendor_id)->get();
+    //     // dd($data);
+    //     return view('web.vendor_dashboard',compact('vendor_id','data'));
+    // }
+    public function vendor_dashboard() {
+        $vendor_id = session('vendor_id');
+        $data = DB::table('service_provider')->where('id', $vendor_id)->first(); // use ->first() instead of ->get()
+        return view('web.vendor_dashboard', compact('vendor_id','data'));
     }
 
 
@@ -418,7 +473,6 @@ class VendorController extends Controller
             }
         }
 
-        // Merge and persist (your existing model/columns)
         TenderDocument::create(array_merge([
             'project_id'  => $request->project_id,
             'vendor_id'   => $vendor_id,

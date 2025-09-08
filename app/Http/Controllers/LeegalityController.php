@@ -40,11 +40,7 @@ class LeegalityController extends Controller
         return view('leegality.new'); // simple form (see next step)
     }
 
-    /**
-     * Example: Run a Workflow (recommended) with one signer using Aadhaar eSign (OTP)
-     * and optional Digital Stamping inside the same flow.
-     * Adjust payload keys per your enabled Workflow.
-     */
+    
     public function createInvite(Request $request)
     {
         $data = $request->validate([
