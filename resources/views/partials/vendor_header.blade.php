@@ -1,110 +1,81 @@
 <style>
-    
-:root {
-    --orange-500: #f97316;
-    --orange-600: #ea580c;
-    --slate-600: #64748b;
-    --slate-900: #0f172a;
-}
-
-
-.enhanced-header {
-    background: #ffffff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-    z-index: 1000;
-    position: fixed;
+  .custom-header {
+    height: 70px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    display: flex;
-    align-items: center;
-}
-
-body {
-    padding-top: 80px;
-}
-
-.enhanced-header .container-xl {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-}
-
-.navbar-brand img {
-    /* height: 190px; */
-    height: 176px;
-    width: 164px;
-    object-fit: contain;
-}
-.navbar-brand img {
-    margin-left: -107px  !important
-}
+    z-index: 1000;
+  }
 
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #f1f5f9;
-    border-radius: 9999px;
-    padding: 0.25rem 0.75rem;
-}
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 9999px;
-    object-fit: cover;
-}
+  .dropdown-toggle::after {
+    display: none;
+  }
 
-.logout-btn {
-    background: transparent;
-    border: none;
-    color: var(--slate-600);
-}
+ 
 
-.logout-btn:hover {
-    color: var(--orange-600);
-}
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-align: right;
-}
-.partner-info p {
-  margin: 0;
-  font-size: 14px;
-}
-.profile-icon img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 4px;
-}
 </style>
+<!--  -->
+<header class="navbar fixed-top navbar-expand-lg custom-header">
+  <div class="container-fluid justify-content-between">
 
-<header class="enhanced-header">
-    <div class="container-xl">
-       
-        <!-- Left: Logo -->
-        <a href="#" class="navbar-brand d-flex align-items-center gap-2">
-            <img src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo">
+    <!-- Logo -->
+    <div class="navbar-brand">
+      <a href="#">
+        <img src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo">
+      </a>
+    </div>
+
+    <!-- Right Side: Profile Dropdown -->
+    <div class="navbar-right d-none d-lg-flex">
+      <div class="dropdown">
+        <!-- 🔹 Profile image acts as toggle -->
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+           href="#" id="profileDropdown" 
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <!-- <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+               alt="" class="rounded-circle me-2" width="40" height="40"> -->
+          <div class="d-none d-md-block">
+            <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;">{{ $vendor->name }}</p>
+            <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $vendor->mobile }}</p>
+          </div>
         </a>
 
-        <!-- Right: Notification + User -->
-        <div class="d-flex align-items-center" style="gap: 1rem;">
-        
-            <div class="right-section">
-                <div class="partner-info">
-                    <p><strong> ID:</strong>   {{ $data->vendor_code ?? '-' }}</p>
-                    <p> {{ $data->name ?? '-' }}</p>
-                </div>
-              
-                </div>
-            </div>
-        </div>
+        <!-- 🔹 Dropdown menu -->
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="#">Profile</a></li>
+         
+          <li><hr class="dropdown-divider"></li>
+         
+           <li class="px-3">
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-danger w-100">Log out</button>
+          </form>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+  </div>
 </header>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.getElementById('notificationBtn')?.addEventListener('click', function () {
+    const dropdown = document.getElementById('notificationsDropdown');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+  });
+
+  function handleLogout() {
+    // Your logout logic here
+    console.log("User logged out");
+  }
+</script>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.vendor_dash.app')
 
 @section('title', 'Join as Service Provider | ConstructKaro')
 

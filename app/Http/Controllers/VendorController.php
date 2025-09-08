@@ -296,12 +296,26 @@ public function registerServiceProvider(Request $request)
         ], 200);
     }
 
+    // public function vendor_confiermetion()
+    // {
+    //     $vendor_id = session('vendor_id');
+    //     $vendor_details =  DB::table('service_provider')
+    //                         ->where('id', $vendor_id)->get();
+    //                         // dd($vendor_details);
+    //     return view('web.vendor_confiermetion', [
+    //         'vendor_id' => $vendor_id
+    //     ]);
+    // }
     public function vendor_confiermetion()
     {
         $vendor_id = session('vendor_id');
 
+        $vendor_details = DB::table('service_provider')
+            ->where('id', $vendor_id)
+            ->first();
+
         return view('web.vendor_confiermetion', [
-            'vendor_id' => $vendor_id
+            'vendor' => $vendor_details
         ]);
     }
 
@@ -328,7 +342,14 @@ public function registerServiceProvider(Request $request)
 
      public function vendor_likes_project()
     {
-        return view('web.vendor_likes_project');
+        $vendor_id = session('vendor_id');
+
+        $vendor_details = DB::table('service_provider')
+            ->where('id', $vendor_id)
+            ->first();
+        return view('web.vendor_likes_project',[
+            'vendor' => $vendor_details
+        ]);
     }
 
      public function likeprojectsData(Request $request)
@@ -366,8 +387,8 @@ public function registerServiceProvider(Request $request)
     // }
     public function vendor_dashboard() {
         $vendor_id = session('vendor_id');
-        $data = DB::table('service_provider')->where('id', $vendor_id)->first(); // use ->first() instead of ->get()
-        return view('web.vendor_dashboard', compact('vendor_id','data'));
+        $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); // use ->first() instead of ->get()
+        return view('web.vendor_dashboard', compact('vendor_id','vendor'));
     }
 
 

@@ -770,25 +770,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Custom JavaScript -->
 <script>
-   // Initialize Lucide icons
+
    document.addEventListener('DOMContentLoaded', function() {
    lucide.createIcons();
    
-   // Initialize the application
    initializeApp();
    });
-   
-   // Main app initialization
+  
    function initializeApp() {
    initializeTabs();
    populateServices();
    populateProjects();
    initializeSearch();
    initializeAnimations();
-   initializeInteractions();
+//    initializeInteractions();
    }
    
-   // Tab functionality
    function initializeTabs() {
    const tabButtons = document.querySelectorAll('.tab-btn');
    const tabContents = document.querySelectorAll('.tab-content');
@@ -797,11 +794,9 @@
        button.addEventListener('click', () => {
            const targetTab = button.getAttribute('data-tab');
            
-           // Remove active class from all buttons and contents
            tabButtons.forEach(btn => btn.classList.remove('active'));
            tabContents.forEach(content => content.classList.remove('active'));
            
-           // Add active class to clicked button and corresponding content
            button.classList.add('active');
            document.getElementById(targetTab + '-content').classList.add('active');
        });
@@ -869,7 +864,7 @@
    }
    ];
    
-   // 1) Ensure modal exists (create once)
+
    if (!document.getElementById('serviceModal')) {
    const modalHTML = `
    <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
@@ -912,41 +907,8 @@
    servicesGrid.appendChild(serviceCard);
    });
    
-   // Event delegation: handle clicks on any Explore button
-   if (!populateServices._delegated) {
-   document.addEventListener('click', (e) => {
-   const btn = e.target.closest('.service-btn[data-index]');
-   if (!btn) return;
    
-   const idx = +btn.getAttribute('data-index');
-   const service = services[idx];
-   if (!service) return;
    
-   // Fill modal content
-   const serviceMsg = `We provide services for <strong>${service.title}</strong>. `
-    + `Please add your project details on our page.`;
-   document.getElementById('serviceModalLabel').textContent = service.title;
-   document.getElementById('modalServiceCount').textContent = service.count;
-   document.getElementById('serviceMessage').innerHTML = serviceMsg;
-   
-   const badge = document.getElementById('modalBadge');
-   badge.style.backgroundColor = service.bgColor;
-   badge.style.color = service.textColor;
-   
-   // Set CTA link with service slug as query param
-   const url = new URL(PROJECT_FORM_BASE_URL, window.location.origin);
-   url.searchParams.set('service', service.slug || service.title);
-   // document.getElementById('goToProjectBtn').setAttribute('href', url.toString());
-   document.getElementById('goToProjectBtn')
-   .setAttribute('href', PROJECT_FORM_BASE_URL);
-   // Show modal
-   const modal = new bootstrap.Modal(document.getElementById('serviceModal'));
-   modal.show();
-   });
-   populateServices._delegated = true;
-   }
-   
-   // Re-initialize Lucide icons for dynamically created content
    lucide.createIcons();
    }
    
@@ -977,7 +939,6 @@
    return col;
    }
    
-   // Projects data and population
    function populateProjects() {
    const projects = [
        {
@@ -1020,7 +981,6 @@
        projectsGrid.appendChild(projectCard);
    });
    
-   // Re-initialize Lucide icons for dynamically created content
    lucide.createIcons();
    }
    
@@ -1135,16 +1095,13 @@
    function openProjectModal(project) {
    document.getElementById('projectDetailsLabel').textContent = project.title || 'Project Details';
    
-   // Status badge
    const statusBadge = document.getElementById('projectStatusBadge');
    statusBadge.innerHTML = `<span class="badge ${project.statusClass || 'bg-secondary'}">${project.status || '—'}</span>`;
    
-   // Text fields
    document.getElementById('projectDetailsLocation').textContent = project.location || '-';
    document.getElementById('projectDetailsBudget').textContent   = project.budget  || '-';
    document.getElementById('projectDetailsTimeline').textContent = project.timeline || '-';
    
-   // Progress (only if defined)
    const wrap = document.getElementById('projectDetailsProgressWrap');
    if (typeof project.completion === 'number') {
    wrap.style.display = 'block';
@@ -1157,10 +1114,8 @@
    wrap.style.display = 'none';
    }
    
-   // Build the carousel slides
    buildProjectImagesCarousel(project);
    
-   // Optional details page button
    const detailsBtn = document.getElementById('projectDetailsPageBtn');
    if (project.url) {
    detailsBtn.href = project.url;
@@ -1170,7 +1125,6 @@
    detailsBtn.style.display = 'none';
    }
    
-   // Show modal
    new bootstrap.Modal(document.getElementById('projectDetailsModal')).show();
    }
    
@@ -1184,7 +1138,6 @@
    status: 'Completed',
    statusClass: 'bg-primary',
    completion: 100,
-   // url: '/projects/isro-rcc' // <- optional project page
    },
    {
    title: 'Shreeyash Construction Work of Godrej Properties',
@@ -1218,25 +1171,7 @@
    projectsGrid.appendChild(projectCard);
    });
    
-   // One-time delegated click handler for buttons
-   if (!populateProjects._delegated) {
-   document.addEventListener('click', (e) => {
-   const btn = e.target.closest('.project-btn[data-index], .project-btn');
-   if (!btn) return;
-   
-   let idx = btn.getAttribute('data-index');
-   if (idx == null) {
-   
-   return;
-   }
-   idx = +idx;
-   const project = projects[idx];
-   if (!project) return;
-   
-   openProjectModal(project);
-   });
-   populateProjects._delegated = true;
-   }
+
    
    lucide.createIcons();
    }
@@ -1262,7 +1197,6 @@
    `);
    });
    
-   // Hide controls/indicators if only one image
    const carouselEl = document.getElementById('projectImagesCarousel');
    const prev = carouselEl.querySelector('.carousel-control-prev');
    const next = carouselEl.querySelector('.carousel-control-next');
@@ -1273,22 +1207,18 @@
    }
    
    
-   // Search functionality
    function initializeSearch() {
    const searchInput = document.getElementById('searchInput');
    
    if (searchInput) {
        searchInput.addEventListener('input', function(e) {
            const searchTerm = e.target.value.toLowerCase();
-           // Add search functionality here if needed
            console.log('Searching for:', searchTerm);
        });
    }
    }
    
-   // Animation utilities
    function initializeAnimations() {
-   // Intersection Observer for scroll animations
    const observerOptions = {
        threshold: 0.1,
        rootMargin: '0px 0px -50px 0px'
@@ -1302,55 +1232,10 @@
        });
    }, observerOptions);
    
-   // Observe all cards and sections
    document.querySelectorAll('.stats-card, .service-card, .project-card').forEach(el => {
        observer.observe(el);
    });
    }
-   
-   // Interactive elements
-   function initializeInteractions() {
-   // Add click handlers for service cards
-   document.addEventListener('click', function(e) {
-       if (e.target.closest('.service-btn')) {
-           e.preventDefault();
-           const serviceCard = e.target.closest('.service-card');
-           const serviceTitle = serviceCard.querySelector('.service-title').textContent;
-           showToast(`Exploring ${serviceTitle} professionals...`);
-       }
-       
-       if (e.target.closest('.project-btn')) {
-           e.preventDefault();
-           const projectCard = e.target.closest('.project-card');
-           const projectTitle = projectCard.querySelector('.project-title').textContent;
-           showToast(`Opening ${projectTitle} details...`);
-       }
-       
-       if (e.target.closest('.cta-btn-primary')) {
-           e.preventDefault();
-           showToast('Redirecting to project creation...');
-       }
-       
-       if (e.target.closest('.cta-btn-secondary')) {
-           e.preventDefault();
-           showToast('Loading more information...');
-       }
-   });
-   
-   // Add hover effects to cards
-   document.addEventListener('mouseenter', function(e) {
-       if (e.target.closest('.stats-card, .service-card, .project-card')) {
-           e.target.closest('.card').style.transform = 'translateY(-10px) scale(1.05)';
-       }
-   }, true);
-   
-   document.addEventListener('mouseleave', function(e) {
-       if (e.target.closest('.stats-card, .service-card, .project-card')) {
-           e.target.closest('.card').style.transform = '';
-       }
-   }, true);
-   }
-   
    
    function showToast(message) {
    
@@ -1434,19 +1319,7 @@
        timeout = setTimeout(later, wait);
    };
    }
-   
-   document.addEventListener('click', function(e) {
-   if (e.target.matches('a[href^="#"]')) {
-       e.preventDefault();
-       const target = document.querySelector(e.target.getAttribute('href'));
-       if (target) {
-           target.scrollIntoView({
-               behavior: 'smooth',
-               block: 'start'
-           });
-       }
-   }
-   });
+
    
    function initializeLazyLoading() {
    const images = document.querySelectorAll('img[loading="lazy"]');
@@ -1467,22 +1340,7 @@
    }
    }
    
-   document.addEventListener('DOMContentLoaded', initializeLazyLoading);
-   
-   window.addEventListener('resize', debounce(() => {
-   
-   console.log('Window resized');
-   }, 250));
-   
-   window.addEventListener('error', function(e) {
-   console.error('JavaScript error:', e.error);
-   });
-   
-   if ('serviceWorker' in navigator) {
-   window.addEventListener('load', () => {
-   
-   });
-   }
+
 </script>
 </body>
 </html>

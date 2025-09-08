@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.vendor_dash.app')
 
 @section('title', 'List of Project | ConstructKaro')
 
@@ -22,6 +22,12 @@
   .badge.bg-success { background:#0B2240; }
   .badge.bg-warning { background:#FF6600; }
   label.form-label { color:#0B2240; font-weight:600; }
+  .py-5 {
+    padding-top: 6rem !important;
+    padding-bottom: 3rem !important;
+}
+
+
 </style>
 
 <div class="container py-5">

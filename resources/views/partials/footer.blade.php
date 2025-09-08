@@ -57,7 +57,7 @@
                   <div class="footer-contacts">
                      <div class="footer-contact">
                         <i data-lucide="phone"></i>
-                        <span>+91 98765 43210</span>
+                        <span>+91 8446115797</span>
                      </div>
                      <div class="footer-contact">
                         <i data-lucide="mail"></i>

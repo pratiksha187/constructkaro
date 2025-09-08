@@ -85,9 +85,19 @@
   .status-selected { background-color: #dcfce7; color: #15803d; }
   .status-pending { background-color: #fef9c3; color: #92400e; }
   .status-rejected { background-color: #fee2e2; color: #b91c1c; }
+
+   .main-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 50px 40px;
+    max-width: 1491px;
+    margin: 90px auto 50px;
+    box-shadow: 0 10px 35px rgba(28, 44, 62, 0.12);
+    border: 1px solid #e5e7eb;
+  }
 </style>
 
-<div class="container">
+<div class="container main-card">
 
 
 <!-- <input type="text" name="data" value="{ session('data') }}">
