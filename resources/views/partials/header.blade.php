@@ -27,17 +27,17 @@
       <a href="{{route('about_us')}}" class="nav-link">About Us</a>
 
       <!-- These two trigger the modal -->
-      <a href="#" class="nav-link soon-link"
+      <!-- <a href="#" class="nav-link soon-link"
          data-title="Education for Customers"
          data-body="We’re preparing step-by-step guides, checklists, and how-tos tailored for customers.">
         Education for Customers
-      </a>
+      </a> -->
 
-      <a href="#" class="nav-link soon-link"
+      <!-- <a href="#" class="nav-link soon-link"
          data-title="Education for Vendors"
          data-body="We’re curating resources, documentation, and best practices to help vendors succeed on ConstructKaro.">
         Education for Vendors
-      </a>
+      </a> -->
 
       <a href="{{ url('contactus') }}" class="nav-link">Contact Us</a>
       <a href="{{ route('login') }}" class="nav-link">Login</a>

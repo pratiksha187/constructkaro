@@ -11,8 +11,6 @@
         width: 16.66666667%;
     }
 }
-
-
 </style>
 <footer class="custom-footer">
          <div class="container-xl">
@@ -35,13 +33,12 @@
                   </div>
                </div>
                <div class="col-md-2">
-                  <h5 class="footer-heading">Education</h5>
+                  <!-- <h5 class="footer-heading">Education</h5>
                   <div class="footer-links">
                      <a href="#" class="footer-link">Education for Customer</a>
                      <a href="#" class="footer-link">Education for Vendor</a>
-                     <!-- <a href="#" class="footer-link">Renovation</a>
-                     <a href="#" class="footer-link">Interior Design</a> -->
-                  </div>
+                    
+                  </div> -->
                </div>
                <div class="col-md-2">
                   <h5 class="footer-heading">Company</h5>
