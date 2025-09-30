@@ -178,13 +178,13 @@
                     <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
                 </div>
 
-                <!-- <div class="col-md-6">
+                <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" autocomplete="off" required>
                     <div id="suggestions" class="col-md-6" style="display: none; z-index: 1000;"></div>
-                </div> -->
+                </div>
 
-                 <div class="col-md-6">
+                 <!-- <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" required>
                     <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">Send Email OTP</button>
@@ -194,7 +194,7 @@
                     <label>Enter Email OTP *</label>
                     <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
                     <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
-                </div> 
+                </div>  -->
 
 
                 <div class="col-md-6">
