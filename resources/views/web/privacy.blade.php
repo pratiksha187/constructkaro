@@ -127,9 +127,14 @@
                 Continued use means acceptance.
             </p>
         </div>
-
         <div class="policy-section">
-            <h5 class="fw-bold" style="color:#f25c05;">11. Grievance Officer</h5>
+            <h5 class="fw-bold" style="color:#f25c05;">11. Jursidcation - Khalapur</h5>
+            <p>
+                This Privacy Policy shall be governed by and construed in accordance with the laws of India. Any disputes arising under this Policy shall be subject to the exclusive jurisdiction of the courts located at Khalapur.
+            </p>
+        </div>
+        <div class="policy-section">
+            <h5 class="fw-bold" style="color:#f25c05;">12. Grievance Officer</h5>
             <p><strong>Name:</strong> Mrs. Sheetal Agarwal</p>
             <p><strong>Email:</strong> swarajyaconstruction@outlook.com</p>
             <p><strong>Phone:</strong> 9326216153</p>

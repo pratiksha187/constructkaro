@@ -86,30 +86,57 @@ class VendorController extends Controller
         return view('web.types_of_agency', compact('agencyTypes','workTypes'));
     }
 
-    public function save_agency_services(Request $request)
-    {
-        $validated = $request->validate([
-            'work_type' => 'required|integer',
-            'work_subtype' => 'required|integer',
-            'vendor_type' => 'required|array',
-            'vendor_type.*' => 'integer',
-            'sub_vendor_types' => 'required|array',
-            'sub_vendor_types.*' => 'integer'
-        ]);
+    // public function save_agency_services(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'work_type' => 'required|integer',
+    //         'work_subtype' => 'required|integer',
+    //         'vendor_type' => 'required|array',
+    //         'vendor_type.*' => 'integer',
+    //         'sub_vendor_types' => 'required|array',
+    //         'sub_vendor_types.*' => 'integer'
+    //     ]);
 
-        // Assuming vendor_id is stored in session, otherwise use auth()->id()
-        $vendor_id = session('vendor_id');
+    //     // Assuming vendor_id is stored in session, otherwise use auth()->id()
+    //     $vendor_id = session('vendor_id');
 
-        AgencyService::create([
-            'user_id' => $vendor_id,
-            'work_type_id' => $validated['work_type'],
-            'work_subtype_id' => $validated['work_subtype'],
-            'vendor_type_id' => json_encode($validated['vendor_type']), // JSON encode array
-            'sub_vendor_types' => json_encode($validated['sub_vendor_types']) // JSON encode array
-        ]);
+    //     AgencyService::create([
+    //         'user_id' => $vendor_id,
+    //         'work_type_id' => $validated['work_type'],
+    //         'work_subtype_id' => $validated['work_subtype'],
+    //         'vendor_type_id' => json_encode($validated['vendor_type']), // JSON encode array
+    //         'sub_vendor_types' => json_encode($validated['sub_vendor_types']) // JSON encode array
+    //     ]);
 
-        return response()->json(['status' => 'success', 'message' => 'Saved successfully']);
-    }
+    //     return response()->json(['status' => 'success', 'message' => 'Saved successfully']);
+    // }
+  public function save_agency_services(Request $request)
+{
+    $validated = $request->validate([
+        'work_type' => 'required|integer',
+        'work_subtype' => 'required|array',
+        'work_subtype.*' => 'integer',
+
+        'vendor_type' => 'required|array',
+        'vendor_type.*' => 'array',          // each project id has an array of vendor ids
+        'vendor_type.*.*' => 'integer',      // validate vendor ids inside each project
+
+        'sub_vendor_types' => 'nullable|array',
+    ]);
+
+    $vendor_id = session('vendor_id') ?? auth()->id();
+
+    AgencyService::create([
+        'user_id'          => $vendor_id,
+        'work_type_id'     => $validated['work_type'],
+        'work_subtype_id'  => json_encode($validated['work_subtype']), // array of subtype ids
+        'vendor_type_id'   => json_encode($validated['vendor_type']),  // nested array (grouped by subtype)
+        'sub_vendor_types' => json_encode($request->input('sub_vendor_types', [])), // nested array
+    ]);
+
+    return response()->json(['status' => 'success', 'message' => 'Saved successfully']);
+}
+
 
      public function about_business(){
         $states = DB::table('states')->where('is_active',1)->get(); 

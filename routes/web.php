@@ -27,8 +27,13 @@ Route::get('/get-cities/{region_id}', [LocationController::class, 'getCities']);
 
 Route::get('/dropdowns', [DropdownController::class, 'index']);
 Route::get('/get-subtypes/{id}', [DropdownController::class, 'getSubtypes']);
-Route::get('/get-vendors/{id}', [DropdownController::class, 'getVendors']);
+// Route::get('/get-vendors/{id}', [DropdownController::class, 'getVendors']);
+Route::post('/get-vendors', [DropdownController::class, 'getVendors'])->name('get.vendors');
+
 Route::get('/get-sub-vendors/{id}', [DropdownController::class, 'getVendorssubcategories']);
+
+
+
 
 Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
 

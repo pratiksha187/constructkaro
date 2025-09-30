@@ -25,12 +25,19 @@ class DropdownController extends Controller
     }
 
     // Get vendors for a selected work subtype
-    public function getVendors($subtypeId)
+//     public function getVendors($subtypeId)
+//     {
+//         $vendors = DB::table('suggested_vendor_types')
+//                     ->where('work_subtype_id', $subtypeId)
+//                     ->get();
+// // dd($vendors);
+//         return response()->json($vendors);
+//     }
+    public function getVendors(Request $request)
     {
+        $subtypeIds = $request->subtype_ids; // array of IDs
         $vendors = DB::table('suggested_vendor_types')
-                    ->where('work_subtype_id', $subtypeId)
-                    ->get();
-// dd($vendors);
+        ->whereIn('work_subtype_id', $subtypeIds)->get();
         return response()->json($vendors);
     }
 
@@ -42,4 +49,6 @@ class DropdownController extends Controller
 // dd($vendors);
         return response()->json($vendors);
     }
+
+    
 }
