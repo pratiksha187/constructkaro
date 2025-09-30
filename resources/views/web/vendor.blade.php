@@ -422,12 +422,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            // if (data.status == 'success') {
-            //     alert('OTP verified!');
-            // } else {
-            //     alert('Invalid OTP');
-            // }
-
+           
             if (data.status == 'success') {
             let btn = document.getElementById('verifyOtpBtn');
             btn.innerText = "OTP Verified ✅";
