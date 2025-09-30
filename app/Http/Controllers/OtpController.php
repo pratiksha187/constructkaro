@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpMail;
 
 class OTPController extends Controller
 {
@@ -78,62 +79,36 @@ class OTPController extends Controller
         ]);
     }
 
-    public function sendEmailOtp(Request $request)
+ public function sendEmailOtp(Request $request)
     {
         $request->validate([
             'email' => 'required|email'
         ]);
 
-        $email = $request->input('email');
         $otp = rand(100000, 999999);
 
-        // Store OTP in session
+        // Store OTP in session (or DB if needed)
         session([
             'email_otp' => $otp,
-            'email_to_verify' => $email
+            'email_for_otp' => $request->email
         ]);
 
-        try {
-            Mail::raw("Your ConstructKaro verification OTP is: $otp", function ($message) use ($email) {
-                $message->to($email)
-                        ->subject('ConstructKaro Email Verification OTP');
-            });
+        // Send OTP email
+        Mail::to($request->email)->send(new OtpMail($otp));
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Email OTP sent successfully!'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to send OTP: '.$e->getMessage()
-            ]);
-        }
+        return response()->json(['status' => 'success', 'message' => 'Email OTP sent successfully!']);
     }
 
-    // Verify Email OTP
     public function verifyEmailOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|digits:6'
+            'otp' => 'required|numeric'
         ]);
 
-        $otp = $request->input('otp');
-        $sessionOtp = session('email_otp');
-        $email = session('email_to_verify');
-
-        if ($otp == $sessionOtp) {
-            session(['email_verified' => true]);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => "Email $email verified successfully!"
-            ]);
+        if ($request->otp == session('email_otp')) {
+            return response()->json(['status' => 'success', 'message' => 'Email OTP verified successfully!']);
         }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Invalid OTP'
-        ]);
+        return response()->json(['status' => 'error', 'message' => 'Invalid Email OTP']);
     }
 }

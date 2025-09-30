@@ -10,11 +10,19 @@ class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $code) {}
+    // app/Mail/OtpMail.php
+public $otp;
 
-    public function build(): self
-    {
-        return $this->subject('Your Verification Code')
-            ->markdown('emails.otp', ['code' => $this->code]);
-    }
+public function __construct($otp)
+{
+    $this->otp = $otp;
+}
+
+public function build()
+{
+    return $this->subject('Your ConstructKaro OTP Code')
+                ->view('emails.otp')
+                ->with(['code' => $this->otp]); // now view has $code
+}
+
 }

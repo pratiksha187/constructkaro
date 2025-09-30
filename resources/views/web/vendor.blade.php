@@ -178,13 +178,13 @@
                     <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
                 </div>
 
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" autocomplete="off" required>
                     <div id="suggestions" class="col-md-6" style="display: none; z-index: 1000;"></div>
-                </div>
+                </div> -->
 
-                <!-- <div class="col-md-6">
+                 <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" required>
                     <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">Send Email OTP</button>
@@ -194,7 +194,7 @@
                     <label>Enter Email OTP *</label>
                     <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
                     <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
-                </div> -->
+                </div> 
 
 
                 <div class="col-md-6">
@@ -481,7 +481,15 @@ $('#sendEmailOtpBtn').on('click', function() {
         body: JSON.stringify({ email: email })
     })
     .then(res => res.json())
-    .then(data => alert(data.message));
+
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Email OTP sent successfully!');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    });
+    // .then(data => alert(data.message));
 });
 
 // Verify Email OTP
@@ -497,7 +505,25 @@ $('#verifyEmailOtpBtn').on('click', function() {
         body: JSON.stringify({ otp: otp })
     })
     .then(res => res.json())
-    .then(data => alert(data.message));
+    .then(data => {
+        if (data.status === 'success') {
+            // Change button state
+            let btn = document.getElementById('verifyEmailOtpBtn');
+            btn.innerText = "Email OTP Verified ✅";
+            btn.classList.remove("btn-success");
+            btn.classList.add("btn-outline-success");
+            btn.disabled = true;
+
+            // Show a green success message
+            let msgBox = document.createElement("div");
+            msgBox.classList.add("text-success", "mt-2");
+            // msgBox.innerText = "Email OTP verified successfully!";
+            btn.parentNode.appendChild(msgBox);
+        } else {
+            alert('Invalid Email OTP');
+        }
+    });
+    // .then(data => alert(data.message));
 });
 
 </script>

@@ -11,6 +11,7 @@
         "guzzlehttp/guzzle": "7.9",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "sendgrid/sendgrid": "^8.1",
         "twilio/sdk": "^8.8",
         "yajra/laravel-datatables-oracle": "^11.1"
     },

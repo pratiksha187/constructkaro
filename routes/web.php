@@ -20,6 +20,12 @@ use App\Http\Controllers\LeegalityController;
 // routes/web.php
 use App\Http\Controllers\LocationController;
 
+
+Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp'])->name('send.email.otp');
+Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp'])->name('verify.email.otp');
+
+
+
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [LocationController::class, 'getCities']);

@@ -5,13 +5,47 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BusinessRegistration;
 use Illuminate\Support\Facades\DB;
-
+use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
     public function test(){
         return view('test');
     }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Generate 6-digit OTP
+        $otp = rand(100000, 999999);
+
+        // Store OTP in session (or DB if you need persistence)
+        session(['otp' => $otp, 'otp_email' => $request->email]);
+
+        // Send mail
+        Mail::to($request->email)->send(new OtpMail($otp));
+
+        return response()->json(['message' => 'OTP sent successfully!']);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|numeric'
+        ]);
+
+        if ($request->otp == session('otp')) {
+            return response()->json(['message' => 'OTP verified successfully!']);
+        }
+
+        return response()->json(['message' => 'Invalid OTP'], 422);
+    }
+
+
     public function contactus(){
         return view('web.contact');
     }
@@ -300,4 +334,7 @@ class AdminController extends Controller
 
         return back()->with('success', 'Thanks! Your message has been received. We’ll get back to you shortly.');
     }
+
+
+    
 }
