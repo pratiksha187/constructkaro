@@ -169,7 +169,7 @@
             </div>
             <div class="col-md-6">
                <label class="form-label">GST Number *</label>
-               <input type="text" id="gst_number" name="gst_number" class="form-control" maxlength="15">
+               <input type="text" id="gst_number" name="gst_number" class="form-control" style="text-transform: uppercase;" maxlength="15">
                <div id="gst_error" style="color: red; display: none;">GST number must be exactly 15 characters.</div>
             </div>
          </div>
@@ -188,12 +188,12 @@
          <div class="row mb-3">
             <div class="col-md-6">
                <label class="form-label">ESIC Number </label>
-               <input type="text" id="esic_number" name="esic_number" class="form-control" maxlength="17">
+               <input type="text" id="esic_number" name="esic_number" class="form-control" maxlength="17" style="text-transform: uppercase;">
                <div id="esic_error" style="color: red; display: none;">Please enter a valid 17-digit ESIC number.</div>
             </div>
             <div class="col-md-6">
                <label class="form-label">PF No</label>
-               <input type="text" id="pf_code" name="pf_code" class="form-control">
+               <input type="text" id="pf_code" name="pf_code" class="form-control" style="text-transform: uppercase;">
             </div>
          </div>
          <div class="row mb-3">
@@ -241,7 +241,7 @@
          <div class="row mb-3">
             <div class="col-md-6">
                <label class="form-label">Bank Name *</label>
-               <input type="text"id="bank_name" name="bank_name" class="form-control">
+               <input type="text"id="bank_name" name="bank_name" class="form-control" style="text-transform: uppercase;">
             </div>
             <div class="col-md-6">
                <label class="form-label">Account Number *</label>
@@ -251,7 +251,7 @@
          <div class="row mb-3">
             <div class="col-md-6">
                <label class="form-label">IFSC Code *</label>
-               <input type="text" id="ifsc_code" name="ifsc_code" class="form-control">
+               <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" style="text-transform: uppercase;">
             </div>
             <div class="col-md-6">
                <label class="form-label">Type of Account *</label>
