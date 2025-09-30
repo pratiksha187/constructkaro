@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Mail;
+
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VendorController;
@@ -10,30 +12,34 @@ use App\Http\Controllers\AgencyService;
 use App\Http\Controllers\EngginerController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\testController;
+use App\Http\Controllers\DropdownController;
 
+use App\Http\Controllers\WorkController;
 // routes/web.php
 use App\Http\Controllers\LeegalityController;
+// routes/web.php
+use App\Http\Controllers\LocationController;
+
+Route::get('/locations', [LocationController::class, 'index']);
+Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
+Route::get('/get-cities/{region_id}', [LocationController::class, 'getCities']);
+
+
+Route::get('/dropdowns', [DropdownController::class, 'index']);
+Route::get('/get-subtypes/{id}', [DropdownController::class, 'getSubtypes']);
+Route::get('/get-vendors/{id}', [DropdownController::class, 'getVendors']);
+Route::get('/get-sub-vendors/{id}', [DropdownController::class, 'getVendorssubcategories']);
 
 Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
 
 Route::post('/esign/create', [LeegalityController::class, 'createInvite'])->name('esign.create');
 
-// Leegality will POST webhooks here (configure in dashboard)
 Route::post('/webhooks/leegality', [LeegalityController::class, 'webhook'])->name('leegality.webhook');
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-Route::post('/otp/sms/send', [testController::class, 'sendSmsOtp'])->name('otp.sms.send');
 Route::get('/test', [AdminController::class, 'test'])->name('test');
-Route::post('/otp/sms/verify', [testController::class, 'verifySmsOtp'])->name('otp.sms.verify');
-
-
-Route::post('/otp/email/send',   [testController::class, 'sendEmailOtp'])->name('otp.email.send');
-Route::post('/otp/email/verify', [testController::class, 'verifyEmailOtp'])->name('otp.email.verify');
 
 Route::get('/project', [ProjectController::class, 'project'])->name('project');
 
@@ -47,15 +53,9 @@ Route::get('/project-details', [ProjectController::class, 'project_details'])->n
 
 Route::post('/project_details_save', [ProjectController::class, 'project_details_save'])->name('project_details_save');
 
-
 Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer.dashboard');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-// Route::get('/vendor', [VendorController::class, 'vendor'])->name('vendor');
-// Route::post('/registerServiceProvider', [VenderController::class, 'registerServiceProvider'])->name('registerServiceProvider');
-// Route::get('/types_of_agency', [VenderController::class, 'types_of_agency'])->name('types_of_agency');
-
 
 Route::get('/vendor', [VendorController::class, 'vendor'])->name('vendor');
 Route::post('/registerServiceProvider', [VendorController::class, 'registerServiceProvider'])->name('registerServiceProvider');
@@ -92,8 +92,8 @@ Route::post('/admin/vendors/{id}/update-status', [VendorController::class, 'upda
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
- Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
- Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
+Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
+Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
 
 Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
 Route::post('/quality', [EngginerController::class, 'quality'])->name('quality');
@@ -103,7 +103,6 @@ Route::post('/safety', [EngginerController::class, 'safety'])->name('safety');
 Route::post('/hr', [EngginerController::class, 'hr'])->name('hr');
 Route::post('/billing', [EngginerController::class, 'billing'])->name('billing');
 
-
 Route::post('/engineer/project/update-remarks', [EngginerController::class, 'updateRemarks']);
        Route::get('/Add-New-Project-Boq', [EngginerController::class, 'NewProjectBoq'])->name('NewProjectBoq');
 Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadBOQ']);
@@ -111,9 +110,6 @@ Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadB
 
 Route::post('/engineer/project/tender', [EngginerController::class, 'storetender'])
     ->name('engineer.project.tender');
-
-
-
 
 // routes/web.php or routes/api.php
 Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp']);
@@ -123,10 +119,31 @@ Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])-
 Route::get('about_us', [AdminController::class, 'about_us'])->name('about_us');
 Route::get('Privacy-Policy', [AdminController::class, 'privacy'])->name('privacy.policy');
 
-// Route::post('/send-phone-otp', [OtpController::class, 'send']);
-// Route::post('/verify-phone-otp', [OtpController::class, 'verify']);
 
-Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('send.otp');
-
+Route::post('/send-otp', [OTPController::class, 'sendOtp']);
+Route::post('/verify-otp', [OTPController::class, 'verifyOtp']);
 
 Route::get('Verified-Partner-Bids', [ProjectController::class, 'Partner_Bids'])->name('Partner_Bids');
+
+Route::get('/work/create', [WorkController::class, 'create'])->name('work.create');
+Route::post('/work/store', [WorkController::class, 'store'])->name('work.store');
+
+// Route::get('/get-subtypes/{typeId}', [WorkController::class, 'getSubtypes']);
+// Route::get('/get-vendors/{subtypeId}', [WorkController::class, 'getVendors']);
+Route::post('/vendor/follow-update', [VendorController::class, 'followUpdate'])->name('vendor.follow.update');
+
+
+Route::get('/test-email', function () {
+    Mail::raw('This is a test email via SendGrid SMTP', function ($message) {
+        $message->to('pirplwebapp@gmail.com')
+                ->subject('Laravel SendGrid Test');
+    });
+
+    return "✅ Test email sent! Check your inbox.";
+});
+
+
+Route::get('/vendor-agreement', [VendorController::class, 'vendor_terms_condition'])->name('vendor.agreement');
+
+
+

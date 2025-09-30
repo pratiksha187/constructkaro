@@ -2,113 +2,138 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Cache;
-use Aws\Sns\SnsClient;
-use App\Models\MobOtp;
-use App\Services\SmsService;
 use Twilio\Rest\Client;
-use App\Services\TwilioService;
-use Illuminate\Support\Facades\Log;
-use App\Models\EmailOtp;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
 
-use Illuminate\Support\Str;
-
-class OtpController extends Controller
+class OTPController extends Controller
 {
-     private TwilioService $twilio;
-
-    public function __construct(TwilioService $twilio)
+    // Send OTP to the user's phone number
+    public function sendOtp(Request $request)
     {
-        $this->twilio = $twilio;
-    }
-    public function sendEmailOtp(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-
-        $otp = rand(100000, 999999);
-
-        // Store OTP in database
-        EmailOtp::updateOrCreate(
-            ['email' => $request->email],
-            [
-                'otp' => $otp,
-                'expires_at' => Carbon::now()->addMinutes(5)
-            ]
-        );
-
-        try {
-            Mail::raw("Your OTP code is: $otp", function ($message) use ($request) {
-                $message->to($request->email)
-                        ->subject('Your Email OTP');
-            });
-
-            return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function verifyEmailOtp(Request $request)
-    {
+        // Validate phone number
         $request->validate([
-            'email' => 'required|email',
-            'otp' => 'required|digits:6',
+            'mobile' => 'required|regex:/^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$/'
         ]);
 
-        $record = EmailOtp::where('email', $request->email)
-                        ->where('otp', $request->otp)
-                        ->where('expires_at', '>', now())
-                        ->first();
+        $mobile = $request->input('mobile');
 
-        if ($record) {
-            $record->delete(); // Optional: delete after successful verification
-            return response()->json(['status' => 'success']);
-        }
+        // Generate a 6-digit OTP
+        $otp = rand(100000, 999999);
 
-        return response()->json(['status' => 'error', 'message' => 'Invalid or expired OTP']);
-    }
+        // Store OTP in session for later verification
+        Session::put('otp', $otp);
+        Session::put('mobile', $mobile);
 
-
-      public function sendOtp(Request $request)
-    {
-        $mobile = $request->input('phone_number');
-        $otp = rand(100000, 999999); // generate 6-digit OTP
-
-            // ✅ Correct way
-        $sid   = env('TWILIO_SID');
-        $token = env('TWILIO_TOKEN');
-        $from  = env('TWILIO_FROM_SMS');
-
+        // Send OTP via Twilio
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+        $from = env('TWILIO_PHONE_NUMBER');
+        
         $client = new Client($sid, $token);
 
-        // try {
+        try {
             $message = $client->messages->create(
-                $mobile, // receiver phone number
+                '+91' . $mobile, // To phone number with country code
                 [
-                    'from' => '18145262956', // your Twilio number
-                    'body' => "Your OTP is: $otp"
+                    'from' => $from,
+                    'body' => 'Your OTP is: ' . $otp
                 ]
             );
- dd($message);
-            // Save OTP in session (or DB for verification)
-            session(['phone_otp' => $otp]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'OTP sent to ' . $mobile
+                'message' => 'OTP sent successfully!',
             ]);
-
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => $e->getMessage()
-        //     ], 500);
-        // }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error sending OTP: ' . $e->getMessage(),
+            ]);
+        }
     }
-   
-    
+
+    // Verify OTP
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|digits:6'
+        ]);
+
+        // Get OTP and mobile from session
+        $sessionOtp = Session::get('otp');
+        $mobile = Session::get('mobile');
+        $otp = $request->input('otp');
+
+        if ($otp == $sessionOtp) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP verified successfully!',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid OTP',
+        ]);
+    }
+
+    public function sendEmailOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $email = $request->input('email');
+        $otp = rand(100000, 999999);
+
+        // Store OTP in session
+        session([
+            'email_otp' => $otp,
+            'email_to_verify' => $email
+        ]);
+
+        try {
+            Mail::raw("Your ConstructKaro verification OTP is: $otp", function ($message) use ($email) {
+                $message->to($email)
+                        ->subject('ConstructKaro Email Verification OTP');
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Email OTP sent successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to send OTP: '.$e->getMessage()
+            ]);
+        }
+    }
+
+    // Verify Email OTP
+    public function verifyEmailOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|digits:6'
+        ]);
+
+        $otp = $request->input('otp');
+        $sessionOtp = session('email_otp');
+        $email = session('email_to_verify');
+
+        if ($otp == $sessionOtp) {
+            session(['email_verified' => true]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => "Email $email verified successfully!"
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid OTP'
+        ]);
+    }
 }

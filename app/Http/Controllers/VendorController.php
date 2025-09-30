@@ -19,144 +19,117 @@ class VendorController extends Controller
 {
     public function vendor()
     {
-        return view('web.vendor'); // View file created below
+         $states = DB::table('states')->where('is_active',1)->get(); 
+        return view('web.vendor',compact('states')); // View file created below
     }
 
-    // public function registerServiceProvider(Request $request)
-    // {
-       
-    //     $validator = Validator::make($request->all(), [
-    //         'name'                  => ['required','string','max:255'],
-    //         'mobile'                => ['required','digits:10','unique:service_provider,mobile'],
-    //         'email'                 => ['required','email:rfc,dns','unique:service_provider,email'],
-    //         'business_name'         => ['nullable','string','max:255'],
-    //         'gst_number'            => ['nullable','string','max:50'],
-    //         'location'              => ['required','max:255'],
-    //         'password'              => ['required','confirmed','min:8'],
-    //     ],[
-    //         'mobile.unique'         => 'This mobile number is already registered.',
-    //         'email.unique'          => 'This email is already registered.',
-    //         'password.confirmed'    => 'Passwords do not match.',
-    //     ]);
+   
+    public function registerServiceProvider(Request $request)
+    {
 
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
+        $validator = Validator::make($request->all(), [
+            'name'          => ['required','string','max:255'],
+            'mobile'        => ['required','digits:10','unique:service_provider,mobile'],
+            'email'         => ['required','email:rfc,dns','unique:service_provider,email'],
+            'business_name' => ['nullable','string','max:255'],
+            'gst_number'    => ['nullable','string','max:50'],
+            'state'      => ['required'],
+            'city'      => ['required'],
+            'region'      => ['required'],
+            'password'      => ['required','confirmed','min:8'],
+        ],[
+            'mobile.unique'      => 'This mobile number is already registered.',
+            'email.unique'       => 'This email is already registered.',
+            'password.confirmed' => 'Passwords do not match.',
+        ]);
 
-    //     $vendor = ServiceProvider::create([
-    //         'name' => $request->name,
-    //         'mobile' => $request->mobile,
-    //         'email' => $request->email,
-    //         'business_name' => $request->business_name,
-    //         'gst_number' => $request->gst_number,
-    //         // 'location' => $request->location,
-    //         'location' => json_encode($request->location),
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-    //         'password' => Hash::make($request->password),
-    //     ]);
+        // Create vendor first
+        $vendor = ServiceProvider::create([
+            'name'          => $request->name,
+            'mobile'        => $request->mobile,
+            'email'         => $request->email,
+            'business_name' => $request->business_name,
+            'gst_number'    => $request->gst_number,
+            'state'      => $request->state,
+             'city'      => $request->city,
+              'region'      => $request->region,
+            'password'      => Hash::make($request->password),
+        ]);
 
-    //     session(['vendor_id' => $vendor->id]);
+        // Generate vendor code: SP/YYYY/ID
+        $vendorCode = 'SP/' . date('Y') . '/' . str_pad($vendor->id, 2, '0', STR_PAD_LEFT);
 
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Registration successful.'
-    //     ], 200);
-    // }
-public function registerServiceProvider(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'name'          => ['required','string','max:255'],
-        'mobile'        => ['required','digits:10','unique:service_provider,mobile'],
-        'email'         => ['required','email:rfc,dns','unique:service_provider,email'],
-        'business_name' => ['nullable','string','max:255'],
-        'gst_number'    => ['nullable','string','max:50'],
-        'location'      => ['required','max:255'],
-        'password'      => ['required','confirmed','min:8'],
-    ],[
-        'mobile.unique'      => 'This mobile number is already registered.',
-        'email.unique'       => 'This email is already registered.',
-        'password.confirmed' => 'Passwords do not match.',
-    ]);
+        // Save vendor code back to DB
+        $vendor->update(['vendor_code' => $vendorCode]);
 
-    if ($validator->fails()) {
+        // Store in session
+        session(['vendor_id' => $vendor->id, 'vendor_code' => $vendorCode]);
+
         return response()->json([
-            'errors' => $validator->errors()
-        ], 422);
+            'success' => true,
+            'message' => 'Registration successful.',
+            'vendor_code' => $vendorCode
+        ], 200);
     }
-
-    // Create vendor first
-    $vendor = ServiceProvider::create([
-        'name'          => $request->name,
-        'mobile'        => $request->mobile,
-        'email'         => $request->email,
-        'business_name' => $request->business_name,
-        'gst_number'    => $request->gst_number,
-        'location'      => json_encode($request->location),
-        'password'      => Hash::make($request->password),
-    ]);
-
-    // Generate vendor code: SP/YYYY/ID
-    $vendorCode = 'SP/' . date('Y') . '/' . str_pad($vendor->id, 2, '0', STR_PAD_LEFT);
-
-    // Save vendor code back to DB
-    $vendor->update(['vendor_code' => $vendorCode]);
-
-    // Store in session
-    session(['vendor_id' => $vendor->id, 'vendor_code' => $vendorCode]);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Registration successful.',
-        'vendor_code' => $vendorCode
-    ], 200);
-}
 
     public function types_of_agency()
     {
-        $agencyTypes = DB::table('agency_types')->get();
-        return view('web.types_of_agency', compact('agencyTypes'));
+        $agencyTypes = DB::table('work_subtypes')->get();
+         $workTypes = DB::table('work_types')->get();
+        // dd($agencyTypes);
+        return view('web.types_of_agency', compact('agencyTypes','workTypes'));
     }
 
     public function save_agency_services(Request $request)
     {
         $validated = $request->validate([
-            'agency_type' => 'required|string',
-            'services' => 'required|array',
-            'other_service' => 'nullable|string|max:255'
+            'work_type' => 'required|integer',
+            'work_subtype' => 'required|integer',
+            'vendor_type' => 'required|array',
+            'vendor_type.*' => 'integer',
+            'sub_vendor_types' => 'required|array',
+            'sub_vendor_types.*' => 'integer'
         ]);
 
+        // Assuming vendor_id is stored in session, otherwise use auth()->id()
         $vendor_id = session('vendor_id');
 
         AgencyService::create([
             'user_id' => $vendor_id,
-            'agency_type' => $validated['agency_type'],
-            'services' => json_encode($validated['services']),
-            'other_service' => $validated['other_service'] ?? null,
+            'work_type_id' => $validated['work_type'],
+            'work_subtype_id' => $validated['work_subtype'],
+            'vendor_type_id' => json_encode($validated['vendor_type']), // JSON encode array
+            'sub_vendor_types' => json_encode($validated['sub_vendor_types']) // JSON encode array
         ]);
 
         return response()->json(['status' => 'success', 'message' => 'Saved successfully']);
     }
 
      public function about_business(){
+        $states = DB::table('states')->where('is_active',1)->get(); 
         $entity_type = DB::table('entity_type')->get(); 
-         return view('web.about_vendor_business',compact('entity_type'));
+        return view('web.about_vendor_business',compact('entity_type','states'));
     }
 
      public function getServices($agency_id)
     {
-        $services = DB::table('services')
-            ->where('agency_id', $agency_id)
-            ->pluck('name', 'id');
-
+        $services = DB::table('suggested_vendor_types')
+            ->where('work_subtype_id', $agency_id)
+            ->pluck('vendor_type', 'id');
+// dd($services);
         return response()->json($services);
     }
 
     public function uploadFile(Request $request)
     {
         $request->validate([
-            'file'  => 'required|file|mimes:pdf|max:20480', // 20 MB (change if needed)
+            'file'  => 'required|file|mimes:pdf|max:20480', 
             'field' => 'required|string'
         ]);
 
@@ -166,146 +139,132 @@ public function registerServiceProvider(Request $request)
     }
  
 
-    public function business_store(Request $request)
-    {
-        // 1) Validate
-        $validated = $request->validate([
-            'experience_years'              => 'required',
-            'team_size'                     => 'required',
-            'service_coverage_area'         => 'required', // may be array from multiselect
-            'min_project_value'             => 'required|numeric',
-            'company_name'                  => 'required|string',
-            'entity_type'                   => 'required', // select -> int/string
-            'registered_address'            => 'required|string',
-            'contact_person_designation'    => 'required|string',
-            'gst_number'                    => 'required|string',
-            'pan_number'                    => 'required|string',
-            'tan_number'                    => 'nullable|string',
-            'esic_number'                   => 'nullable|string',
-            'pf_code'                       => 'nullable|string',
-            'msme_registered'               => ['required', Rule::in(['yes','no'])],
-            'bank_name'                     => 'required|string',
-            'account_number'                => 'required|string',
-            'ifsc_code'                     => 'required|string',
-            'account_type'                  => 'required', // select
-            'agreed_declaration'            => 'nullable', // checkbox
-            'aadhar_section'                => 'nullable',
-            'cin_section'                   => 'nullable',
-            'llpin_no'                      => 'nullable|string',
 
-            // optional direct uploads (single file each)
-            'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
-            'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
-            'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
-            'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
-            'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
-            'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
-            'work_completion_certificates_file'   => 'nullable|file|mimes:pdf|max:40960',
-            'pf_esic_documents_file'              => 'nullable|file|mimes:pdf|max:20480',
-            'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
-            'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
-            'past_work_photos_file'               => 'nullable|file|mimes:pdf|max:40960',
-            'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
-            'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
+public function business_store(Request $request)
+{
+//    dd($request);
+    $validated = $request->validate([
+        'experience_years'           => 'required|numeric',
+        'team_size'                  => 'required|numeric',
+        'min_project_value'          => 'required|numeric',
+        'company_name'               => 'required|string',
+        'entity_type'                => 'required|string', 
+        'registered_address'         => 'required|string',
+        'contact_person_designation' => 'required|string',
+        'gst_number'                 => 'required|string',
+        'pan_number'                 => 'required|string',
+        'tan_number'                 => 'nullable|string',
+        'esic_number'                => 'nullable|string',
+        'pf_code'                    => 'nullable|string',
+        'msme_registered'            => ['required', Rule::in(['yes','no'])],
+        'bank_name'                  => 'required|string',
+        'account_number'             => 'required|string',
+        'ifsc_code'                  => 'required|string',
+        'account_type'               => 'required|string',
+        'agreed_declaration'         => 'required', 
+        'llpin_no'                   => 'nullable|string',
+        'state'                      => 'required', 
+        'region'                     => 'required', 
+        'city'                       => 'required', 
+        'client_name' => 'required',
+        'organization' => 'required', 
+        'phone' => 'required', 
+        'email' => 'required', 
+        // Single files
+        'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
+        'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
+        'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
+        'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
+        'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
+        'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
+        'work_completion_certificates_file'   => 'nullable|file|mimes:pdf|max:40960',
+        'pf_documents_file'                   => 'nullable|file|mimes:pdf|max:20480',
+        'epic_documents_file'                 => 'nullable|file|mimes:pdf|max:20480',
+        'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
+        'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
+        'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
+        'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
 
-            // paths coming from your sequential uploader (JSON object)
-            'uploaded_paths'                      => 'nullable|string',
-        ]);
+        // Multiple files
+        'past_work_photos'                     => 'nullable',
+        'past_work_photos.*'                   => 'file|image|mimes:jpeg,png,jpg,gif|max:10240',
+    ]);
 
-        // 2) Vendor + default flags
-        $validated['user_id']  = session('vendor_id');
-        $validated['approved'] = 0;
+    $userId = session('vendor_id');
 
-        // 3) Collect paths from JSON map (sequential uploader)
-        $pathsFromJson = json_decode($request->input('uploaded_paths', '{}'), true) ?: [];
+    // --- Handle single file uploads ---
+    $singleFiles = [
+        'cancelled_cheque_file','pan_card_file','aadhaar_card_file',
+        'certificate_of_incorporation_file','itr_file','turnover_certificate_file',
+        'work_completion_certificates_file','pf_documents_file','epic_documents_file',
+        'company_profile_file','portfolio_file','license_certificate_file','uploadadharpanFile'
+    ];
 
-        // 4) Also support direct uploads in this request
-        $fileFields = [
-            'cancelled_cheque_file','pan_card_file','aadhaar_card_file',
-            'certificate_of_incorporation_file','itr_file','turnover_certificate_file',
-            'work_completion_certificates_file','pf_esic_documents_file',
-            'company_profile_file','portfolio_file','past_work_photos_file',
-            'license_certificate_file','uploadadharpanFile'
-        ];
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $pathsFromJson[$field] = $request->file($field)->store('vendor_docs', 'public'); // "public/vendor_docs/..."
-            }
+    $uploadedFiles = [];
+    foreach ($singleFiles as $field) {
+        if ($request->hasFile($field)) {
+            $uploadedFiles[$field] = $request->file($field)->store('vendor_docs', 'public');
         }
-        // Optional MSME file
-        if ($request->hasFile('msme_file')) {
-            $request->validate(['msme_file' => 'file|mimes:pdf|max:20480']);
-            $pathsFromJson['msme_file'] = $request->file('msme_file')->store('vendor_docs', 'public');
-        }
-
-        // 5) Normalize data to scalars (avoid array-to-string)
-        // service_coverage_area can be multiselect -> array
-        $serviceCoverage = $request->input('service_coverage_area', []);
-        if (is_array($serviceCoverage)) {
-            // store as comma-separated; OR use json_encode($serviceCoverage)
-            $serviceCoverage = implode(',', array_filter($serviceCoverage, fn($v) => $v !== null && $v !== ''));
-        }
-
-        // checkbox to boolean (1/0)
-        $agreed = $request->boolean('agreed_declaration') ? 1 : 0;
-
-        // Ensure all file path values are strings (flatten if any array sneaks in)
-        foreach ($pathsFromJson as $k => $v) {
-            if (is_array($v)) {
-                $pathsFromJson[$k] = implode(',', $v); // or pick first: $v[0] ?? null
-            }
-        }
-
-        // 6) Build insert payload (only scalar values)
-        $payload = [
-            'experience_years'                => (string)$validated['experience_years'],
-            'team_size'                       => (string)$validated['team_size'],
-            'service_coverage_area'           => $serviceCoverage,
-            'min_project_value'               => $validated['min_project_value'],
-            'company_name'                    => $validated['company_name'],
-            'entity_type'                     => (string)$validated['entity_type'],
-            'registered_address'              => $validated['registered_address'],
-            'contact_person_designation'      => $validated['contact_person_designation'],
-            'gst_number'                      => $validated['gst_number'],
-            'pan_number'                      => $validated['pan_number'],
-            'tan_number'                      => $validated['tan_number'] ?? null,
-            'esic_number'                     => $validated['esic_number'] ?? null,
-            'pf_code'                         => $validated['pf_code'] ?? null,
-            'msme_registered'                 => $validated['msme_registered'],   // 'yes'|'no' stored as text; or map to 1/0
-            'bank_name'                       => $validated['bank_name'],
-            'account_number'                  => $validated['account_number'],
-            'ifsc_code'                       => $validated['ifsc_code'],
-            'account_type'                    => (string)$validated['account_type'],
-            'agreed_declaration'              => $agreed,
-            'llpin_no'                        => $validated['llpin_no'] ?? null,
-            'user_id'                         => $validated['user_id'],
-            'approved'                        => 0,
-            'created_at'                      => now(),
-            'updated_at'                      => now(),
-        ];
-
-        // merge stored file paths (strings) into payload
-        $payload = array_merge($payload, $pathsFromJson);
-
-        // 7) Insert (Query Builder; no model)
-        DB::table('business_registrations')->insert($payload);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Business registration data saved successfully!'
-        ], 200);
     }
 
-    // public function vendor_confiermetion()
-    // {
-    //     $vendor_id = session('vendor_id');
-    //     $vendor_details =  DB::table('service_provider')
-    //                         ->where('id', $vendor_id)->get();
-    //                         // dd($vendor_details);
-    //     return view('web.vendor_confiermetion', [
-    //         'vendor_id' => $vendor_id
-    //     ]);
-    // }
+    // --- Handle multiple past work photos ---
+    if ($request->hasFile('past_work_photos')) {
+        $pastPhotos = [];
+        foreach ($request->file('past_work_photos') as $file) {
+            $pastPhotos[] = $file->store('vendor_docs/past_photos', 'public');
+        }
+        $uploadedFiles['past_work_photos'] = json_encode($pastPhotos);
+    }
+
+    // --- Build DB payload ---
+    $payload = [
+        'experience_years'            => $validated['experience_years'],
+        'team_size'                   => $validated['team_size'],
+        'min_project_value'           => $validated['min_project_value'],
+        'company_name'                => $validated['company_name'],
+        'entity_type'                 => $validated['entity_type'],
+        'registered_address'          => $validated['registered_address'],
+        'contact_person_designation'  => $validated['contact_person_designation'],
+        'gst_number'                  => $validated['gst_number'],
+        'pan_number'                  => $validated['pan_number'],
+        'tan_number'                  => $validated['tan_number'] ?? null,
+        'esic_number'                 => $validated['esic_number'] ?? null,
+        'pf_code'                     => $validated['pf_code'] ?? null,
+        'msme_registered'             => $validated['msme_registered'],
+        'bank_name'                   => $validated['bank_name'],
+        'account_number'              => $validated['account_number'],
+        'ifsc_code'                   => $validated['ifsc_code'],
+        'account_type'                => $validated['account_type'],
+        'agreed_declaration'          => $request->boolean('agreed_declaration') ? 1 : 0,
+        'llpin_no'                    => $validated['llpin_no'] ?? null,
+        'user_id'                     => $userId,
+        'past_work_photos'=>  $uploadedFiles['past_work_photos'] ,
+        // 'client_name'=> $validated['client_name'] ,
+        // 'email'=> $validated['email'] ,
+        // 'phone'=> $validated['phone'] ,
+        // 'organization'=> $validated['organization'] ,
+        'client_name'   => json_encode($validated['client_name']),
+    'organization'  => json_encode($validated['organization']),
+    'phone'         => json_encode($validated['phone']),
+    'email'         => json_encode($validated['email']),
+        'cancelled_cheque_file'         => $uploadedFiles['cancelled_cheque_file'],
+        'approved'                    => 0,
+        'created_at'                  => now(),
+        'updated_at'                  => now(),
+    ];
+
+    // Merge uploaded file paths
+    $payload = array_merge($payload, $uploadedFiles);
+// dd($payload);
+    DB::table('business_registrations')->insert($payload);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Business registration saved successfully!'
+    ], 200);
+}
+
+
     public function vendor_confiermetion()
     {
         $vendor_id = session('vendor_id');
@@ -324,7 +283,7 @@ public function registerServiceProvider(Request $request)
         return view('web.list_of_project');
     }
 
-     public function projectsData(Request $request)
+    public function projectsData(Request $request)
     {
         $query = projectDetails::query()
                     ->where('boq_status', 1)
@@ -340,7 +299,7 @@ public function registerServiceProvider(Request $request)
         return DataTables::of($query)->make(true);
     }
 
-     public function vendor_likes_project()
+    public function vendor_likes_project()
     {
         $vendor_id = session('vendor_id');
 
@@ -352,11 +311,11 @@ public function registerServiceProvider(Request $request)
         ]);
     }
 
-     public function likeprojectsData(Request $request)
+    public function likeprojectsData(Request $request)
     {
         // dd($request);
         $vendorId = session('vendor_id');
-// dd($vendorId);
+        // dd($vendorId);
         // Join with projects_details table to get project information
         $query = DB::table('project_likes')
             ->join('projects_details', 'project_likes.project_id', '=', 'projects_details.id')
@@ -378,21 +337,39 @@ public function registerServiceProvider(Request $request)
         return DataTables::of($query)->make(true);
     }
 
-    // public function vendor_dashboard(){
-    //     $vendor_id = session('vendor_id');
-    //     $data =  DB::table('service_provider')
-    //             ->where('id', $vendor_id)->get();
-    //     // dd($data);
-    //     return view('web.vendor_dashboard',compact('vendor_id','data'));
-    // }
-    public function vendor_dashboard() {
-        $vendor_id = session('vendor_id');
-        $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); // use ->first() instead of ->get()
-        return view('web.vendor_dashboard', compact('vendor_id','vendor'));
-    }
+   
+public function vendor_dashboard() {
+    $vendor_id = session('vendor_id');
+    $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+
+    $project_details = DB::table('business_registrations')
+                        ->where('user_id', $vendor->id) 
+                        ->get();
+
+    $project_details_count = $project_details->count();
+
+ 
+$projects_by_month = DB::table('business_registrations')
+    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as total'))
+    ->where('user_id', $vendor->id)
+    ->groupBy('month')
+    ->orderBy('month')
+    ->pluck('total', 'month');
 
 
-        public function projectlikes(Request $request)
+
+    return view('web.vendor_dashboard', compact(
+        'vendor_id',
+        'vendor',
+        'project_details',
+        'project_details_count',
+        'projects_by_month'
+    ));
+}
+
+
+
+    public function projectlikes(Request $request)
     {
         $vendor_id = session('vendor_id');
         $request->validate([
@@ -416,7 +393,7 @@ public function registerServiceProvider(Request $request)
         return response()->json(['message' => 'Like recorded!']);
     }
 
-        public function projectshow($id)
+    public function projectshow($id)
     {
         $project = ProjectDetails::findOrFail($id);
 
@@ -512,5 +489,40 @@ public function registerServiceProvider(Request $request)
         $vendor->save();
 
         return response()->json(['message' => 'Vendor status updated successfully.']);
+    }
+
+
+    public function followUpdate(Request $request)
+    {
+        $vendorId = $request->vendor_id;
+        // dd($vendorId);
+        $vendor = DB::table('service_provider')->where('id', $vendorId)->first();
+        if(!$vendor){
+            return response()->json(['status' => 'error']);
+        }
+
+        // Example: Update a column like `has_followed` to 1
+        DB::table('service_provider')->where('id', $vendorId)->update([
+            'has_followed' => 1,
+            'updated_at' => now()
+        ]);
+
+        return response()->json(['status' => 'success']);
+    }
+
+
+    public function vendor_terms_condition(){
+        $vendor_id = session('vendor_id');
+
+        $vednor_details=DB::table('service_provider')->where('id', $vendor_id)->first();
+        $get_agency_services = DB::table('agency_services')->where('user_id', $vendor_id)->first();
+        $work_id = $get_agency_services->work_type_id;
+
+        $vednor_comp_details=DB::table('business_registrations')->where('user_id', $vendor_id)->first();
+        
+        $workTypes_name = DB::table('work_types')->where('id', $work_id)->first();
+
+        // dd($vednor_comp_details);
+        return view('web.vendor_terms_condition',compact('vendor_id','vednor_details','get_agency_services','work_id','workTypes_name','vednor_comp_details'));
     }
 }

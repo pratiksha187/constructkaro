@@ -67,18 +67,17 @@
       <div class="form-section">
          <h5>Basic Business Information</h5>
          <div class="row mb-3">
-          
             <div class="col-md-6">
-                <label class="form-label">Years of Experience *</label>
-                <select class="form-select" id="experience_years" name="experience_years">
-                    <option value="">Select years of experience</option>
-                    <option value="1">0-2 Years</option>
-                    <option value="2">3-5 Years</option>
-                    <option value="3">6-10 Years</option>
-                    <option value="4">11-15 Years</option>
-                    <option value="5">16-20 Years</option>
-                    <option value="6">20+ Years</option>
-                </select>
+               <label class="form-label">Years of Experience *</label>
+               <select class="form-select" id="experience_years" name="experience_years">
+                  <option>Select years of experience</option>
+                  <option value="1">0-2 Years</option>
+                  <option value="2">3-5 Years</option>
+                  <option value="3">6-10 Years</option>
+                  <option value="4">11-15 Years</option>
+                  <option value="5">16-20 Years</option>
+                  <option value="6">20+ Years</option>
+               </select>
             </div>
             <div class="col-md-6">
                <label class="form-label">Team Size *</label>
@@ -140,9 +139,6 @@
                   @endforeach
                </select>
             </div>
-
-
-            
             <div class="col-md-6 mt-3" id="aadhar_section" style="display: none;">
                <label class="form-label">Aadhar Card No</label>
                <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" maxlength="12" placeholder="Enter Aadhar number">
@@ -290,21 +286,11 @@
                   class="form-control" multiple>
                <ul id="file_list" class="mt-2 text-primary small"></ul>
             </div>
-          
-            <div class="col-md-12" id="itr_section" style="display:none; margin-top:15px;">
-                <label class="form-label">Upload ITR PDFs *</label>
-                <div class="mb-2">
-                    <label>FY 25-26 *</label>
-                    <input accept="application/pdf" type="file" name="itr_25_26" class="form-control itr_file">
-                </div>
-                <div class="mb-2">
-                    <label>FY 24-25 *</label>
-                    <input accept="application/pdf" type="file" name="itr_24_25" class="form-control itr_file">
-                </div>
-                <div class="mb-2">
-                    <label>FY 23-24 *</label>
-                    <input accept="application/pdf" type="file" name="itr_23_24" class="form-control itr_file">
-                </div>
+            <div class="col-md-6">
+               3 Years ITR PDF (Latest First) *
+               <input accept="application/pdf" type="file" id="itr_file" name="itr_file" multiple class="form-control"
+                  >
+               <ul id="itr_file_list" class="mt-2 text-primary small"></ul>
             </div>
             <div class="col-md-6">Turnover Certificate (CA Certified) *<input accept="application/pdf" type="file" id="turnover_certificate_file" name="turnover_certificate_file" class="form-control"></div>
             <div class="col-md-6">
@@ -394,7 +380,7 @@
         </div>
 
         <!-- Commission Structure -->
-        <!-- <div class="p-3 mb-3 rounded" style="background-color:#fff3e0;">
+        <div class="p-3 mb-3 rounded" style="background-color:#fff3e0;">
           <h6 class="fw-bold">Commission Structure (Indicative)</h6>
           <div class="row small">
             <div class="col-md-6">
@@ -409,43 +395,20 @@
             </div>
           </div>
           <small class="text-muted">*Exact percentages will be specified in the vendor contract</small>
-        </div> -->
-         <div id="commission_box" class="p-3 mb-3 rounded" style="background-color:#fff3e0; display:none;">
-         <h6 class="fw-bold">Commission Structure (Indicative)</h6>
-         <div class="row small">
-            <div class="col-md-12">
-               <p id="commission_text" class="mb-1"></p>
-            </div>
-         </div>
-         <small class="text-muted">*Exact percentages will be specified in the vendor contract</small>
-         </div>
-        <!-- <div class="form-check mb-2">
+        </div>
+
+        <div class="form-check mb-2">
           <input class="form-check-input" type="checkbox" id="terms_policy">
           <label class="form-check-label small" for="terms_policy">
             I agree to the <strong>Vendor Terms & Conditions and Non-Circumvention Policy</strong>.  
             I understand that I cannot bypass ConstructKaro for direct dealings with introduced customers for 12 months.
           </label>
-        </div> -->
-
-         <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id="terms_policy" required>
-            <label class="form-check-label small" for="terms_policy">
-               I agree to the 
-               <a href="{{route('vendor.agreement')}}" target="_blank" class="text-decoration-none fw-bold text-primary">
-                  Vendor Terms & Conditions and Non-Circumvention Policy
-               </a>.  
-               I understand that I cannot bypass ConstructKaro for direct dealings with introduced customers for 12 months.
-            </label>
-         </div>
-
+        </div>
 
         <div class="form-check mb-2">
           <input class="form-check-input" type="checkbox" id="privacy_policy">
           <label class="form-check-label small" for="privacy_policy">
-            I agree to the 
-                  <a href="{{route('privacy.policy')}}" target="_blank" class="text-decoration-none fw-bold text-primary">
-                 Privacy Policy and Data Processing terms
-               </a>.  
+            I agree to the <strong>Privacy Policy and Data Processing terms</strong>.  
             I consent to ConstructKaro processing my business and project data for platform operations.
           </label>
         </div>
@@ -475,19 +438,19 @@
 
    
     if (text === "Proprietorship") {
-           $("#certificate_label").text("PAN Of Proprietorship*");
+           $("#certificate_label").text("Proprietorship Document *");
        } else if (text === "Private Limited") {
-           $("#certificate_label").text("Certificate Of Incopration*");
+           $("#certificate_label").text("Private Limited Document*");
        } else  if (text === "Partnership") {
-           $("#certificate_label").text("Partnership Deed*");
+           $("#certificate_label").text("Partnership Document*");
        } else if (text === "LLP") {  
-           $("#certificate_label").text("LLP Agreement*");
+           $("#certificate_label").text("LLP Document*");
        } else if (text === "Public Limited") {  
-           $("#certificate_label").text("Certificate Of Incopration*");
+           $("#certificate_label").text("Public Limited  Document*");
        } else if (text === "OPC") {      
-           $("#certificate_label").text("Certificate Of Incopration*");
+           $("#certificate_label").text("OPC  Document*");
        } else if (text === "HUF") {      
-           $("#certificate_label").text("HUF PAN Card*");
+           $("#certificate_label").text("HUF  Document*");
        } else{
            $("#certificate_label").text("Relevant Document *");
        }
@@ -892,49 +855,5 @@
        }
      });
    });
-</script>
-<script>
-$(document).ready(function() {
-    $('#experience_years').change(function() {
-        let selected = $(this).val();
-        if(selected == "1") {
-            // 0-2 Years: hide ITR section and remove 'required'
-            $('#itr_section').hide();
-            $('.itr_file').prop('required', false);
-        } else if(selected != "") {
-            // Other options: show ITR section and make files mandatory
-            $('#itr_section').show();
-            $('.itr_file').prop('required', true);
-        } else {
-            $('#itr_section').hide();
-            $('.itr_file').prop('required', false);
-        }
-    });
-});
-</script>
-
-<script>
-  // Define commissions
-  const commissions = {
-    "Architects": "6–10%",
-    "Consultants": "6–10%",
-    "Contractors": "7–8%",
-    "Interiors": "12–15%",
-    "Surveying": "6–8%",
-    "Fabrication": "8–10%",
-    "Utilities/Specialized": "8–10%"
-  };
-
-  // On dropdown change
-  $('#entity_type').on('change', function () {
-    let selected = $(this).val();
-    alert(selected);
-    if (commissions[selected]) {
-      $('#commission_text').html(`<strong>${selected}:</strong> ${commissions[selected]}`);
-      $('#commission_box').show();
-    } else {
-      $('#commission_box').hide();
-    }
-  });
 </script>
 @endsection

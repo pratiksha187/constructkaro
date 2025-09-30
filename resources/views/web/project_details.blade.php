@@ -1038,70 +1038,9 @@
                            >
                         <small class="form-text text-muted">You can attach multiple files (PDF, DOC, JPG, PNG). Max 10MB each.</small>
                      </div>
-                     <!-- <div class="col-lg-6">
-                        <div class="form-field-group">
-                           <label class="form-label">
-                              <div class="form-label-icon icon-blue">
-                                 <i data-lucide="map-pin" class="text-white" style="width: 1rem; height: 1rem;"></i>
-                              </div>
-                              <span>Project Location</span>
-                           </label>
-                           <div class="position-relative">
-                              <input 
-                                 type="text" 
-                                 name="project_location" id="project_location"
-                                 class="form-input focus-blue" 
-                                 placeholder="e.g., Mumbai, Delhi, Bangalore..."
-                                 require>
-                              <div class="input-check-icon" id="projectLocationCheck">
-                                 <i data-lucide="check-circle" style="width: 1.5rem; height: 1.5rem;"></i>
-                              </div>
-                           </div>
-                        </div>
-                     </div> -->
-                       <!-- <div class="col-lg-6">
-                        <div class="form-field-group">
-                           <label class="form-label">
-                              <div class="form-label-icon icon-green">
-                                 <i data-lucide="dollar-sign" class="text-white" style="width: 1rem; height: 1rem;"></i>
-                              </div>
-                              <span>Estimated Budget</span>
-                           </label>
-                           <div class="position-relative">
-                              <input 
-                                 type="text" 
-                                 id="budget_range" name="budget_range"
-                                 class="form-input focus-green" 
-                                 placeholder="e.g., ₹10L - ₹50L, ₹1Cr - ₹5Cr..."
-                                 >
-                              <div class="input-check-icon" id="estimatedBudgetCheck">
-                                 <i data-lucide="check-circle" style="width: 1.5rem; height: 1.5rem;"></i>
-                              </div>
-                           </div>
-                        </div>
-                     </div> -->
-                  </div>
-                  <div class="row g-4 mb-4">
                      
-                     <!-- <div class="col-lg-6">
-                        <div class="form-field-group">
-                           <label class="form-label">
-                              <div class="form-label-icon icon-purple">
-                                 <i data-lucide="calendar" class="text-white" style="width: 1rem; height: 1rem;"></i>
-                              </div>
-                              <span>Expected Timeline</span>
-                           </label>
-                           <select id="expectedTimeline" name="expected_timeline" class="form-select">
-                              <option value="">Select your preferred timeline</option>
-                              <option value="1-3months">1-3 months</option>
-                              <option value="3-6months">3-6 months</option>
-                              <option value="6-12months">6-12 months</option>
-                              <option value="1-2years">1-2 years</option>
-                              <option value="2plus">2+ years</option>
-                           </select>
-                        </div>
-                     </div> -->
                   </div>
+                 
                   <div class="row g-4 mb-4">
                      <div class="col-lg-12">
                         <label class="form-label">
@@ -1116,8 +1055,68 @@
                            placeholder="Tell us more about your project vision, specific requirements, architectural preferences, or any special features you have in mind..."
                            ></textarea>
                      </div>
-                  
+                     <div class="space-y-4">
+                        <!-- Agreement & Terms -->
+                        <div>
+                           <h3 class="font-medium text-gray-900 mb-2">Agreement & Terms <span class="text-red-500">*</span></h3>
+
+                           <div class="space-y-2">
+                              <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="terms" class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span class="text-gray-700">
+                                 I accept the
+                                 <a href="#" class="text-indigo-600 hover:underline">Customer Terms &amp; Conditions</a>
+                                 and
+                                 <a href="#" class="text-indigo-600 hover:underline">Privacy Policy</a>.
+                              </span>
+                              </label>
+
+                              <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="no_bypass" class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span class="text-gray-700">
+                                 I agree not to bypass ConstructKaro with vendors introduced via this platform.
+                              </span>
+                              </label>
+                           </div>
+                        </div>
+
+                        <!-- Optional Add-ons -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                           <h4 class="font-medium text-gray-900 mb-3">Optional Add-ons (Custom Plan)</h4>
+
+                           <div class="space-y-3">
+                              <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="addons[]" value="architect_boq"
+                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span>
+                                 <span class="font-medium text-gray-900">Get Architect &amp; BOQ package</span><br>
+                                 <span class="text-gray-600 text-sm">Design + Drawings + BOQ + 3D (charged separately)</span>
+                              </span>
+                              </label>
+
+                              <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="addons[]" value="quality_safety"
+                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span>
+                                 <span class="font-medium text-gray-900">Site Quality &amp; Safety checks</span><br>
+                                 <span class="text-gray-600 text-sm">Periodic inspections during construction</span>
+                              </span>
+                              </label>
+
+                              <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="addons[]" value="monitoring_dashboard"
+                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span>
+                                 <span class="font-medium text-gray-900">Project Monitoring Dashboard</span><br>
+                                 <span class="text-gray-600 text-sm">Progress tracking, photos, milestones</span>
+                              </span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+
                   </div>
+                  
                   <div class="d-flex justify-content-between">
                      <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
                      Back
@@ -1404,16 +1403,27 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content p-4">
       <div class="modal-body text-center" id="thankYouSection">
-       
-        <h4 class="fw-bold">Thank you! Your request has been submitted.</h4>
+       <h4>Project Submitted Successfully!</h4>
+        <h3 class="fw-bold">Thank you! Your request has been submitted.</h3>
         <p>Your project has been received and is now under review by the <strong>Constructkaro</strong> team.</p>
+         <h4>Your request has been submitted with ID: CST-2024-001</h4>
 
+         <h6>Expect up to 3 quotes from verified vendors within 24-48 hours.</h6>
         <div class="border rounded p-3 text-start mb-4" style="background-color: #f6f9fc;">
           <p><strong>⏱ Expected Response:</strong> Within 24 working hours</p>
           <p><strong>📞 Next Step:</strong> Our executive will reach out to you if needed</p>
-          <p><strong>🗂 Submission ID:</strong> <span id="submissionId">BX-2025-011</span></p>
+          <p><strong>🗂 Submission ID:</strong> <span id="submissionId"></span></p>
         </div>
-
+         <div class="p-4 bg-light rounded mt-4 text-start mx-auto" style="max-width: 600px;">
+               <h6 class="fw-semibold text-dark mb-3">What happens next?</h6>
+               <ul class="mb-0 text-muted">
+               <li>We’ll match your requirements with verified vendors</li>
+               <li>Vendors will review your project and submit quotes</li>
+               <li>You’ll receive notifications via email and SMS</li>
+               <li>Compare quotes and choose the best vendor for your project</li>
+               </ul>
+            </div>
+            <br>
         <button id="goToDashboardBtn" class="btn btn-warning">Go to My Dashboard</button>
 
         <p class="mt-3 text-muted small">
@@ -1438,34 +1448,38 @@
         }
     });
 
+   $('#projectForm').on('submit', function (e) {
+      e.preventDefault();
 
+      let isValid = true;
 
-  // Form submission (before AJAX)
-  $('#projectForm').on('submit', function (e) {
-    e.preventDefault();
+      // ✅ Check normal required fields
+      $('#projectForm [required]').each(function () {
+         if (!$(this).val().trim()) {
+               $(this).focus();
+               isValid = false;
+               return false; // break loop
+         }
+      });
 
-    // Validate required fields manually
-    let isValid = true;
-    $('#projectForm [required]').each(function () {
-      if (!$(this).val().trim()) {
-        $(this).focus();
-        isValid = false;
-        return false; // break loop
+      if (!isValid) return;
+
+      // ✅ Check if Agreement checkboxes are ticked
+      if (!$('input[name="terms"]').is(':checked') || !$('input[name="no_bypass"]').is(':checked')) {
+         alert("You must accept the Agreement & Terms before continuing.");
+         return;
       }
-    });
 
-    if (!isValid) return;
+      // ✅ If all good, set modal data
+      $('#modalProjectName').text($('#project_name').val());
+      $('#modalProjectLocation').text($('#project_location').val());
+      $('#modalBudget').text($('#budget_range').val());
+      $('#modalTimeline').text($('#expectedTimeline').val());
+      $('#modalDescription').text($('#project_description').val());
 
-    // Set data in confirmation modal
-    $('#modalProjectName').text($('#project_name').val());
-    $('#modalProjectLocation').text($('#project_location').val());
-    $('#modalBudget').text($('#budget_range').val());
-    $('#modalTimeline').text($('#expectedTimeline').val());
-    $('#modalDescription').text($('#project_description').val());
-
-    // Show modal
-    $('#projectConfirmModal').modal('show');
-  });
+      // ✅ Show modal
+      $('#projectConfirmModal').modal('show');
+   });
 
   // AJAX Submit after confirmation
   $('#confirmSubmitBtn').on('click', function () {
@@ -1482,7 +1496,7 @@
         $('#thankYouModal').modal('show');
 
         // Optional: Set dynamic submission ID
-        // $('#submissionId').text(response.submission_id || 'BX-2025-011');
+        $('#submissionId').text(response.submission_id || 'BX-2025-011');
       },
       error: function (xhr) {
         alert('Error submitting form. Please check console.');
@@ -1493,7 +1507,9 @@
 
   // Redirect to Dashboard
   $('#goToDashboardBtn').on('click', function () {
-    window.location.href = "{{route('Partner_Bids')}}";
+   //  window.location.href = "{{route('Partner_Bids')}}";
+            window.location.href = "{{ route('customer.dashboard') }}";
+
   });
 
 });

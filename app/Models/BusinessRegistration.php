@@ -18,7 +18,7 @@ class BusinessRegistration extends Model
         'bank_name', 'account_number', 'ifsc_code', 'account_type',
         'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
         'certificate_of_incorporation_file', 'itr_file', 'turnover_certificate_file',
-        'work_completion_certificates_file', 'pf_esic_documents_file',
+        'work_completion_certificates_file', 'pf_documents_file','epic_documents_file',
         'company_profile_file', 'portfolio_file', 'past_work_photos_file',
         'license_certificate_file', 'agreed_declaration', 'user_id', 'approved'
     ];

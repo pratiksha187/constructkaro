@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\DB;
 class ProjectController extends Controller
 {
     public function project(){
+        $workTypes = DB::table('work_types')->get();
         $construction_types = DB::table('categories')->orderBy('id')->get();
         $expected_timeline =DB::table('expected_timeline')->orderBy('id')->get();
         $budgets = DB::table('budget_range')->orderBy('id')->get();
         $role_types = DB::table('role')->get();
-        return view('web.project',compact('construction_types','role_types','expected_timeline','budgets'));
+        $states = DB::table('states')->where('is_active',1)->get(); 
+        return view('web.project',compact('construction_types','states','role_types','expected_timeline','budgets','workTypes'));
     }
 
     public function getSubCategories(Request $request)
@@ -48,91 +50,123 @@ class ProjectController extends Controller
         return response()->json($types);
     }
 
-
     public function storeproject(Request $request)
     {
-        // Validate form (added rules for arch_drawings + arch_files)
+        // ✅ Validation
         $validated = $request->validate([
-            'full_name'            => 'required|string|max:255',
-            'phone_number'         => ['required','string','max:20'],
-            'email'                => 'required|email|max:255',
-            'password'             => 'required|string|min:6|confirmed', // expects password_confirmation
-            'role_id'              => 'required|integer',
-            'construction_type_id' => 'required|integer',
-            'project_type_id'      => 'required|integer',
-            'expected_start'       => 'nullable|date',
-            'land_area'            => 'nullable|numeric',
+            'full_name'        => 'required|string|max:255',
+            'phone_number'     => 'required|string|max:20',
+            'email'            => 'required|email|max:255',
+            'password'         => 'required|string|min:6|confirmed',
+            'role_id'          => 'required|integer',
+            'expected_start'   => 'nullable|date',
+            'land_area'        => 'nullable|numeric',
+            'site_status'      => 'nullable',
+            'floors'           => 'nullable',
+            'water'            => 'nullable',
+            'electricity'      => 'nullable',
+            'drainage'         => 'nullable',
+            'payment_preference'  => 'nullable',
+            'quality_preference'  => 'nullable',
+            'vendor_preference'   => 'nullable',
+            'best_time'           => 'nullable',
 
-            // NEW: drawings toggle + multi-pdf uploads
-            'arch_drawings'        => 'nullable',
-            'arch_files'           => 'required_if:arch_drawings,1|array',
-            'arch_files.*'         => 'file|mimetypes:application/pdf|max:10240', // 10 MB per file
+            // Drawings + multi-pdf uploads
+            'arch_drawings'   => 'nullable',
+            'arch_files'      => 'required_if:arch_drawings,1|array',
+            'arch_files.*'    => 'file|mimes:pdf,application/pdf|max:10240',
 
-            'struct_drawings'  => 'nullable',
-            'struct_files'     => 'required_if:struct_drawings,1|array',
-            'struct_files.*'   => 'file|mimetypes:application/pdf|max:10240', // 10MB per file
+            'struct_drawings' => 'nullable',
+            'struct_files'    => 'required_if:struct_drawings,1|array',
+            'struct_files.*'  => 'file|mimes:pdf,application/pdf|max:10240',
 
+            // Dropdowns (can be arrays if multi-select)
+            'work_subtype'    => 'nullable',
+            'work_type'       => 'nullable',
+            'vendor_type'     => 'nullable',
+            'sub_vendor_types'=> 'nullable',
 
-            // Optional (if you send as array from UI)
-            'sub_categories'       => 'nullable|array',
-            'sub_categories.*'     => 'nullable|string'
+            'region'        => 'required',
+            'city'        => 'required',
+            'state'        => 'required'
+            
+            
+            
         ]);
 
-        // Handle optional BOQ upload (existing)
+        // ✅ Handle BOQ upload
         $boqPath = null;
         if ($request->hasFile('boq_file')) {
             $boqPath = $request->file('boq_file')->store('boq_files', 'public');
         }
 
-        // Handle multiple Architectural Drawing PDFs (NEW)
+        // ✅ Handle multiple Architectural Drawing PDFs
         $archPaths = [];
         if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
             foreach ($request->file('arch_files') as $file) {
-                // stored at storage/app/public/arch_drawings/...
                 $archPaths[] = $file->store('arch_drawings', 'public');
             }
         }
-        // Handle multiple Structural Drawing PDFs
+
+        // ✅ Handle multiple Structural Drawing PDFs
         $structPaths = [];
         if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
             foreach ($request->file('struct_files') as $file) {
-                $structPaths[] = $file->store('struct_drawings', 'public'); // storage/app/public/struct_drawings
+                $structPaths[] = $file->store('struct_drawings', 'public');
             }
         }
 
-        // Sub-categories (array -> CSV if you want to keep old field)
-        $subCategoriesCsv = is_array($request->sub_categories)
-            ? implode(',', $request->sub_categories)
-            : null;
+        // ✅ Convert possible arrays into strings/JSON
+        $workType        = is_array($request->work_type) ? json_encode($request->work_type) : $request->work_type;
+        $workSubtype     = is_array($request->work_subtype) ? json_encode($request->work_subtype) : $request->work_subtype;
+        $vendorType      = is_array($request->vendor_type) ? json_encode($request->vendor_type) : $request->vendor_type;
+        $subVendorTypes  = is_array($request->sub_vendor_types) ? json_encode($request->sub_vendor_types) : $request->sub_vendor_types;
 
-        // Create the project
+        // ✅ Create project
         $project = Project::create([
-            'full_name'            => $request->full_name,
-            'phone_number'         => $request->phone_number,
-            'email'                => $request->email,
-            'password'             => Hash::make($request->password),
-            'role_id'              => $request->role_id,
-            'construction_type_id' => $request->construction_type_id,
-            'project_type_id'      => $request->project_type_id,
+            'full_name'        => $request->full_name,
+            'phone_number'     => $request->phone_number,
+            'email'            => $request->email,
+            'password'         => Hash::make($request->password),
+            'role_id'          => $request->role_id,
 
-            'site_ready'           => $request->has('site_ready'),
-            'sub_categories'       => $subCategoriesCsv,      // if your column is a string
-            'land_location'        => $request->land_location,
-            'survey_number'        => $request->survey_number,
-            'land_type'            => $request->land_type,
-            'land_area'            => $request->land_area,
-            'land_unit'            => $request->land_unit,
+            'site_ready'       => $request->has('site_ready'),
+            'land_location'    => $request->land_location,
+            'survey_number'    => $request->survey_number,
+            'land_type'        => $request->land_type,
+            'land_area'        => $request->land_area,
+            'land_unit'        => $request->land_unit,
 
-            'arch_drawings'        => $request->has('arch_drawings'),
-            'struct_drawings'      => $request->has('struct_drawings'),
-            'has_boq'              => $request->has('has_boq'),
-            'boq_file'             => $boqPath,
-            'expected_start'       => $request->expected_start,
-            'project_duration'     => $request->project_duration,
-            'budget_range'         => $request->budget_range,
+            'arch_drawings'    => $request->has('arch_drawings'),
+            'struct_drawings'  => $request->has('struct_drawings'),
+            'has_boq'          => $request->has('has_boq'),
+            'boq_file'         => $boqPath,
+            'expected_start'   => $request->expected_start,
+            'project_duration' => $request->project_duration,
+            'budget_range'     => $request->budget_range,
+            'site_status'      => $request->site_status,
+            'floors'           => $request->floors,
+            'water'            => $request->water,
+            'electricity'      => $request->electricity,
+            'drainage'         => $request->drainage,
+            'payment_preference'=> $request->payment_preference,
+            'quality_preference'=> $request->quality_preference,
+            'vendor_preference'=> $request->vendor_preference,
+            'best_time'        => $request->best_time,
 
-            // Save the drawings file paths (JSON recommended)
-            'arch_files'           => !empty($archPaths) ? json_encode($archPaths) : null,
+            // ✅ Store converted arrays
+            'work_type'        => $workType,
+            'work_subtype'     => $workSubtype,
+            'vendor_type'      => $vendorType,
+            'sub_vendor_types' => $subVendorTypes,
+
+
+            'region'        => $request->region,
+            'city'        => $request->city,
+            'state'           => $request->state,
+            // ✅ Save JSON file paths
+            'arch_files'       => !empty($archPaths) ? json_encode($archPaths) : null,
+            'struct_files'     => !empty($structPaths) ? json_encode($structPaths) : null,
         ]);
 
         session(['current_project_id' => $project->id]);
@@ -142,6 +176,8 @@ class ProjectController extends Controller
             'redirect' => route('project_details'),
         ]);
     }
+
+
 
     public function project_details(){
         $projectId = session('current_project_id');
@@ -190,327 +226,136 @@ class ProjectController extends Controller
             'updated_at' => now(),
         ]);
 
-        return response()->json(['success' => true, 'project_id' => $projectId]);
+        return response()->json(['success' => true, 'project_id' => $projectId,'submission_id' => $submission_id]);
     }
 
-    // public function customer_dashboard(){
-    //     $session = session('current_project_id');
-    //     $projects  = DB::table('projects')
-    //                         ->where('id',$session)
-    //                         ->get();
+    public function customer_dashboard()
+    {
+        $user = session('user'); // ✅ user from login
+        $projectId = session('current_project_id'); // ✅ project from form (optional)
 
-                            
-    //     dd($projects);
-    //     return view('web.customer_dashboard',compact('session','projects'));
-    // }
-    // public function customer_dashboard()
-    // {
-    //     $session = session('current_project_id');
+        // if (!$user) {
+        //     return redirect('/login')->with('error', 'Session expired, please login again.');
+        // }
+        $projectKey = $projectId ?: $user->id;
+        // ✅ Always fetch customer details by user_id (same as project_id)
+        $cust_details = DB::table('projects')
+                            ->where('id', $projectKey)
+                            ->first();
+
+
+        // ✅ If form set projectId use that, else fallback to user->id
         
-    //     $cust_details= DB::table('projects')
-    //                     ->where('id', $session)
-    //                     ->first();
-    //     $projects = DB::table('projects_details')
-    //                     ->where('project_id', $session)
-    //                     ->get();                
 
-    //     return view('web.customer_dashboard', compact('projects','cust_details'));
-    // }
-public function customer_dashboard()
-{
-    $user = session('user'); // ✅ use user session directly
-
-    if (!$user) {
-        return redirect('/login')->with('error', 'Session expired, please login again.');
-    }
-
-    $cust_details = DB::table('projects')
-                        ->where('id', $user->id)
-                        ->first();
-
-    $projects = DB::table('projects_details')
-                        ->where('project_id', $user->id)
+        $projects = DB::table('projects_details')
+                        ->where('project_id', $projectKey)
                         ->get();
 
-    return view('web.customer_dashboard', compact('projects', 'cust_details'));
-}
 
-    // public function Partner_Bids(){
-    //      $projectId = session('current_project_id');
-    //      $like_project_list_vendor = DB::table('projects')
-    //                                 ->where('id', $projectId)
-    //                                 ->get();
-
-    //      $vendor_details = DB::table('project_likes')
-    //                                 ->where('vendor_id', $like_project_list_vendor->id)
-    //                                 ->get();                      
-    //      dd($like_project_list_vendor);
-    //     return view('web.Partner_Bids',compact('like_project_list_vendor'));
-    // }
-//     public function Partner_Bids() {
-//     $projectId = session('current_project_id');
-
-//     // Get the specific project (not as a collection)
-//     $like_project_list_vendor = DB::table('projects')
-//                                   ->where('id', $projectId)
-//                                   ->first(); // ✅ important
-
-//     // Now this works since $like_project_list_vendor is an object
-//     $vendor_details = DB::table('project_likes')
-//                         ->where('vendor_id', $like_project_list_vendor->id)
-//                         ->first();
-//     $vendor_id = DB::table('service_provider')
-//                         ->where('vendor_id', $vendor_details->id)
-//                         ->first();
-//     // Optional: Debug
-//     dd($vendor_id);
-
-//     return view('web.Partner_Bids', compact('like_project_list_vendor', 'vendor_details'));
-// }
-// public function Partner_Bids() {
-//     $projectId = session('current_project_id');
-   
-//     // $pro_id = DB::table('projects')
-//     //                               ->where('id', $projectId)
-//     //                               ->first();
-//     // Get the specific project
-//     $like_project_list_vendor = DB::table('projects')
-//                                   ->where('id', $projectId)
-//                                   ->first();
-//   dd($like_project_list_vendor);
-//     if (!$like_project_list_vendor) {
-//         return redirect()->back()->with('error', 'Project not found.');
-//     }
-//     $vender_id = $like_project_list_vendor->id;
- 
-//     // Get vendor_like entry for this project
-//     $vendor_details = DB::table('project_likes')
-//                         ->where('vendor_id', $vender_id)  // ✅ Correct field
-//                         ->get();
-//   dd($vendor_details);
-//     if (!$vendor_details) {
-//         return redirect()->back()->with('error', 'No vendor liked this project yet.');
-//     }
-//     $vendorid = $vendor_details->vendor_id;
-//     // Get the actual vendor data from service_provider table
-//     $vendor = DB::table('service_provider')
-//                 ->where('id', $vendorid) // ✅ Correct usage
-//                 ->first();
-//   // Debug check
-   
-//     if (!$vendor) {
-//         return redirect()->back()->with('error', 'Vendor not found.');
-//     }
-
-//     $tender_data = DB::table('tender_documents')
-//                 ->where('project_id', $vendor_details->vendor_id) // ✅ Correct usage
-//                 ->get();
-
-//     return view('web.Partner_Bids', compact('like_project_list_vendor', 'vendor_details', 'vendor'));
-// }
-// public function Partner_Bids() {
-//     // $projectId =21;
-//     $projectId = session('current_project_id');
-// //    dd($projectId);
-//     $project = DB::table('projects')
-//                 ->where('id', $projectId)
-//                 ->first();  
-//         // dd($project->id);        
-//      $projects_details=   DB::table('projects_details')
-//                 ->where('project_id', $projectId)
-//                 ->first();         
-//     //  dd($projects_details); 
-//     $projects_details_id = $projects_details->id;
-// //  dd($projects_details_id);  
-//     $vendor_details = DB::table('project_likes')
-//                         ->where('project_id', $projects_details_id) 
-//                         ->get();
-
-//     $vendorIds = $vendor_details->pluck('vendor_id')->toArray();
-// //  dd($vendorIds);
-//     $vendor = DB::table('service_provider')
-//                 ->whereIn('id', $vendorIds)
-//                 ->get();
-//                  dd($vendor);
-   
-// //   business_registrations
-//      return view('web.Partner_Bids',compact('vendor'));
-// //   dd($project);
-   
-// }
-public function Partner_Bids()
-{
-    $projectId = session('current_project_id');
-
-    $project = DB::table('projects')
-        ->where('id', $projectId)
-        ->first();  
-
-    $projects_details = DB::table('projects_details')
-        ->where('project_id', $projectId)
-        ->first();         
-
-    $projects_details_id = $projects_details->id;
-
-    $vendor_details = DB::table('project_likes')
-        ->where('project_id', $projects_details_id) 
-        ->get();
-
-    $vendorIds = $vendor_details->pluck('vendor_id')->toArray();
-  
-  
-    $vendor = DB::table('service_provider')
-                ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
-                ->leftJoin('tender_documents', function ($join) use ($projects_details_id) {
-                    $join->on('tender_documents.vendor_id', '=', 'service_provider.id')
-                        ->where('tender_documents.project_id', $projects_details_id);
-                })
-                ->whereIn('service_provider.id', $vendorIds)
-                ->select(
-                    'service_provider.id as service_provider_id',
-                    'business_registrations.id as business_registration_id',
-                    'tender_documents.id as tender_document_id',
-                    'service_provider.*',
-                    'business_registrations.*',
-                    'tender_documents.*'
-                )
-                ->orderBy('tender_documents.vendor_cost', 'asc')
+        $vendors = DB::table('business_registrations')
+                ->where('user_id', '11')
                 ->get();
-
-// dd($vendor);
-    return view('web.Partner_Bids', compact('vendor'));
-}
-
-// public function proceedVendor(Request $request)
-// {
-//     $request->validate([
-//         'selected_vendor' => 'required',
-//     ]);
-
-//     $vendorId = (string) $request->selected_vendor; // cast to string
-//     $projectId = (string) session('current_project_id'); // cast to string
-
-//     $projects_details = DB::table('projects_details')
-//         ->where('project_id', $projectId)
-//         ->first();
-
-//     $projects_details_id = $projects_details->id ?? null;
-//     $customerName = auth()->user()->name ?? 'Customer';
-//     // Now set only the chosen vendor to 1
-//     $updated = DB::table('project_likes')
-//         ->where('project_id', $projectId)
-//         ->where('vendor_id', $vendorId)
-//         ->update([
-//             'selected_vendor' => '1',
-//             'updated_at' => now(),
-//         ]);
-
-//     return response()->json([
-//         'status'               => $updated ? 'success' : 'not_updated',
-//         'vendor_id'            => $vendorId,
-//         'project_id'           => $projectId,
-//         'projects_details_id'  => $projects_details_id,
-//         'customer_name'        => $customerName,
-//     ]);
-// }
-// public function proceedVendor(Request $request)
-// {
-   
-//     $request->validate([
-//         'selected_vendor' => 'required',
-//     ]);
-
-//     $vendorId = (string) $request->selected_vendor; 
-//     $projectId = (string) session('current_project_id'); 
-
-//     // Get project details
-//     $projects_details = DB::table('projects_details')
-//         ->where('project_id', $projectId)
-//         ->first();
-
-//     $projects_details_id = $projects_details->id;
-   
-//     $exists = DB::table('project_likes')
-//         ->where('project_id', $projects_details_id)
-//         ->where('vendor_id', $vendorId)
-//         ->where('selected_vendor','1')
-//         ->exists();
-// // dd( $exists);
-//     if ($exists) {
-//         // Update selected vendor
-//         echo"alredy selected vendor for this project";
-//     } else {
-        
-//         $updated = DB::table('project_likes')
-//                     ->where('project_id', $projects_details_id)
-//                     ->where('vendor_id', $vendorId)
-//                     ->update([
-//                         'selected_vendor' => 1,
-//                         'updated_at'      => now(),
-//                     ]);
-
-//     }
-
-//     return response()->json([
-//         'status'              => $updated ? 'success' : 'failed',
-//         'vendor_id'           => $vendorId,
-//         'project_id'          => $projectId,
-//         'projects_details_id' => $projects_details_id,
-       
-//     ]);
-// }
-
-public function proceedVendor(Request $request)
-{
-    $request->validate([
-        'selected_vendor' => 'required',
-    ]);
-
-    $vendorId = (string) $request->selected_vendor; 
-    $projectId = (string) session('current_project_id'); 
-
-    // Get project details
-    $projects_details = DB::table('projects_details')
-        ->where('project_id', $projectId)
-        ->first();
-
-    $projects_details_id = $projects_details->id;
-
-    // default value
-    $updated = 0;
-
-    $exists = DB::table('project_likes')
-        ->where('project_id', $projects_details_id)
-        ->where('vendor_id', $vendorId)
-        ->where('selected_vendor', '1')
-        ->exists();
-
-    if ($exists) {
-        // Already selected vendor
-        return response()->json([
-            'status'  => 'exists',
-            'message' => 'Vendor already selected for this project',
-            'vendor_id' => $vendorId,
-            'project_id' => $projectId,
-            'projects_details_id' => $projects_details_id,
-        ]);
-    } else {
-        // Update vendor
-        $updated = DB::table('project_likes')
-            ->where('project_id', $projects_details_id)
-            ->where('vendor_id', $vendorId)
-            ->update([
-                'selected_vendor' => 1,
-                'updated_at'      => now(),
-            ]);
+    // dd($vendors);
+        return view('web.customer_dashboard', compact('projects', 'cust_details', 'projectKey','vendors'));
     }
 
-    return response()->json([
-        'status'              => $updated ? 'success' : 'failed',
-        'vendor_id'           => $vendorId,
-        'project_id'          => $projectId,
-        'projects_details_id' => $projects_details_id,
-    ]);
-}
+
+    
+    public function Partner_Bids()
+    {
+        $projectId = session('current_project_id');
+
+        $project = DB::table('projects')
+            ->where('id', $projectId)
+            ->first();  
+
+        $projects_details = DB::table('projects_details')
+            ->where('project_id', $projectId)
+            ->first();         
+
+        $projects_details_id = $projects_details->id;
+
+        $vendor_details = DB::table('project_likes')
+            ->where('project_id', $projects_details_id) 
+            ->get();
+// dd($vendor_details);
+        $vendorIds = $vendor_details->pluck('vendor_id')->toArray();
+    
+    
+        $vendor = DB::table('service_provider')
+                    ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
+                    ->leftJoin('tender_documents', function ($join) use ($projects_details_id) {
+                        $join->on('tender_documents.vendor_id', '=', 'service_provider.id')
+                            ->where('tender_documents.project_id', $projects_details_id);
+                    })
+                    ->whereIn('service_provider.id', $vendorIds)
+                    ->select(
+                        'service_provider.id as service_provider_id',
+                        'business_registrations.id as business_registration_id',
+                        'tender_documents.id as tender_document_id',
+                        'service_provider.*',
+                        'business_registrations.*',
+                        'tender_documents.*'
+                    )
+                    ->orderBy('tender_documents.vendor_cost', 'asc')
+                    ->get();
+
+    // dd($vendor);
+        return view('web.Partner_Bids', compact('vendor'));
+    }
+
+
+    public function proceedVendor(Request $request)
+    {
+        $request->validate([
+            'selected_vendor' => 'required',
+        ]);
+
+        $vendorId = (string) $request->selected_vendor; 
+        $projectId = (string) session('current_project_id'); 
+
+        // Get project details
+        $projects_details = DB::table('projects_details')
+            ->where('project_id', $projectId)
+            ->first();
+
+        $projects_details_id = $projects_details->id;
+
+        // default value
+        $updated = 0;
+
+        $exists = DB::table('project_likes')
+            ->where('project_id', $projects_details_id)
+            ->where('vendor_id', $vendorId)
+            ->where('selected_vendor', '1')
+            ->exists();
+
+        if ($exists) {
+            // Already selected vendor
+            return response()->json([
+                'status'  => 'exists',
+                'message' => 'Vendor already selected for this project',
+                'vendor_id' => $vendorId,
+                'project_id' => $projectId,
+                'projects_details_id' => $projects_details_id,
+            ]);
+        } else {
+            // Update vendor
+            $updated = DB::table('project_likes')
+                ->where('project_id', $projects_details_id)
+                ->where('vendor_id', $vendorId)
+                ->update([
+                    'selected_vendor' => 1,
+                    'updated_at'      => now(),
+                ]);
+        }
+
+        return response()->json([
+            'status'              => $updated ? 'success' : 'failed',
+            'vendor_id'           => $vendorId,
+            'project_id'          => $projectId,
+            'projects_details_id' => $projects_details_id,
+        ]);
+    }
 
 }

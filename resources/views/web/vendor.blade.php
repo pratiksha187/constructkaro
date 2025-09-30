@@ -152,18 +152,30 @@
                     <label>Full Name *</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
-                <!-- <div class="col-md-6">
-                    <label>Mobile Number *</label>
-                    <input type="text" name="mobile" class="form-control" required>
-                </div> -->
+             
                 <div class="col-md-6">
                     <label>Mobile Number *</label>
                     <input type="text" 
-                            name="mobile" 
-                            class="form-control" 
-                            required
-                            pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$"
-                            title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
+                        name="mobile" 
+                        class="form-control" 
+                        required
+                        maxlength="10"
+                        pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$"
+                        title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
+                    <button type="button" id="sendOtpBtn" class="btn btn-primary mt-2">Send OTP</button>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Enter OTP *</label>
+                    <input type="text" 
+                        id="otp" 
+                        name="otp" 
+                        class="form-control" 
+                        required
+                        maxlength="6"
+                        pattern="\d{6}"
+                        title="Enter the 6-digit OTP">
+                    <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
                 </div>
 
                 <div class="col-md-6">
@@ -171,6 +183,19 @@
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" autocomplete="off" required>
                     <div id="suggestions" class="col-md-6" style="display: none; z-index: 1000;"></div>
                 </div>
+
+                <!-- <div class="col-md-6">
+                    <label for="email" class="form-label">Email ID *</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                    <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">Send Email OTP</button>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Enter Email OTP *</label>
+                    <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
+                    <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
+                </div> -->
+
 
                 <div class="col-md-6">
                     <label>Business Name</label>
@@ -180,13 +205,29 @@
                     <label>GST Number</label>
                     <input type="text" name="gst_number" class="form-control">
                 </div>
+              
                 <div class="col-md-6">
-                    <label>City / Location *</label>
-                    <select id="location" name="location[]" class="form-select" multiple required>
+                    <label for="state" class="form-label">Select State</label>
+                    <select name="state" id="state" class="form-control">
+                    <option value="">-- Select State --</option>
+                    @foreach ($states as $state)
+                        <option value="{{ $state->id }}">{{ $state->name }}</option>
+                    @endforeach
+                    </select>
+                </div>
 
-                        <option value="">-- Select Service Coverage Area --</option>
+                <div class="col-md-6">
+                    <label for="region" class="form-label">Select Region</label>
+                    <select name="region" id="region" class="form-control">
+                        <option value="">-- Select Region --</option>
+                    </select>
+                </div>
 
-                    
+
+                <div class="col-md-6">
+                    <label for="city" class="form-label">Select City</label>
+                    <select name="city" id="city" class="form-control">
+                        <option value="">-- Select City --</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -346,98 +387,113 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>
-$(function () {
-  // If this select was already enhanced, destroy and re-init (prevents "no search" bugs)
-  if ($('#location').data('select2')) {
-    $('#location').select2('destroy');
-  }
+    document.getElementById('sendOtpBtn').addEventListener('click', function() {
+        var mobile = document.querySelector('[name="mobile"]').value;
+        
+        fetch('/send-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ mobile: mobile })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status == 'success') {
+                alert('OTP sent successfully!');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 
-  $('#location').select2({
-    width: '100%',
-    placeholder: '-- Select Service Coverage Area --',
-    allowClear: true,
-    minimumResultsForSearch: 0,
-    dropdownParent: $(document.body),
-
-    // Group-aware matcher: matches option text OR group label.
-    matcher: function (params, data) {
-      const term = $.trim(params.term || '').toLowerCase();
-      if (term === '') return data;  // show all when no search
-
-      // If this is a group (has children)
-      if (data.children && data.children.length) {
-        const groupLabel = (data.text || '').toLowerCase();
-
-        // 1) If group label matches, return whole group unchanged
-        if (groupLabel.includes(term)) {
-          return data;
-        }
-
-        // 2) Otherwise, filter children by their text
-        const filteredChildren = [];
-        for (let i = 0; i < data.children.length; i++) {
-          const child = data.children[i];
-          if ((child.text || '').toLowerCase().includes(term)) {
-            // Clone the child so Select2 can render it
-            filteredChildren.push($.extend(true, {}, child));
-          }
-        }
-
-        if (filteredChildren.length) {
-          const modifiedData = $.extend(true, {}, data);
-          modifiedData.children = filteredChildren;
-          return modifiedData;
-        }
-        // No children matched → hide this group
-        return null;
-      }
-
-      // Regular option
-      if ((data.text || '').toLowerCase().includes(term)) {
-        return data;
-      }
-
-      // As a fallback, try to match option's parent <optgroup> label
-      const el = data.element;
-      const groupLabel = el && el.parentElement && el.parentElement.label
-        ? el.parentElement.label.toLowerCase()
-        : '';
-      if (groupLabel.includes(term)) {
-        return data;
-      }
-
-      return null;
-    }
-  });
-});
+    document.getElementById('verifyOtpBtn').addEventListener('click', function() {
+        var otp = document.getElementById('otp').value;
+        
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ otp: otp })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status == 'success') {
+                alert('OTP verified!');
+            } else {
+                alert('Invalid OTP');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 </script>
 
 <script>
-fetch('/get-service-areas')
-  .then(res => res.json())
-  .then(data => {
-    const select = document.getElementById('location');
-    select.innerHTML = '';
+    // State → Region
+    $('#state').on('change', function() {
+        let state_id = $(this).val();
+        $('#region').empty().append('<option value="">-- Select Region --</option>');
+        $('#city').empty().append('<option value="">-- Select City --</option>');
 
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = '-- Select Service Coverage Area --';
-    defaultOption.value = '';
-    select.appendChild(defaultOption);
-
-    data.forEach(group => {
-      const optgroup = document.createElement('optgroup');
-      optgroup.label = group.region;
-
-      group.areas.forEach(area => {
-        const option = document.createElement('option');
-        option.value = area;
-        option.textContent = area;
-        optgroup.appendChild(option);
-      });
-
-      select.appendChild(optgroup);
+        if (state_id) {
+            $.get('/get-regions/' + state_id, function(data) {
+                $.each(data, function(key, value) {
+                    $('#region').append('<option value="'+ key +'">'+ value +'</option>');
+                });
+            });
+        }
     });
-  });
-</script>
 
+    // Region → City
+    $('#region').on('change', function() {
+        let region_id = $(this).val();
+        $('#city').empty().append('<option value="">-- Select City --</option>');
+
+        if (region_id) {
+            $.get('/get-cities/' + region_id, function(data) {
+                $.each(data, function(key, value) {
+                    $('#city').append('<option value="'+ key +'">'+ value +'</option>');
+                });
+            });
+        }
+    });
+
+
+    // Send Email OTP
+$('#sendEmailOtpBtn').on('click', function() {
+    let email = $('#email').val();
+
+    fetch('/send-email-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message));
+});
+
+// Verify Email OTP
+$('#verifyEmailOtpBtn').on('click', function() {
+    let otp = $('#emailOtp').val();
+
+    fetch('/verify-email-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ otp: otp })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message));
+});
+
+</script>
 @endsection

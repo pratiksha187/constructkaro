@@ -6,9 +6,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
   body {
-    background: #f9fafb;
+    background: #f8fafc;
     font-family: 'Segoe UI', sans-serif;
     color: #1c2c3e;
   }
@@ -19,12 +21,12 @@
     padding: 50px 40px;
     max-width: 1200px;
     margin: 90px auto 50px;
-    box-shadow: 0 10px 35px rgba(28, 44, 62, 0.12);
+    box-shadow: 0 8px 28px rgba(28, 44, 62, 0.12);
     border: 1px solid #e5e7eb;
   }
 
   .gradient-text {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 700;
     background: linear-gradient(90deg, #f25c05, #1c2c3e);
     -webkit-background-clip: text;
@@ -42,9 +44,9 @@
   }
 
   .card-option {
-    background: #fdfdfd;
+    background: #ffffff;
     border-radius: 16px;
-    padding: 35px 25px;
+    padding: 30px 25px;
     text-align: center;
     border: 1px solid #e2e8f0;
     transition: all 0.3s ease;
@@ -53,43 +55,43 @@
   }
 
   .card-option:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 22px rgba(28, 44, 62, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(28, 44, 62, 0.15);
     border-color: #f25c05;
   }
 
   .card-option .icon {
     background: #1c2c3e;
     color: #ffffff;
-    font-size: 28px;
+    font-size: 26px;
     width: 65px;
     height: 65px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 18px;
+    margin: 0 auto 15px;
     box-shadow: 0 4px 10px rgba(28, 44, 62, 0.25);
   }
 
   .card-option h5 {
     font-size: 18px;
     font-weight: 600;
+    margin-bottom: 8px;
     color: #1c2c3e;
-    margin-bottom: 10px;
   }
 
   .card-option p {
     font-size: 14px;
     color: #6b7280;
-    min-height: 45px;
+    min-height: 42px;
   }
 
   .btn-primary {
     background-color: #f25c05;
     border-color: #f25c05;
     font-weight: 500;
-    padding: 10px 20px;
+    padding: 8px 18px;
     border-radius: 10px;
     transition: all 0.3s ease;
   }
@@ -100,107 +102,135 @@
     transform: scale(1.05);
   }
 
-  .btn-outline-success {
-    color: #1c2c3e;
-    border-color: #1c2c3e;
-    font-weight: 500;
-    border-radius: 10px;
-    padding: 10px 20px;
+  .social-buttons a {
+    min-width: 110px;
   }
 
-  .btn-outline-success:hover {
-    background-color: #1c2c3e;
-    color: #fff;
-    border-color: #1c2c3e;
-  }
-
-  .info-message {
-    background: #fff7ed;
-    color: #b45309;
-    padding: 16px 22px;
-    border-radius: 12px;
-    text-align: center;
-    margin-top: 50px;
-    font-size: 15px;
-    border: 1px solid #fed7aa;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-  }
-
-  .logout-btn button {
-    border-color: #1c2c3e;
-    color: #1c2c3e;
+  .progress {
+    height: 10px;
     border-radius: 6px;
-    font-weight: 500;
+    overflow: hidden;
+    background: #e5e7eb;
   }
-
-  .logout-btn button:hover {
-    background-color: #1c2c3e;
-    color: #fff;
+  .progress-bar {
+    background: linear-gradient(90deg, #f25c05, #ff8746);
   }
 </style>
 
-<!-- Logout Button -->
-<form method="POST" action="" class="logout-btn">
-  @csrf
-  <button type="submit" class="btn btn-sm btn-outline-light">
-    <i class="bi bi-box-arrow-right me-1"></i> Log out
-  </button>
-</form>
-
-<!-- Main Content Card -->
 <div class="container main-card">
   <div class="mb-4 text-center">
     <h2 class="gradient-text">Welcome to ConstructKaro Vendor Network!</h2>
     <p class="welcome-desc">
-      We're excited to have you onboard. Your profile is currently under review. 
-      Once verified, you’ll be visible to project owners and gain full access to exciting opportunities across the platform.
+      Your profile is under review. Once verified, you’ll be visible to project owners and get full access to new opportunities.
     </p>
-    <a href="{{ route('vendor_likes_project') }}" class="btn btn-outline-success mt-3">
-      <i class="bi bi-heart-fill me-1"></i> Like Projects
-    </a>
   </div>
 
-  <div class="text-center mb-5">
-    <h5 class="text-muted">While we verify your profile, you can:</h5>
-  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-lg-8">
+      <div class="card-option text-center p-4 shadow-lg rounded-4">
 
-  <div class="row g-4 justify-content-center">
-    <!-- Explore Projects Card -->
-    <div class="col-md-6 col-lg-5">
-      <div class="card-option" onclick="window.location='{{ route('projects.list.page') }}'">
-        <div class="icon"><i class="bi bi-search"></i></div>
-        <h5>Explore Projects</h5>
-        <p>Browse available projects with limited access until your profile is verified.</p>
-        <a href="{{ route('projects.list.page') }}" class="btn btn-primary mt-3">Browse Projects</a>
+        <!-- Vendor Info -->
+        <p class="fw-bold">Vendor ID: {{ $vendor->id }} | Name: {{ $vendor->name }}</p>
+
+        <div class="icon mb-3">
+          <i class="bi bi-person-lines-fill fs-1 text-primary"></i>
+        </div>
+
+        <h5 class="fw-bold">Profile Completion</h5>
+
+        <p class="text-muted small fst-italic">
+          "Stay connected, grow with us, and unlock more opportunities."
+        </p>
+
+        <div class="progress my-3" style="height: 20px;">
+          <div id="progressBar" class="progress-bar" style="width:90%">90%</div>
+        </div>
+
+        <p id="profileMsg">
+          Follow our official pages to reach <strong>100%</strong> completion.  
+          Get exclusive updates, tips, and project leads faster!
+        </p>
+
+        <!-- Social Buttons -->
+        <div id="socialLinks" class="social-buttons d-flex justify-content-center gap-2 mb-3">
+          <a href="https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr" target="_blank" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-facebook"></i> Facebook
+          </a>
+          <a href="https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==" target="_blank" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-instagram"></i> Instagram
+          </a>
+          <a href="#" target="_blank" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-linkedin"></i> LinkedIn
+          </a>
+        </div>
+
+        <!-- Follow Confirm Button -->
+        <button id="followConfirm" class="btn btn-success fw-bold" data-vendor-id="{{ $vendor->id }}">
+          ✅ I Have Followed
+        </button>
+
+        <!-- Dashboard Access after follow -->
+        <div id="dashboardAccess" class="d-none mt-3">
+          <div class="progress my-3" style="height: 20px;">
+            <div class="progress-bar bg-success" style="width:100%">100%</div>
+          </div>
+          <p class="text-success small fw-bold">
+            🎉 Thank you for joining our community! Your profile is now 100% complete.  
+            Stay tuned for project opportunities and success tips.
+          </p>
+          <a href="{{ route('vendor_dashboard') }}" class="btn btn-primary mt-2">Go to Dashboard</a>
+        </div>
+
+        <hr>
+        <a href="{{ route('vendor_dashboard') }}" class="btn btn-outline-secondary mt-2">
+          Skip & Go to Dashboard
+        </a>
+
       </div>
     </div>
-
-    <!-- Complete Profile Card -->
-    <div class="col-md-6 col-lg-5">
-      <div class="card-option" onclick="window.location='{{ route('vendor_dashboard') }}'">
-        <div class="icon"><i class="bi bi-person-lines-fill"></i></div>
-        <h5>Complete Your Profile</h5>
-        <p>Provide more details to strengthen your profile and speed up the approval process.</p>
-        <a href="{{ route('vendor_dashboard') }}" class="btn btn-primary mt-3">Edit Profile</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Info Message -->
-  <div class="info-message mt-5">
-    <i class="bi bi-info-circle-fill me-2"></i>
-    Verification usually takes 1–2 business days. We’ll notify you via email once your account is approved.
   </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#followConfirm').click(function() {
+        let vendorId = $(this).data('vendor-id');
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let button = $(this);
+
+        $.ajax({
+            url: '{{ route("vendor.follow.update") }}', 
+            type: 'POST',
+            data: {
+                _token: token,
+                vendor_id: vendorId
+            },
+            success: function(response) {
+                if(response.status === 'success') {
+                    // Hide social buttons and follow button
+                    $('#socialLinks').addClass('d-none');
+                    button.addClass('d-none');
+
+                    // Update progress bar
+                    $('#progressBar').addClass('bg-success').css('width', '100%').text('100%');
+
+                    // Update message
+                    $('#profileMsg').html("Great job! 🎉 You’re now part of the ConstructKaro success community.");
+
+                    // Show dashboard access
+                    $('#dashboardAccess').removeClass('d-none');
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            },
+            error: function() {
+                alert('Error updating follow status.');
+            }
+        });
+    });
+});
+</script>
+
 @endsection

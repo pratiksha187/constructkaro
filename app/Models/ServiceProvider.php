@@ -15,7 +15,9 @@ class ServiceProvider extends Authenticatable
         'email',
         'business_name',
         'gst_number',
-        'location',
+        'region',
+        'city',
+        'state',
         'vendor_code',
         'password',
     ];

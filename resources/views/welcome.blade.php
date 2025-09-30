@@ -25,7 +25,7 @@
                <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
                   Build Smart. 
                   <span class="text-blue-600">Hire Verified</span> 
-                  <span class="text-orange-500">Contractors</span> Instantly.
+                  <span class="text-orange-500">Construction Vendors</span> Instantly.
                </h1>
                <p class="text-gray-600 text-lg mb-8">
                   Connect with trusted professionals for your construction projects.

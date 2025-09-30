@@ -61,5 +61,11 @@
        href="{{ route('vender_approve_data') }}">Approve Vendor</a>
     <a class="side-link {{ request()->routeIs('vender_reject_data') ? 'active' : '' }}"
        href="{{ route('vender_reject_data') }}">Reject Vendor</a>
+
+
+    <div class="title">Add </div>
+    <a class="side-link {{ request()->routeIs('worktype') ? 'active' : '' }}"
+       href="{{ route('worktype') }}">Work Type</a>
+    
   </div>
 </aside>
