@@ -67,6 +67,7 @@ class AuthController extends Controller
                     return redirect()->route('about_business');
                 }
 
+                
                 // Step 3: All good → go to vendor confirmation
                 return redirect('/vendor_confiermetion');
             }
