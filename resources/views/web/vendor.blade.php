@@ -422,11 +422,21 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
+            // if (data.status == 'success') {
+            //     alert('OTP verified!');
+            // } else {
+            //     alert('Invalid OTP');
+            // }
+
             if (data.status == 'success') {
-                alert('OTP verified!');
-            } else {
-                alert('Invalid OTP');
-            }
+            let btn = document.getElementById('verifyOtpBtn');
+            btn.innerText = "OTP Verified ✅";
+            btn.classList.remove("btn-success");
+            btn.classList.add("btn-outline-success");
+            btn.disabled = true;
+        } else {
+            alert('Invalid OTP');
+        }
         })
         .catch(error => console.error('Error:', error));
     });
