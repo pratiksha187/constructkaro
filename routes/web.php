@@ -13,6 +13,7 @@ use App\Http\Controllers\EngginerController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\testController;
 use App\Http\Controllers\DropdownController;
+use App\Http\Controllers\CallingController;
 
 use App\Http\Controllers\WorkController;
 // routes/web.php
@@ -65,6 +66,9 @@ Route::get('/project-details', [ProjectController::class, 'project_details'])->n
 Route::post('/project_details_save', [ProjectController::class, 'project_details_save'])->name('project_details_save');
 
 Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer.dashboard');
+
+
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -105,6 +109,17 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
 Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
+
+
+Route::get('/calling_dashboard', [CallingController::class, 'calling_dashboard'])->name('calling.dashboard');
+
+Route::get('/vendor-add', [CallingController::class, 'vendoradd'])->name('vendoradd');
+// Route::get('/callingvendorlistadd', [CallingController::class, 'callingvendorlistadd'])->name('callingvendorlistadd');
+
+
+Route::get('/callingvendorlistadd', [CallingController::class, 'index'])->name('callingvendorlistadd');
+Route::post('/vendors', [CallingController::class, 'store'])->name('vendors.store');
+Route::post('/vendors/{id}', [CallingController::class, 'update'])->name('vendors.update');
 
 Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
 Route::post('/quality', [EngginerController::class, 'quality'])->name('quality');
@@ -158,3 +173,9 @@ Route::get('/vendor-agreement', [VendorController::class, 'vendor_terms_conditio
 
 
 
+Route::get('/make-hash', function () {
+    $password = "secret123@";
+    $hash = Hash::make($password);
+
+    return $hash; // Example: $2y$12$Z9R3PzFUhP...
+});

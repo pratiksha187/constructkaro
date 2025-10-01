@@ -335,6 +335,6 @@ class AdminController extends Controller
         return back()->with('success', 'Thanks! Your message has been received. We’ll get back to you shortly.');
     }
 
-
+   
     
 }

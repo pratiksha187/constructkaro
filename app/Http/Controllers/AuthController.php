@@ -31,23 +31,14 @@ class AuthController extends Controller
             } elseif ($admin->login_as == 2) {
                 session(['engineer' => $admin]);
                 return redirect('/engineer_dashboard');
+            } elseif ($admin->login_as == 5) {
+                session(['calling' => $admin]);
+                return redirect('/calling_dashboard');
             }
             return back()->with('error', 'Unauthorized role.');
         }
 
-        // 🔹 Vendor Login
-        // $vendor = DB::table('service_provider')->where('email', $request->email)->first();
-        // //  dd(Hash::check($request->password, $vendor->password));
-        // if ($vendor && Hash::check($request->password, $vendor->password)) {
-           
-        //     if ($vendor->login_as == 4) {
-        //         session(['vendor_id' => $vendor->id]);
-        //         return redirect('/vendor_confiermetion');
-        //     }
-        //     return back()->with('error', 'Unauthorized role.');
-        // }
-
-          // 🔹 Vendor Login
+       
         $vendor = DB::table('service_provider')->where('email', $request->email)->first();
 
         if ($vendor && Hash::check($request->password, $vendor->password)) {
@@ -94,6 +85,9 @@ class AuthController extends Controller
 
             return redirect('/customer_dashboard');
         }
+
+
+        
 
         return back()->with('error', 'Invalid credentials or unauthorized user.');
     }

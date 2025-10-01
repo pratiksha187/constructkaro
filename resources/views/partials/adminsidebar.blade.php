@@ -64,8 +64,7 @@
 
 
     <div class="title">Add </div>
-    <a class="side-link {{ request()->routeIs('worktype') ? 'active' : '' }}"
-       href="{{ route('worktype') }}">Work Type</a>
+   
     
   </div>
 </aside>
