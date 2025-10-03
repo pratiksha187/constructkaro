@@ -184,7 +184,7 @@
                     <div id="suggestions" class="col-md-6" style="display: none; z-index: 1000;"></div>
                 </div> -->
 
-                 <div class="col-md-6">
+                <div class="col-md-6">
                     <label for="email" class="form-label">Email ID *</label>
                     <input type="email" name="email" id="email" class="form-control" required>
                     <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">Send Email OTP</button>

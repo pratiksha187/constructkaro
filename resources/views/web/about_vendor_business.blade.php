@@ -103,15 +103,22 @@
                   @endforeach
                </select>
             </div>
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
                <label for="region" class="form-label">Select Region *</label>
                <select name="region" id="region" class="form-control">
                   <option value="">-- Select Region --</option>
                </select>
+            </div> -->
+            <div class="col-md-6">
+               <label for="region" class="form-label">Select Region *</label>
+               <select name="region[]" id="region" class="form-control" multiple>
+                  <option value="">-- Select Region --</option>
+               </select>
             </div>
+
             <div class="col-md-6">
                <label for="city" class="form-label">Select City *</label>
-               <select name="city" id="city" class="form-control">
+               <select name="city[]" id="city" class="form-control" multiple>
                   <option value="">-- Select City --</option>
                </select>
             </div>
@@ -156,6 +163,10 @@
             <div class="col-md-6 mt-3" id="llpin" style="display: none;">
                <label class="form-label">LLPIN No</label>
                <input type="text" name="llpin_no" id="llpin_no" class="form-control" placeholder="Enter LLPIN number">
+            </div>
+             <div class="col-md-6 mt-3" id="partnershipdeed" style="display: none;">
+               <label class="form-label">Partnership deed</label>
+               <input type="text" name="partnershipdeed_no" id="partnershipdeed_no" class="form-control" placeholder="Enter Partnership deed number">
             </div>
          </div>
          <div class="mb-3">
@@ -393,23 +404,7 @@
           </ul>
         </div>
 
-        <!-- Commission Structure -->
-        <!-- <div class="p-3 mb-3 rounded" style="background-color:#fff3e0;">
-          <h6 class="fw-bold">Commission Structure (Indicative)</h6>
-          <div class="row small">
-            <div class="col-md-6">
-              <p class="mb-1"><strong>Architects/Consultants:</strong> 6–10%</p>
-              <p class="mb-1"><strong>Contractors:</strong> 7–8%</p>
-              <p class="mb-1"><strong>Interiors:</strong> 12–15%</p>
-              <p class="mb-1"><strong>Surveying:</strong> 6–8%</p>
-            </div>
-            <div class="col-md-6">
-              <p class="mb-1"><strong>Fabrication:</strong> 8–10%</p>
-              <p class="mb-1"><strong>Utilities/Specialized:</strong> 8–10%</p>
-            </div>
-          </div>
-          <small class="text-muted">*Exact percentages will be specified in the vendor contract</small>
-        </div> -->
+      
          <div id="commission_box" class="p-3 mb-3 rounded" style="background-color:#fff3e0; display:none;">
          <h6 class="fw-bold">Commission Structure (Indicative)</h6>
          <div class="row small">
@@ -419,14 +414,7 @@
          </div>
          <small class="text-muted">*Exact percentages will be specified in the vendor contract</small>
          </div>
-        <!-- <div class="form-check mb-2">
-          <input class="form-check-input" type="checkbox" id="terms_policy">
-          <label class="form-check-label small" for="terms_policy">
-            I agree to the <strong>Vendor Terms & Conditions and Non-Circumvention Policy</strong>.  
-            I understand that I cannot bypass ConstructKaro for direct dealings with introduced customers for 12 months.
-          </label>
-        </div> -->
-
+      
          <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="terms_policy" required>
             <label class="form-check-label small" for="terms_policy">
@@ -467,6 +455,26 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#city').select2({
+      placeholder: "-- Select City --",
+      allowClear: true,
+      width: '100%'   // ensures it fits Bootstrap form-control
+    });
+  });
+
+
+   $(document).ready(function() {
+    $('#region').select2({
+      placeholder: "-- Select region --",
+      allowClear: true,
+      width: '100%'   // ensures it fits Bootstrap form-control
+    });
+  });
+</script>
 <script>
   $('#entity_type').on('change', function () {
     const selectedOption = $(this).find("option:selected");
@@ -493,19 +501,31 @@
        }
 
     // --- Show/hide sections ---
-    if (value === '3' || value === '4' || value === '5') { // Proprietor / Partnership / LLP
+    if (value === '4' || value === '5') { // Proprietor / Partnership / LLP
         $('#aadhar_pan_link_section').show();
         $('#aadhar_section').show();
+        $('#partnershipdeed').hide();
+
         $('#cin_section').hide();
         $('#llpin').hide();
     } else if (value === '6') { // LLPIN
         $('#aadhar_pan_link_section').hide();
         $('#aadhar_section').hide();
+        $('#partnershipdeed').hide();
+
         $('#cin_section').hide();
         $('#llpin').show();
+    } else if (value === '3') { // Private Limited / Public Ltd
+        $('#aadhar_pan_link_section').hide();
+        $('#cin_section').hide();
+        $('#partnershipdeed').show();
+        $('#aadhar_section').hide();
+        $('#llpin').hide();
     } else if (value !== '') { // Private Limited / Public Ltd
         $('#aadhar_pan_link_section').hide();
         $('#cin_section').show();
+        $('#partnershipdeed').hide();
+
         $('#aadhar_section').hide();
         $('#llpin').hide();
     } else { // Nothing selected
@@ -842,33 +862,70 @@
 </script>
 <script>
    // State → Region
-   $('#state').on('change', function() {
-       let state_id = $(this).val();
-       $('#region').empty().append('<option value="">-- Select Region --</option>');
-       $('#city').empty().append('<option value="">-- Select City --</option>');
+      $('#state').on('change', function() {
+         let state_id = $(this).val();
+         $('#region').empty().append('<option value="">-- Select Region --</option>');
+         $('#city').empty().append('<option value="">-- Select City --</option>');
+
+         if (state_id) {
+            $.get('/get-regions/' + state_id, function(data) {
+                  $.each(data, function(key, value) {
+                     $('#region').append('<option value="'+ key +'">'+ value +'</option>');
+                  });
+            });
+         }
+      });
+
+      // Region → City (multiple)
+      $('#region').on('change', function() {
+         let region_ids = $(this).val(); // array of selected region IDs
+         $('#city').empty().append('<option value="">-- Select City --</option>');
+
+         if (region_ids && region_ids.length > 0) {
+            $.ajax({
+                  url: '/get-cities-by-regions',
+                  type: 'POST',
+                  data: {
+                     region_ids: region_ids,
+                     _token: '{{ csrf_token() }}'
+                  },
+                  success: function(data) {
+                     $.each(data, function(key, value) {
+                        $('#city').append('<option value="'+ key +'">'+ value +'</option>');
+                     });
+                  }
+            });
+         }
+      });
+
+   // State → Region
+   // $('#state').on('change', function() {
+   //     let state_id = $(this).val();
+   //     $('#region').empty().append('<option value="">-- Select Region --</option>');
+   //     $('#city').empty().append('<option value="">-- Select City --</option>');
    
-       if (state_id) {
-           $.get('/get-regions/' + state_id, function(data) {
-               $.each(data, function(key, value) {
-                   $('#region').append('<option value="'+ key +'">'+ value +'</option>');
-               });
-           });
-       }
-   });
+   //     if (state_id) {
+   //         $.get('/get-regions/' + state_id, function(data) {
+   //             $.each(data, function(key, value) {
+   //                 $('#region').append('<option value="'+ key +'">'+ value +'</option>');
+   //             });
+   //         });
+   //     }
+   // });
    
-   // Region → City
-   $('#region').on('change', function() {
-       let region_id = $(this).val();
-       $('#city').empty().append('<option value="">-- Select City --</option>');
+   // // Region → City
+   // $('#region').on('change', function() {
+   //     let region_id = $(this).val();
+   //     $('#city').empty().append('<option value="">-- Select City --</option>');
    
-       if (region_id) {
-           $.get('/get-cities/' + region_id, function(data) {
-               $.each(data, function(key, value) {
-                   $('#city').append('<option value="'+ key +'">'+ value +'</option>');
-               });
-           });
-       }
-   });
+   //     if (region_id) {
+   //         $.get('/get-cities/' + region_id, function(data) {
+   //             $.each(data, function(key, value) {
+   //                 $('#city').append('<option value="'+ key +'">'+ value +'</option>');
+   //             });
+   //         });
+   //     }
+   // });
 </script>
 
 <script>
@@ -928,7 +985,7 @@ $(document).ready(function() {
   // On dropdown change
   $('#entity_type').on('change', function () {
     let selected = $(this).val();
-    alert(selected);
+   //  alert(selected);
     if (commissions[selected]) {
       $('#commission_text').html(`<strong>${selected}:</strong> ${commissions[selected]}`);
       $('#commission_box').show();

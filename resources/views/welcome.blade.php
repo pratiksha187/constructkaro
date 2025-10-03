@@ -17,6 +17,11 @@
   .animate-fadeInUp {
     animation: fadeInUp 0.6s ease-out forwards;
   }
+  .stat-label {
+    font-size: 0.900rem;
+    color: #ea580c;
+    margin-bottom: 0.5rem;
+}
 </style>
       <section class="min-h-screen flex items-center justify-center px-6 py-16">
          <div class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -41,25 +46,33 @@
                </div>
               
             </div>
-            <!-- Right: Image with badges -->
+           
             <div class="relative">
-               <!-- Main Image -->
-               <div class="bg-gradient-to-br from-blue-50 to-orange-50 rounded-3xl p-6 shadow-xl relative">
-                  <img src="your-image.png" alt="Contractor Illustration" class="w-full max-w-md mx-auto" />
+               <div class="bg-gradient-to-br from-blue-50 to-orange-50 rounded-3xl p-6 shadow-xl relative h-[350px]"> 
+                  <!-- 👆 set container height (adjust as per your design) -->
+
+                  <video controls autoplay muted loop 
+                        class="w-full h-full object-cover rounded-2xl">
+                     <source src="logo/intro.mp4" type="video/mp4">
+                     Your browser does not support the video tag.
+                  </video>
                </div>
+
                <!-- Badge: Verified -->
                <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2">
                   <span class="bg-blue-600 text-white text-sm px-3 py-1 rounded-full shadow-md">
-                  Verified ✓
+                     Verified ✓
                   </span>
                </div>
+
                <!-- Badge: Instant Match -->
                <div class="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2">
                   <span class="bg-orange-500 text-white text-sm px-3 py-1 rounded-full shadow-md">
-                  Instant Match
+                     Instant Match
                   </span>
                </div>
             </div>
+
          </div>
       </section>
       <section class="hero-section py-5">
@@ -79,63 +92,81 @@
 
                <!-- Stats Cards -->
                <div class="row g-4 mt-5" id="statsCards">
-                  <div class="col-6 col-lg-3">
-                     <div class="card stats-card">
-                        <div class="card-body text-center">
-                           <div class="stat-icon stat-icon-blue">
-                              <i data-lucide="users"></i>
-                           </div>
-                           <div class="stat-content">
-                              <p class="stat-value">1,250+</p>
-                              <p class="stat-label">Active Projects</p>
-                              <span class="badge badge-success">+15%</span>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-6 col-lg-3">
-                     <div class="card stats-card">
-                        <div class="card-body text-center">
-                           <div class="stat-icon stat-icon-green">
-                              <i data-lucide="trending-up"></i>
-                           </div>
-                           <div class="stat-content">
-                              <p class="stat-value">98.5%</p>
-                              <p class="stat-label">Success Rate</p>
-                              <span class="badge badge-success">+2.1%</span>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-6 col-lg-3">
-                     <div class="card stats-card">
-                        <div class="card-body text-center">
-                           <div class="stat-icon stat-icon-orange">
-                              <i data-lucide="dollar-sign"></i>
-                           </div>
-                           <div class="stat-content">
-                              <p class="stat-value">₹500 Cr</p>
-                              <p class="stat-label">Total Investment</p>
-                              <span class="badge badge-success">+22%</span>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-6 col-lg-3">
-                     <div class="card stats-card">
-                        <div class="card-body text-center">
-                           <div class="stat-icon stat-icon-purple">
-                              <i data-lucide="user-plus"></i>
-                           </div>
-                           <div class="stat-content">
-                              <p class="stat-value">85</p>
-                              <p class="stat-label">New Partners</p>
-                              <span class="badge badge-success">+8%</span>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+   <!-- Verified Vendors -->
+   <div class="col-6 col-lg-3">
+      <div class="card stats-card">
+         <div class="card-body text-center">
+            <div class="stat-icon stat-icon-blue">
+               <i data-lucide="users"></i>
+            </div>
+            <div class="stat-content">
+               <p class="stat-value">50+</p>
+               <p class="stat-label">Verified Vendors</p>
+               <small class="text-muted d-block">
+                  Contractors, Architects, Interior Designers, Surveyors & more
+               </small>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Transparent Bidding -->
+   <div class="col-6 col-lg-3">
+      <div class="card stats-card">
+         <div class="card-body text-center">
+            <div class="stat-icon stat-icon-green">
+               <i data-lucide="check-circle"></i>
+            </div>
+            <div class="stat-content">
+               <p class="stat-value">100%</p>
+               <p class="stat-label">Transparent Bidding</p>
+               <small class="text-muted d-block">
+                  No fake leads. </small>
+                  <small class="text-muted d-block">
+                  Pay only when you win work .
+               </small>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Zero Registration Fees -->
+   <div class="col-6 col-lg-3">
+      <div class="card stats-card">
+         <div class="card-body text-center">
+            <div class="stat-icon stat-icon-orange">
+               <i data-lucide="badge-check"></i>
+            </div>
+            <div class="stat-content">
+               <p class="stat-value">Zero</p>
+               <p class="stat-label">Registration Fees</p>
+               <small class="text-muted d-block">
+                  Vendors join for free. Customers post projects free.
+               </small>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Active Regions -->
+   <div class="col-6 col-lg-3">
+      <div class="card stats-card">
+         <div class="card-body text-center">
+            <div class="stat-icon stat-icon-purple">
+               <i data-lucide="map-pin"></i>
+            </div>
+            <div class="stat-content">
+               <p class="stat-value">8+ Regions</p>
+               <p class="stat-label">Active Locations</p>
+               <small class="text-muted d-block">
+                  Mumbai • Raigad • Pune • Mumbai Suburban • Palghar • Thane • Navi Mumbai  expanding soon
+               </small>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
             </div>
          </div>
       </section>

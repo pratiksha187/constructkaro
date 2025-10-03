@@ -30,6 +30,8 @@ Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp'])->name
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [LocationController::class, 'getCities']);
+// Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
+Route::post('/get-cities-by-regions', [LocationController::class, 'getCitiesByRegions']);
 
 
 Route::get('/dropdowns', [DropdownController::class, 'index']);
@@ -41,6 +43,9 @@ Route::get('/get-sub-vendors/{id}', [DropdownController::class, 'getVendorssubca
 
 
 
+// Route::get('/get-subtypes/{workTypeId}', [ProjectController::class, 'getSubtypes']);
+Route::get('/get-vendors-id/{subtypeId}', [DropdownController::class, 'getVendors_id'])->name('get-vendors-id');
+// Route::get('/get-sub-vendors/{vendorId}', [ProjectController::class, 'getSubVendors']);
 
 Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
 

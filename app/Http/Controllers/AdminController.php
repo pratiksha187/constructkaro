@@ -74,6 +74,7 @@ class AdminController extends Controller
     public function vender_approve_form()
     {
         $vendors = BusinessRegistration::where('approved', 0)->get(); 
+        
         return view('admin.vender_approve_form', compact('vendors'));
     }
 

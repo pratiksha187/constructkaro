@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Http\Request; 
 class LocationController extends Controller {
 
     public function index() {
@@ -26,5 +26,16 @@ class LocationController extends Controller {
                     ->pluck('name', 'id');
         return response()->json($cities);
     }
+
+    public function getCitiesByRegions(Request $request)
+    {
+        $cities = DB::table('cities')
+            ->whereIn('regions_id', $request->region_ids)
+            ->pluck('name', 'id');
+
+        return response()->json($cities);
+    }
+
+    
 }
 

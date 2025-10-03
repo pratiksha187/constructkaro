@@ -75,14 +75,18 @@
                         pattern="\d{6}"
                         title="Enter the 6-digit OTP">
                      <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
+                     <span id="otpStatus" class="ms-2 fw-bold"></span>
+                  </div>
+                 
+                  <div class="relative">
+                     <label for="email" class="form-label">Email ID *</label>
+                     <input type="email" name="email" id="email" class="form-control" required>
+                     <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">Send Email OTP</button>
                   </div>
                   <div class="relative">
-                     <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                     <div class="flex items-stretch rounded-lg border border-gray-300 overflow-hidden">
-                        <input id="email" name="email" type="email" placeholder="Enter your email address"
-                           class="flex-1 px-3 py-2 outline-none border-0 text-gray-900 placeholder-gray-400" />
-                     </div>
-                     <div id="suggestions" class="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow hidden z-50 max-h-60 overflow-y-auto"></div>
+                     <label>Enter Email OTP *</label>
+                     <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
+                     <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
                   </div>
                   <div class="relative">
                      <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
@@ -155,7 +159,7 @@
                </div>
             </div>
             <!-- 2. Project Details -->
-            <div class="section-divider">
+            <!-- <div class="section-divider">
                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                   <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">2</span>
                   Project Details
@@ -182,22 +186,60 @@
                         <option value="">Select Vendor</option>
                      </select>
                   </div>
-                  <!-- <div>
-                     <label>Work/Service Category *:</label>
-                     <div id="sub_vendor_type_checkbox">
-                       
-                     </div>
-                  </div> -->
+                 
                   <div>
                      <label>Work/Service Category *:</label>
                      <select id="sub_vendor_type_dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all select2" name="sub_vendor_types">
                         <option value="">Select Sub Vendor Type</option>
-                        <!-- Options will be populated here -->
+                       
                      </select>
                   </div>
-
                </div>
-            </div>
+            </div> -->
+            <div class="section-divider">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+        <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">2</span>
+        Project Details
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Work Type -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Find Your Construction Vendor *</label>
+            <select id="work_type" name="work_type" class="form-control select2">
+                <option value="">Select Construction Type</option>
+                @foreach($workTypes as $type)
+                    <option value="{{ $type->id }}">{{ $type->work_type }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Work Subtype -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Project Type *</label>
+            <select id="work_subtype" name="work_subtype" class="form-control select2">
+                <option value="">Select Work Subtype</option>
+            </select>
+        </div>
+
+        <!-- Vendor Type -->
+        <div>
+            <label>Work/Service Model *:</label>
+            <select id="vendor_type" name="vendor_type" class="form-control select2">
+                <option value="">Select Vendor</option>
+            </select>
+        </div>
+
+        <!-- Sub Vendor Type -->
+        <div>
+            <label>Work/Service Category *:</label>
+            <select id="sub_vendor_type_dropdown" name="sub_vendor_types" class="form-control select2">
+                <option value="">Select Sub Vendor Type</option>
+            </select>
+        </div>
+    </div>
+</div>
+
             <!-- 3. Site Information -->
             <div class="section-divider">
                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
@@ -456,7 +498,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
+<!-- <script>
    $(document).ready(function () {
        // Initialize Select2
        $('.select2').select2({
@@ -501,7 +543,7 @@
    
            if (subtypeId) {
                $.ajax({
-                   url: '/get-vendors/' + subtypeId,
+                   url: 'get-vendors',
                    type: 'GET',
                    success: function (res) {
                        $('#vendor_type').html('<option value="">Select Vendor</option>');
@@ -518,45 +560,12 @@
            }
        });
    
-       // On Vendor Type change → Load Sub Vendor Types as Checkboxes
-     //  $('#vendor_type').on('change', function () {
-        //   var vendorId = this.value;
-   
-        //   $('#sub_vendor_type_checkbox').html('Loading...');
-   
-        //   if (vendorId) {
-               // $.ajax({
-               //     url: '/get-sub-vendors/' + vendorId,
-               //     type: 'GET',
-               //     success: function (res) {
-                     //   let html = '';
-                     //   if (res.length > 0) {
-                     //       res.forEach(function (item) {
-                     //           html += `
-                     //               <div>
-                     //                   <label>
-                     //                       <input type="checkbox" name="sub_vendor_types[]" value="${item.id}">
-                     //                       ${item.vendor_subcategory}
-                     //                   </label>
-                     //               </div>
-                     //           `;
-                     //       });
-                     //   } else {
-   //                         html = 'No Sub Vendor Types Found';
-   //                     }
-   //                     $('#sub_vendor_type_checkbox').html(html);
-   //                 }
-   //             });
-   //         } else {
-   //             $('#sub_vendor_type_checkbox').html('');
-   //         }
-   //     });
-   // });
+    
    $('#vendor_type').on('change', function () {
     var vendorId = this.value;
-
+   
     $('#sub_vendor_type_dropdown').html('<option>Loading...</option>');
-
+   
     if (vendorId) {
         $.ajax({
             url: '/get-sub-vendors/' + vendorId,
@@ -577,8 +586,89 @@
     } else {
         $('#sub_vendor_type_dropdown').html('<option value="">Select Sub Vendor Type</option>');
     }
+   });
+   });
+</script> -->
+<script>
+   $(document).ready(function () {
+    // Initialize all select2
+    $('.select2').select2({
+        placeholder: "Select an option",
+        allowClear: true,
+        width: '100%'
+    });
+
+    // Work Type → Subtypes
+    $('#work_type').on('change', function () {
+        let workTypeId = $(this).val();
+
+        $('#work_subtype').html('<option value="">Loading...</option>').trigger('change');
+        $('#vendor_type').html('<option value="">Select Vendor</option>').trigger('change');
+        $('#sub_vendor_type_dropdown').html('<option value="">Select Sub Vendor Type</option>').trigger('change');
+
+        if (workTypeId) {
+            $.ajax({
+                url: '/get-subtypes/' + workTypeId,
+                type: 'GET',
+                success: function (res) {
+                    let html = '<option value="">Select Work Subtype</option>';
+                    res.forEach(function (item) {
+                        html += `<option value="${item.id}">${item.work_subtype}</option>`;
+                    });
+                    $('#work_subtype').html(html).trigger('change');
+                }
+            });
+        }
+    });
+
+    // Subtype → Vendors
+    $('#work_subtype').on('change', function () {
+        let subtypeId = $(this).val();
+
+        $('#vendor_type').html('<option value="">Loading...</option>').trigger('change');
+        $('#sub_vendor_type_dropdown').html('<option value="">Select Sub Vendor Type</option>').trigger('change');
+
+        if (subtypeId) {
+            $.ajax({
+                url: '/get-vendors-id/' + subtypeId,
+                type: 'GET',
+                success: function (res) {
+                    let html = '<option value="">Select Vendor</option>';
+                    res.forEach(function (item) {
+                        html += `<option value="${item.id}">${item.vendor_type}</option>`;
+                    });
+                    $('#vendor_type').html(html).trigger('change');
+                }
+            });
+        }
+    });
+
+    // Vendor → Sub Vendor Types
+    $('#vendor_type').on('change', function () {
+        let vendorId = $(this).val();
+
+        $('#sub_vendor_type_dropdown').html('<option value="">Loading...</option>').trigger('change');
+
+        if (vendorId) {
+            $.ajax({
+                url: '/get-sub-vendors/' + vendorId,
+                type: 'GET',
+                success: function (res) {
+                    let html = '<option value="">Select Sub Vendor Type</option>';
+                    if (res.length > 0) {
+                        res.forEach(function (item) {
+                            html += `<option value="${item.id}">${item.vendor_subcategory}</option>`;
+                        });
+                    } else {
+                        html = '<option value="">No Sub Vendor Types Found</option>';
+                    }
+                    $('#sub_vendor_type_dropdown').html(html).trigger('change');
+                }
+            });
+        }
+    });
 });
-});
+
 </script>
 <script>
    // Get today's date and add 1 day
@@ -925,33 +1015,80 @@
    });
    
    // --- VERIFY OTP ---
+   // document.getElementById('verifyOtpBtn').addEventListener('click', function() {
+   //    let otp = document.getElementById('otp').value.trim();
+   //    let otpStatus = document.getElementById('otpStatus');
+   //     if (!/^\d{6}$/.test(otp)) {
+   //         alert("Please enter a valid 6-digit OTP.");
+   //         return;
+   //     }
+   
+   //     fetch("{{ url('/verify-otp') }}", {
+   //         method: 'POST',
+   //         headers: {
+   //             'Content-Type': 'application/json',
+   //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+   //         },
+   //         body: JSON.stringify({ otp: otp })
+   //     })
+   //     .then(res => res.json())
+   //    //  .then(data => {
+   //    //      if (data.status === 'success') {
+   //    //          otpVerified = true; // mark as verified
+   //    //          alert('OTP verified successfully!');
+   //    //      } else {
+   //    //          otpVerified = false;
+   //    //          alert('Invalid OTP');
+   //    //      }
+   //    //  })
+   //    .then(data => {
+   //      if (data.status === 'success') {
+   //          otpVerified = true;
+   //          otpStatus.innerHTML = "<span style='color:green'>✅ OTP Verified</span>"; // ✅ Show message
+   //      } else {
+   //          otpVerified = false;
+   //          otpStatus.innerHTML = "<span style='color:red'>❌ Invalid OTP</span>";
+   //      }
+   //  })
+   //     .catch(error => console.error('Error:', error));
+   // });
+   // --- VERIFY OTP ---
    document.getElementById('verifyOtpBtn').addEventListener('click', function() {
-       let otp = document.getElementById('otp').value.trim();
+    let otp = document.getElementById('otp').value.trim();
+    let otpStatus = document.getElementById('otpStatus');
+    let verifyBtn = document.getElementById('verifyOtpBtn');
    
-       if (!/^\d{6}$/.test(otp)) {
-           alert("Please enter a valid 6-digit OTP.");
-           return;
-       }
+    if (!/^\d{6}$/.test(otp)) {
+        otpStatus.innerHTML = "<span style='color:red'>❌ Please enter a valid 6-digit OTP.</span>";
+        return;
+    }
    
-       fetch("{{ url('/verify-otp') }}", {
-           method: 'POST',
-           headers: {
-               'Content-Type': 'application/json',
-               'X-CSRF-TOKEN': '{{ csrf_token() }}'
-           },
-           body: JSON.stringify({ otp: otp })
-       })
-       .then(res => res.json())
-       .then(data => {
-           if (data.status === 'success') {
-               otpVerified = true; // mark as verified
-               alert('OTP verified successfully!');
-           } else {
-               otpVerified = false;
-               alert('Invalid OTP');
-           }
-       })
-       .catch(error => console.error('Error:', error));
+    fetch("{{ url('/verify-otp') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ otp: otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            otpVerified = true;
+   
+            // ✅ Replace button with message
+            verifyBtn.style.display = "none";  
+            otpStatus.innerHTML = "<span style='color:green'>✅ OTP Verified</span>";
+   
+            // Optional: disable OTP input after success
+            document.getElementById('otp').readOnly = true;
+   
+        } else {
+            otpVerified = false;
+            otpStatus.innerHTML = "<span style='color:red'>❌ Invalid OTP</span>";
+        }
+    })
+    .catch(error => console.error('Error:', error));
    });
    
    // --- FORM SUBMIT ---
@@ -1027,6 +1164,66 @@
                });
            });
        }
+   });
+   
+   
+   
+       // Send Email OTP
+   $('#sendEmailOtpBtn').on('click', function() {
+    let email = $('#email').val();
+   
+    fetch('/send-email-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+   
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Email OTP sent successfully!');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    });
+    // .then(data => alert(data.message));
+   });
+   
+   // Verify Email OTP
+   $('#verifyEmailOtpBtn').on('click', function() {
+    let otp = $('#emailOtp').val();
+   
+    fetch('/verify-email-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ otp: otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Change button state
+            let btn = document.getElementById('verifyEmailOtpBtn');
+            btn.innerText = "Email OTP Verified ✅";
+            btn.classList.remove("btn-success");
+            btn.classList.add("btn-outline-success");
+            btn.disabled = true;
+   
+            // Show a green success message
+            let msgBox = document.createElement("div");
+            msgBox.classList.add("text-success", "mt-2");
+            // msgBox.innerText = "Email OTP verified successfully!";
+            btn.parentNode.appendChild(msgBox);
+        } else {
+            alert('Invalid Email OTP');
+        }
+    });
+    // .then(data => alert(data.message));
    });
 </script>
 @endsection
