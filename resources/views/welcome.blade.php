@@ -89,83 +89,82 @@
                     </p>
                 </div>
 
-
                <!-- Stats Cards -->
                <div class="row g-4 mt-5" id="statsCards">
-   <!-- Verified Vendors -->
-   <div class="col-6 col-lg-3">
-      <div class="card stats-card">
-         <div class="card-body text-center">
-            <div class="stat-icon stat-icon-blue">
-               <i data-lucide="users"></i>
-            </div>
-            <div class="stat-content">
-               <p class="stat-value">50+</p>
-               <p class="stat-label">Verified Vendors</p>
-               <small class="text-muted d-block">
-                  Contractors, Architects, Interior Designers, Surveyors & more
-               </small>
-            </div>
-         </div>
-      </div>
-   </div>
+                  <!-- Verified Vendors -->
+                  <div class="col-6 col-lg-3">
+                     <div class="card stats-card">
+                        <div class="card-body text-center">
+                           <div class="stat-icon stat-icon-blue">
+                              <i data-lucide="users"></i>
+                           </div>
+                           <div class="stat-content">
+                              <p class="stat-value">50+</p>
+                              <p class="stat-label">Verified Vendors</p>
+                              <small class="text-muted d-block">
+                                 Contractors, Architects, Interior Designers, Surveyors & more
+                              </small>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
 
-   <!-- Transparent Bidding -->
-   <div class="col-6 col-lg-3">
-      <div class="card stats-card">
-         <div class="card-body text-center">
-            <div class="stat-icon stat-icon-green">
-               <i data-lucide="check-circle"></i>
-            </div>
-            <div class="stat-content">
-               <p class="stat-value">100%</p>
-               <p class="stat-label">Transparent Bidding</p>
-               <small class="text-muted d-block">
-                  No fake leads. </small>
-                  <small class="text-muted d-block">
-                  Pay only when you win work .
-               </small>
-            </div>
-         </div>
-      </div>
-   </div>
+                  <!-- Transparent Bidding -->
+                  <div class="col-6 col-lg-3">
+                     <div class="card stats-card">
+                        <div class="card-body text-center">
+                           <div class="stat-icon stat-icon-green">
+                              <i data-lucide="check-circle"></i>
+                           </div>
+                           <div class="stat-content">
+                              <p class="stat-value">100%</p>
+                              <p class="stat-label">Transparent Bidding</p>
+                              <small class="text-muted d-block">
+                                 No fake leads. </small>
+                                 <small class="text-muted d-block">
+                                 Pay only when you win work .
+                              </small>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
 
-   <!-- Zero Registration Fees -->
-   <div class="col-6 col-lg-3">
-      <div class="card stats-card">
-         <div class="card-body text-center">
-            <div class="stat-icon stat-icon-orange">
-               <i data-lucide="badge-check"></i>
-            </div>
-            <div class="stat-content">
-               <p class="stat-value">Zero</p>
-               <p class="stat-label">Registration Fees</p>
-               <small class="text-muted d-block">
-                  Vendors join for free. Customers post projects free.
-               </small>
-            </div>
-         </div>
-      </div>
-   </div>
+                  <!-- Zero Registration Fees -->
+                  <div class="col-6 col-lg-3">
+                     <div class="card stats-card">
+                        <div class="card-body text-center">
+                           <div class="stat-icon stat-icon-orange">
+                              <i data-lucide="badge-check"></i>
+                           </div>
+                           <div class="stat-content">
+                              <p class="stat-value">Zero</p>
+                              <p class="stat-label">Registration Fees</p>
+                              <small class="text-muted d-block">
+                                 Vendors join for free. Customers post projects free.
+                              </small>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
 
-   <!-- Active Regions -->
-   <div class="col-6 col-lg-3">
-      <div class="card stats-card">
-         <div class="card-body text-center">
-            <div class="stat-icon stat-icon-purple">
-               <i data-lucide="map-pin"></i>
-            </div>
-            <div class="stat-content">
-               <p class="stat-value">8+ Regions</p>
-               <p class="stat-label">Active Locations</p>
-               <small class="text-muted d-block">
-                  Mumbai • Raigad • Pune • Mumbai Suburban • Palghar • Thane • Navi Mumbai  expanding soon
-               </small>
-            </div>
-         </div>
-      </div>
-   </div>
-</div>
+                  <!-- Active Regions -->
+                  <div class="col-6 col-lg-3">
+                     <div class="card stats-card">
+                        <div class="card-body text-center">
+                           <div class="stat-icon stat-icon-purple">
+                              <i data-lucide="map-pin"></i>
+                           </div>
+                           <div class="stat-content">
+                              <p class="stat-value">8+ Regions</p>
+                              <p class="stat-label">Active Locations</p>
+                              <small class="text-muted d-block">
+                                 Mumbai • Raigad • Pune • Mumbai Suburban • Palghar • Thane • Navi Mumbai  expanding soon
+                              </small>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
 
             </div>
          </div>
