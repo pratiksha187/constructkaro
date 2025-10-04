@@ -116,15 +116,25 @@ Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboar
 Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
 
 
-Route::get('/calling_dashboard', [CallingController::class, 'calling_dashboard'])->name('calling.dashboard');
+// Route::get('/calling_dashboard', [CallingController::class, 'calling_dashboard'])->name('calling.dashboard');
 
-Route::get('/vendor-add', [CallingController::class, 'vendoradd'])->name('vendoradd');
+// Route::get('/vendor-add', [CallingController::class, 'vendoradd'])->name('vendoradd');
 // Route::get('/callingvendorlistadd', [CallingController::class, 'callingvendorlistadd'])->name('callingvendorlistadd');
 
 
 Route::get('/callingvendorlistadd', [CallingController::class, 'index'])->name('callingvendorlistadd');
+// Route::post('/vendors', [CallingController::class, 'store'])->name('vendors.store');
+// Route::post('/vendors/{id}', [CallingController::class, 'update'])->name('vendors.update');
+// Route::put('/vendors/{id}', [CallingController::class, 'update'])->name('vendors.update');
+
+Route::get('/calling_dashboard', [CallingController::class, 'calling_dashboard'])->name('calling.dashboard');
+
+Route::get('/vendor-add', [CallingController::class, 'index'])->name('vendoradd');
+
 Route::post('/vendors', [CallingController::class, 'store'])->name('vendors.store');
-Route::post('/vendors/{id}', [CallingController::class, 'update'])->name('vendors.update');
+Route::put('/vendors/{id}', [CallingController::class, 'update'])->name('vendors.update');
+
+
 
 Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
 Route::post('/quality', [EngginerController::class, 'quality'])->name('quality');
