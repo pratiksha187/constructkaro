@@ -7,7 +7,7 @@
 
 <div class="min-h-screen flex bg-gradient-to-br from-[#f6f8fa] to-[#eef2f7]">
 
-    <!-- Left Section: Illustration / Branding -->
+    <!-- Left Section -->
     <div class="hidden lg:flex lg:w-1/2 bg-[#1c2c3e] text-white items-center justify-center relative">
         <div class="p-12 max-w-md text-center">
             <img src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo" class="mx-auto mb-6 h-16">
@@ -19,17 +19,26 @@
         </div>
     </div>
 
-    <!-- Right Section: Login Card -->
+    <!-- Right Section -->
     <div class="flex items-center justify-center w-full lg:w-1/2 px-6 lg:px-16">
         <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
 
-            <!-- Title -->
             <h2 class="text-2xl font-bold text-center mb-2 text-[#1c2c3e]">Login to Your Account</h2>
             <p class="text-center text-gray-500 text-sm mb-6">Enter your credentials below</p>
 
-            <!-- Form -->
             <form method="POST" action="{{ route('login') }}" class="space-y-5">
                 @csrf
+
+                <!-- Login As -->
+                <div>
+                    <label for="login_as" class="block text-sm font-medium text-gray-700 mb-1">Login As</label>
+                    <select name="login_as" id="login_as"
+                        class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#f25c05]" required>
+                        <option value="">-- Select Role --</option>
+                        <option value="vendor">Vendor</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                </div>
 
                 <!-- Email -->
                 <div>
@@ -45,26 +54,22 @@
                 </div>
 
                 <!-- Password -->
-              <div>
-    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-    <div class="relative">
-        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-            <i class="bi bi-lock"></i>
-        </span>
-        <input type="password" name="password" id="password" placeholder="••••••••"
-            autocomplete="current-password"
-            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f25c05]" required>
-        
-        <!-- Show/Hide Icon -->
-        <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500" onclick="togglePassword()">
-            <i id="toggleIcon" class="bi bi-eye"></i>
-        </span>
-    </div>
-</div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" name="password" id="password" placeholder="••••••••"
+                            autocomplete="current-password"
+                            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f25c05]" required>
+                        <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500" onclick="togglePassword()">
+                            <i id="toggleIcon" class="bi bi-eye"></i>
+                        </span>
+                    </div>
+                </div>
 
-
-
-                <!-- Login Button -->
+                <!-- Submit -->
                 <button type="submit"
                     class="w-full bg-[#f25c05] hover:bg-[#1c2c3e] text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out shadow-md">
                     Login
@@ -83,7 +88,6 @@
 function togglePassword() {
     const passwordInput = document.getElementById('password');
     const toggleIcon = document.getElementById('toggleIcon');
-    
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
         toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
