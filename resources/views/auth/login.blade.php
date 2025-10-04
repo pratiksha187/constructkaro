@@ -35,6 +35,7 @@
                     <select name="login_as" id="login_as"
                         class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#f25c05]" required>
                         <option value="">-- Select Role --</option>
+                       <option value="staff">Staff</option>
                         <option value="vendor">Vendor</option>
                         <option value="customer">Customer</option>
                     </select>
