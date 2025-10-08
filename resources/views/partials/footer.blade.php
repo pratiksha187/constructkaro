@@ -33,12 +33,7 @@
                   </div>
                </div>
                <div class="col-md-2">
-                  <!-- <h5 class="footer-heading">Education</h5>
-                  <div class="footer-links">
-                     <a href="#" class="footer-link">Education for Customer</a>
-                     <a href="#" class="footer-link">Education for Vendor</a>
-                    
-                  </div> -->
+                 
                </div>
                <div class="col-md-2">
                   <h5 class="footer-heading">Company</h5>
@@ -70,7 +65,7 @@
                   </div>
                   <div class="col-md-6 text-md-end">
                      <div class="footer-legal">
-                        <!-- <a href="#" class="footer-link">Privacy Policy</a> -->
+                        
                          <a href="{{ route('privacy.policy') }}" target="_blank" class="footer-link">Privacy Policy</a>
                         <a href="#" class="footer-link">Terms of Service</a>
                      </div>

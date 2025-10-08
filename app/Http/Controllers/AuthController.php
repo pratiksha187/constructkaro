@@ -13,130 +13,158 @@ class AuthController extends Controller
     public function showLoginForm() {
         return view('auth.login');
     }
-public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'login_as' => 'required|in:staff,vendor,customer'
-    ]);
 
-    $role = $request->login_as;
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'login_as' => 'required|in:staff,vendor,customer'
+        ]);
 
-    /** ---------------------------------------------------
-     * 🧱 STAFF LOGIN (Admin / Engineer / Calling / Others)
-     * --------------------------------------------------- */
-    if ($role === 'staff') {
-        $admin = DB::table('users')->where('email', $request->email)->first();
+        $role = $request->login_as;
 
-        if ($admin && Hash::check($request->password, $admin->password)) {
+        if ($role === 'staff') {
+            $admin = DB::table('users')->where('email', $request->email)->first();
 
-            // Role check based on login_as field in DB
-            if ($admin->login_as == 1) {
-                session(['admin' => $admin]);
-                return redirect('/admin_dashboard');
-            } elseif ($admin->login_as == 2) {
-                session(['engineer' => $admin]);
-                return redirect('/engineer_dashboard');
-            } elseif ($admin->login_as == 5) {
-                session(['calling' => $admin]);
-                return redirect('/calling_dashboard');
-            } else {
-                return back()->with('error', 'Unauthorized staff role.');
-            }
-        }
+            if ($admin && Hash::check($request->password, $admin->password)) {
 
-        return back()->with('error', 'Invalid staff credentials.');
-    }
-
-    /** ---------------------------------------------------
-     * 🧱 VENDOR LOGIN
-     * --------------------------------------------------- */
-    if ($role === 'vendor') {
-        $vendor = DB::table('service_provider')->where('email', $request->email)->first();
-
-        if ($vendor && Hash::check($request->password, $vendor->password)) {
-            if ($vendor->login_as == 4) {
-                session(['vendor_id' => $vendor->id]);
-
-                // Step 1: Check agency_services
-                $agencyExists = DB::table('agency_services')->where('user_id', $vendor->id)->exists();
-                if (!$agencyExists) {
-                    return redirect()->route('types_of_agency');
+                if ($admin->login_as == 1) {
+                    session(['admin' => $admin]);
+                    return redirect('/admin_dashboard');
+                } elseif ($admin->login_as == 2) {
+                    session(['engineer' => $admin]);
+                    return redirect('/engineer_dashboard');
+                } elseif ($admin->login_as == 5) {
+                    session(['calling' => $admin]);
+                    return redirect('/calling_dashboard');
+                } else {
+                    return back()->with('error', 'Unauthorized staff role.');
                 }
-
-                // Step 2: Check business_registrations
-                $businessExists = DB::table('business_registrations')->where('user_id', $vendor->id)->exists();
-                if (!$businessExists) {
-                    return redirect()->route('about_business');
-                }
-
-                // Step 3: All good → go to vendor confirmation
-                return redirect('/vendor_confiermetion');
             }
 
-            return back()->with('error', 'Unauthorized role for vendor login.');
+            return back()->with('error', 'Invalid staff credentials.');
         }
 
-        return back()->with('error', 'Invalid vendor credentials.');
-    }
+        if ($role === 'vendor') {
+            $vendor = DB::table('service_provider')->where('email', $request->email)->first();
 
-    /** ---------------------------------------------------
-     * 🧱 CUSTOMER LOGIN
-     * --------------------------------------------------- */
-    if ($role === 'customer') {
-        $user = DB::table('projects')->where('email', $request->email)->first();
+            if ($vendor && Hash::check($request->password, $vendor->password)) {
+                if ($vendor->login_as == 4) {
+                    session(['vendor_id' => $vendor->id]);
 
-        if ($user && $user->login_id == 3 && Hash::check($request->password, $user->password)) {
-            $projects = DB::table('projects_details')
-                        ->where('project_id', $user->id)
-                        ->get();
+                    // Step 1: Check agency_services
+                    $agencyExists = DB::table('agency_services')->where('user_id', $vendor->id)->exists();
+                    if (!$agencyExists) {
+                        return redirect()->route('types_of_agency');
+                    }
 
-            $totalProjects = $projects->count();
+                    // Step 2: Check business_registrations
+                    $businessExists = DB::table('business_registrations')->where('user_id', $vendor->id)->exists();
+                    if (!$businessExists) {
+                        return redirect()->route('about_business');
+                    }
 
-            session([
-                'user' => $user,
-                'totalProjects' => $totalProjects
-            ]);
+                    // Step 3: All good → go to vendor confirmation
+                    return redirect('/vendor_confiermetion');
+                }
 
-            return redirect('/customer_dashboard');
+                return back()->with('error', 'Unauthorized role for vendor login.');
+            }
+
+            return back()->with('error', 'Invalid vendor credentials.');
         }
 
-        return back()->with('error', 'Invalid customer credentials.');
-    }
+        if ($role === 'customer') {
+            $user = DB::table('projects')->where('email', $request->email)->first();
 
-    /** ---------------------------------------------------
-     * ❌ DEFAULT FALLBACK
-     * --------------------------------------------------- */
-    return back()->with('error', 'Invalid credentials or unauthorized user.');
-}
+            if ($user && $user->login_id == 3 && Hash::check($request->password, $user->password)) {
+
+
+                // Step 1: Check projects_details
+                $projects_details = DB::table('projects_details')->where('project_id', $user->id)->exists();
+              
+                if (!$projects_details) {
+                    return redirect()->route('projects_details');
+                }
+
+                $projects = DB::table('projects_details')
+                            ->where('project_id', $user->id)
+                            ->get();
+
+                $totalProjects = $projects->count();
+
+                session([
+                    'user' => $user,
+                    'totalProjects' => $totalProjects
+                ]);
+
+                return redirect('/customer_dashboard');
+            }
+
+            return back()->with('error', 'Invalid customer credentials.');
+        }
+
+        return back()->with('error', 'Invalid credentials or unauthorized user.');
+    }
 
 //     public function login(Request $request)
 // {
 //     $request->validate([
 //         'email' => 'required|email',
 //         'password' => 'required',
-//         'login_as' => 'required|in:vendor,customer'
+//         'login_as' => 'required|in:staff,vendor,customer',
 //     ]);
 
 //     $role = $request->login_as;
 
+//     /* ---------------- Staff Login ---------------- */
+//     if ($role === 'staff') {
+//         $staff = DB::table('users')->where('email', $request->email)->first();
+
+//         if ($staff && Hash::check($request->password, $staff->password)) {
+
+//             switch ($staff->login_as) {
+//                 case 1:
+//                     session(['admin' => $staff]);
+//                     return redirect('/admin_dashboard');
+//                 case 2:
+//                     session(['engineer' => $staff]);
+//                     return redirect('/engineer_dashboard');
+//                 case 5:
+//                     session(['calling' => $staff]);
+//                     return redirect('/calling_dashboard');
+//                 default:
+//                     return back()->with('error', 'Unauthorized staff role.');
+//             }
+//         }
+
+//         return back()->with('error', 'Invalid staff credentials.');
+//     }
+
+//     /* ---------------- Vendor Login ---------------- */
 //     if ($role === 'vendor') {
-//         // 🔹 Vendor Login
 //         $vendor = DB::table('service_provider')->where('email', $request->email)->first();
 
 //         if ($vendor && Hash::check($request->password, $vendor->password)) {
 //             if ($vendor->login_as == 4) {
+
 //                 session(['vendor_id' => $vendor->id]);
 
 //                 // Step 1: Check agency_services
-//                 $agencyExists = DB::table('agency_services')->where('user_id', $vendor->id)->exists();
+//                 $agencyExists = DB::table('agency_services')
+//                     ->where('user_id', $vendor->id)
+//                     ->exists();
+
 //                 if (!$agencyExists) {
 //                     return redirect()->route('types_of_agency');
 //                 }
 
 //                 // Step 2: Check business_registrations
-//                 $businessExists = DB::table('business_registrations')->where('user_id', $vendor->id)->exists();
+//                 $businessExists = DB::table('business_registrations')
+//                     ->where('user_id', $vendor->id)
+//                     ->exists();
+
 //                 if (!$businessExists) {
 //                     return redirect()->route('about_business');
 //                 }
@@ -145,127 +173,50 @@ public function login(Request $request)
 //                 return redirect('/vendor_confiermetion');
 //             }
 
-//             return back()->with('error', 'Unauthorized role for vendor login.');
+//             return back()->with('error', 'Unauthorized vendor role.');
 //         }
 
-//     } elseif ($role === 'customer') {
-//         // 🔹 Customer Login
-//         $user = DB::table('projects')->where('email', $request->email)->first();
+//         return back()->with('error', 'Invalid vendor credentials.');
+//     }
 
-//         if ($user && $user->login_id == 3 && Hash::check($request->password, $user->password)) {
+//     /* ---------------- Customer Login ---------------- */
+//     if ($role === 'customer') {
+//         $customer = DB::table('projects')->where('email', $request->email)->first();
 
-//             $projects = DB::table('projects_details')
-//                             ->where('project_id', $user->id)
-//                             ->get();
+//         if ($customer && Hash::check($request->password, $customer->password) && $customer->login_id == 3) {
 
-//             $totalProjects = $projects->count();
+//             // Step 1: Check project details exist
+//             $hasProjectDetails = DB::table('projects_details')
+//                 ->where('project_id', $customer->id)
+//                 ->exists();
 
-//             // ✅ Store user & project info in session
+//             if (!$hasProjectDetails) {
+//                 return redirect()->route('projects_details');
+//             }
+
+//             // Step 2: Count projects
+//             $totalProjects = DB::table('projects_details')
+//                 ->where('project_id', $customer->id)
+//                 ->count();
+
+//             // Step 3: Store session
 //             session([
-//                 'user' => $user,
-//                 'totalProjects' => $totalProjects
+//                 'customer' => $customer,
+//                 'totalProjects' => $totalProjects,
+//                 'projects_details' =>$projects_details
 //             ]);
 
 //             return redirect('/customer_dashboard');
 //         }
-//     }
 
-//     // 🔹 Common Admin/Engineer/Calling Login (Optional)
-//     $admin = DB::table('users')->where('email', $request->email)->first();
-//     if ($admin && Hash::check($request->password, $admin->password)) {
-//         if ($admin->login_as == 1) {
-//             session(['admin' => $admin]);
-//             return redirect('/admin_dashboard');
-//         } elseif ($admin->login_as == 2) {
-//             session(['engineer' => $admin]);
-//             return redirect('/engineer_dashboard');
-//         } elseif ($admin->login_as == 5) {
-//             session(['calling' => $admin]);
-//             return redirect('/calling_dashboard');
-//         }
+//         return back()->with('error', 'Invalid customer credentials.');
 //     }
 
 //     return back()->with('error', 'Invalid credentials or unauthorized user.');
 // }
 
-    // public function login(Request $request)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email',
-    //         'password' => 'required'
-    //     ]);
 
-    //     // 🔹 Admin / Engineer Login
-    //     $admin = DB::table('users')->where('email', $request->email)->first();
-    //     if ($admin && Hash::check($request->password, $admin->password)) {
-    //         if ($admin->login_as == 1) {
-    //             session(['admin' => $admin]);
-    //             return redirect('/admin_dashboard');
-    //         } elseif ($admin->login_as == 2) {
-    //             session(['engineer' => $admin]);
-    //             return redirect('/engineer_dashboard');
-    //         } elseif ($admin->login_as == 5) {
-    //             session(['calling' => $admin]);
-    //             return redirect('/calling_dashboard');
-    //         }
-    //         return back()->with('error', 'Unauthorized role.');
-    //     }
-
-       
-    //     $vendor = DB::table('service_provider')->where('email', $request->email)->first();
-
-    //     if ($vendor && Hash::check($request->password, $vendor->password)) {
-
-    //         if ($vendor->login_as == 4) {
-    //             session(['vendor_id' => $vendor->id]);
-
-    //             // Step 1: Check agency_services
-    //             $agencyExists = DB::table('agency_services')->where('user_id', $vendor->id)->exists();
-    //             if (!$agencyExists) {
-    //                 return redirect()->route('types_of_agency');
-    //             }
-
-    //             // Step 2: Check business_registrations
-    //             $businessExists = DB::table('business_registrations')->where('user_id', $vendor->id)->exists();
-    //             if (!$businessExists) {
-    //                 return redirect()->route('about_business');
-    //             }
-
-                
-    //             // Step 3: All good → go to vendor confirmation
-    //             return redirect('/vendor_confiermetion');
-    //         }
-
-    //         return back()->with('error', 'Unauthorized role.');
-    //     }
-
-
-    //     // 🔹 Customer Login
-    //     $user = DB::table('projects')->where('email', $request->email)->first();
-    //     if ($user && $user->login_id == 3 && Hash::check($request->password, $user->password)) {
-
-    //         $projects = DB::table('projects_details')
-    //                         ->where('project_id', $user->id)
-    //                         ->get();
-
-    //         $totalProjects = $projects->count();
-
-    //         // ✅ Store user & project info in session
-    //         session([
-    //             'user' => $user,
-    //             'totalProjects' => $totalProjects
-    //         ]);
-
-    //         return redirect('/customer_dashboard');
-    //     }
-
-
-        
-
-    //     return back()->with('error', 'Invalid credentials or unauthorized user.');
-    // }
-
-     public function logout() {
+    public function logout() {
         session()->forget('user');
         return redirect('/');
     }

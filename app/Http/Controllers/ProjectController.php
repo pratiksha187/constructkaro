@@ -179,22 +179,63 @@ class ProjectController extends Controller
 
 
 
-    public function project_details(){
-        $projectId = session('current_project_id');
-        // dd($projectId);
-        if (!$projectId) {
-            return redirect('/')->with('error', 'No project found in session.');
-        }
+    // public function project_details(){
+    //     $projectId = session('current_project_id');
+        
+    //     // dd($projectId);
+    //     if (!$projectId) {
+    //         return redirect('/')->with('error', 'No project found in session.');
+    //     }
 
-        $project = Project::findOrFail($projectId);
+    //     $project = Project::findOrFail($projectId);
 
-        return view('web.project_details', compact('project'));
+    //     $project_data = DB::table('projects')
+    //                         ->where('id', $projectId)
+    //                         ->first();
+    //     dd($project_data);
+
+    //     return view('web.project_details', compact('project'));
+    // }
+public function project_details()
+{
+    $projectId = session('current_project_id');
+
+    if (!$projectId) {
+        return redirect('/')->with('error', 'No project found in session.');
     }
+
+    $project = DB::table('projects')->where('id', $projectId)->first();
+
+    if (!$project) {
+        return redirect('/')->with('error', 'Project not found.');
+    }
+
+    // Default state
+    $showFullAddons = false;
+
+    // ✅ Apply same logic for work_type 1 and 4
+    if (in_array($project->work_type, [1, 4])) {
+        if (
+            $project->arch_drawings == 0 ||
+            $project->struct_drawings == 0 ||
+            $project->has_boq == 0
+        ) {
+            $showFullAddons = true;
+        }
+    }
+
+    // dd($showFullAddons);
+
+    return view('web.project_details', compact('project', 'showFullAddons'));
+}
+
 
   
     public function project_details_save(Request $request)
     {
         $projectId = session('current_project_id');
+        $lastProject = DB::table('projects_details')->latest('id')->first();
+        $pro_id = $lastProject->id;
         $request->validate([
             'project_name' => 'required|string',
             'project_description' => 'nullable|string',
@@ -212,7 +253,7 @@ class ProjectController extends Controller
         }
 
         // $submission_id = 'PI'.'/'.$projectId;
-        $submission_id = 'PI/' . date('Y') . '/' . str_pad($projectId, 6, '0', STR_PAD_LEFT);
+        $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
 
         // Insert project into DB
         $projectId = DB::table('projects_details')->insertGetId([
@@ -232,25 +273,19 @@ class ProjectController extends Controller
     public function customer_dashboard()
     {
         $user = session('user'); // ✅ user from login
+       
         $projectId = session('current_project_id'); // ✅ project from form (optional)
 
-        // if (!$user) {
-        //     return redirect('/login')->with('error', 'Session expired, please login again.');
-        // }
         $projectKey = $projectId ?: $user->id;
         // ✅ Always fetch customer details by user_id (same as project_id)
         $cust_details = DB::table('projects')
                             ->where('id', $projectKey)
                             ->first();
-
-
-        // ✅ If form set projectId use that, else fallback to user->id
-        
-
+// dd($cust_details);
         $projects = DB::table('projects_details')
                         ->where('project_id', $projectKey)
                         ->get();
-
+// dd($projects);
 
         $vendors = DB::table('business_registrations')
                 ->where('user_id', '11')
@@ -356,6 +391,21 @@ class ProjectController extends Controller
             'project_id'          => $projectId,
             'projects_details_id' => $projects_details_id,
         ]);
+    }
+
+    public function viewProject($id)
+    {
+        $project = DB::table('projects_details')->find($id);
+// dd($project);
+        // if (!$project) {
+        //     return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
+        // }
+
+        // $milestones = DB::table('project_milestones')->where('project_id', $id)->get();
+        // $payments = DB::table('project_payments')->where('project_id', $id)->get();
+        // $vendor = DB::table('vendors')->where('id', $project->vendor_id)->first();
+// , 'milestones', 'payments', 'vendor'
+        return view('web.customer_project_details', compact('project'));
     }
 
 }

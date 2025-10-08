@@ -313,23 +313,6 @@
     }
   }
 
-  // function submitTender() {
-  //   if (!activeProject?.id) return alert('Invalid project');
-  //   for (const key in tenderForm) {
-  //     tenderForm[key] = document.getElementById(`tender-${key}`).value;
-  //   }
-
-  //   const payload = { ...tenderForm, project_id: activeProject.id, _token: CSRF_TOKEN };
-
-  //   fetch('/engineer/project/tender', {
-  //     method:'POST',
-  //     headers:{ 'Content-Type':'application/json' },
-  //     body: JSON.stringify(payload)
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => { alert(data.message || 'Tender submitted!'); toggleTenderModal(false); })
-  //     .catch(() => alert('Tender submission failed.'));
-  // }
   function submitTender() {
   if (!activeProject?.id) return alert('Invalid project');
 

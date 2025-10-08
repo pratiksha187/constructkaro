@@ -95,9 +95,6 @@
       </div>
 
       <div class="text-center mt-4">
-        <!-- <a href="/customer_dashboard" class="btn btn-warning text-white fw-semibold">
-          View Project Dashboard
-        </a> -->
         <button id="goToDashboard" class="btn btn-warning text-white fw-semibold">
             View Project Dashboard
         </button>
@@ -176,9 +173,6 @@ $(document).on("click", "#goToDashboard", function () {
         success: function (response) {
             // Option 1: Redirect user after successful call
             window.location.href = "{{ route('customer.dashboard') }}";
-
-            // Option 2: If you want to show data inside modal without redirect:
-            // $("#dashboardContent").html(response);
         },
         error: function () {
             alert("Something went wrong, please try again!");

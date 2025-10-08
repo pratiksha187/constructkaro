@@ -276,7 +276,6 @@
             <div class="col-md-6">GST Certificate *<input accept="application/pdf" type="file" id="pan_card_file" name="pan_card_file" class="form-control"></div>
 
             <div class="col-md-6">Aadhaar Card (Authorised Person) *<input accept="application/pdf" type="file" id="aadhaar_card_file" name="aadhaar_card_file" class="form-control"></div>
-            <!-- <div class="col-md-6">Certificate of Incorporation (If company/LLP) *<input accept="application/pdf" type="file" id="certificate_of_incorporation_file" name="certificate_of_incorporation_file" class="form-control"></div> -->
             <div class="col-md-6">
                <label id="certificate_label" class="form-label">
                Certificate of Incorpration/ LLPIN/ SHOP ACT (FOR Proprietor) *
@@ -336,7 +335,6 @@
                </div>
                <div class="col-md-3">
                   <label class="form-label small">Upload Past Work Photos *</label>
-                  <!-- <input type="file" name="past_work_photos[]" class="form-control past_work_photos" multiple> -->
                   <input type="file" name="past_work_photos[]" multiple
                       onchange="if(this.files.length > 50){ alert('Max 50 files allowed!'); this.value=''; }">
 
@@ -412,10 +410,6 @@
             I consent to ConstructKaro processing my business and project data for platform operations.
           </label>
         </div>
-
-
-     
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
@@ -534,7 +528,6 @@
     $('#businessForm').on('submit', function(e) {
         e.preventDefault(); // Prevent default form submission
 
-        // Validate declaration checkbox (optional)
         if (!$('#agreed_declaration').is(':checked')) {
             alert('Please agree to the declaration.');
             return;

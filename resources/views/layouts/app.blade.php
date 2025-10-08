@@ -109,16 +109,7 @@
          0%, 100% { transform: translateY(0); }
          50% { transform: translateY(-20px); }
          }
-         /* Header Styles */
-         /* .custom-header {
-         background: rgba(255, 255, 255, 0.8);
-         backdrop-filter: blur(20px);
-         border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-         position: relative;
-         z-index: 10;
-         height: 80px;
-         } */
+        
          .custom-header {
          position: fixed !important;
          top: 0;

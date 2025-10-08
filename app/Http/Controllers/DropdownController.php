@@ -24,15 +24,6 @@ class DropdownController extends Controller
         return response()->json($subtypes);
     }
 
-    // Get vendors for a selected work subtype
-//     public function getVendors($subtypeId)
-//     {
-//         $vendors = DB::table('suggested_vendor_types')
-//                     ->where('work_subtype_id', $subtypeId)
-//                     ->get();
-// // dd($vendors);
-//         return response()->json($vendors);
-//     }
     public function getVendors(Request $request)
     {
         $subtypeIds = $request->subtype_ids; // array of IDs
@@ -53,7 +44,7 @@ class DropdownController extends Controller
         $vendors = DB::table('vendor_subcategories')
                     ->where('vendor_type_id', $vendsubtypeId)
                     ->get();
-// dd($vendors);
+
         return response()->json($vendors);
     }
 

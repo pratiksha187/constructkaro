@@ -8,7 +8,6 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AgencyService;
 use App\Http\Controllers\EngginerController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\testController;
@@ -16,10 +15,15 @@ use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\CallingController;
 
 use App\Http\Controllers\WorkController;
-// routes/web.php
-use App\Http\Controllers\LeegalityController;
-// routes/web.php
+
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\GeoapifyController;
+
+Route::get('/geoapify', function () {
+    return view('web.geoapify');
+});
+
+Route::post('/get-geoapify-location', [GeoapifyController::class, 'getCoordinates']);
 
 
 Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp'])->name('send.email.otp');
@@ -46,12 +50,6 @@ Route::get('/get-sub-vendors/{id}', [DropdownController::class, 'getVendorssubca
 // Route::get('/get-subtypes/{workTypeId}', [ProjectController::class, 'getSubtypes']);
 Route::get('/get-vendors-id/{subtypeId}', [DropdownController::class, 'getVendors_id'])->name('get-vendors-id');
 // Route::get('/get-sub-vendors/{vendorId}', [ProjectController::class, 'getSubVendors']);
-
-Route::get('/esign/new', [LeegalityController::class, 'createInviteView'])->name('esign.new');
-
-Route::post('/esign/create', [LeegalityController::class, 'createInvite'])->name('esign.create');
-
-Route::post('/webhooks/leegality', [LeegalityController::class, 'webhook'])->name('leegality.webhook');
 
 Route::get('/', function () {
     return view('welcome');
@@ -94,6 +92,9 @@ Route::get('/vender/projects-data', [VendorController::class, 'projectsData']);
 Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojectsData']);
 
 Route::post('/proceed-vendor', [ProjectController::class, 'proceedVendor'])->name('proceed.vendor');
+
+Route::get('/customer/project/{id}', [ProjectController::class, 'viewProject'])->name('customer.project.view');
+
 Route::post('/business/upload-file', [VendorController::class, 'uploadFile'])->name('business.uploadFile');
 Route::get('/project-details-vendor/{id}', [VendorController::class, 'projectshow']);
 Route::post('/project-likes', [VendorController::class, 'projectlikes']);

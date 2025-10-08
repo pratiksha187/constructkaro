@@ -103,12 +103,7 @@
                   @endforeach
                </select>
             </div>
-            <!-- <div class="col-md-6">
-               <label for="region" class="form-label">Select Region *</label>
-               <select name="region" id="region" class="form-control">
-                  <option value="">-- Select Region --</option>
-               </select>
-            </div> -->
+         
             <div class="col-md-6">
                <label for="region" class="form-label">Select Region *</label>
                <select name="region[]" id="region" class="form-control" multiple>
@@ -179,7 +174,7 @@
                <input type="text" id="contact_person_designation" name="contact_person_designation" class="form-control">
             </div>
             <div class="col-md-6">
-               <label class="form-label">GST Number *</label>
+               <label class="form-label">GST Number </label>
                <input type="text" id="gst_number" name="gst_number" class="form-control" style="text-transform: uppercase;" maxlength="15">
                <div id="gst_error" style="color: red; display: none;">GST number must be exactly 15 characters.</div>
             </div>
@@ -251,21 +246,21 @@
          <h5>Bank Details</h5>
          <div class="row mb-3">
             <div class="col-md-6">
-               <label class="form-label">Bank Name *</label>
+               <label class="form-label">Bank Name </label>
                <input type="text"id="bank_name" name="bank_name" class="form-control" style="text-transform: uppercase;">
             </div>
             <div class="col-md-6">
-               <label class="form-label">Account Number *</label>
+               <label class="form-label">Account Number </label>
                <input type="text" id="account_number" name="account_number" class="form-control">
             </div>
          </div>
          <div class="row mb-3">
             <div class="col-md-6">
-               <label class="form-label">IFSC Code *</label>
+               <label class="form-label">IFSC Code </label>
                <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" style="text-transform: uppercase;">
             </div>
             <div class="col-md-6">
-               <label class="form-label">Type of Account *</label>
+               <label class="form-label">Type of Account </label>
                <select class="form-select" id="account_type" name="account_type" required>
                   <option value="">Select account type</option>
                   <option value="1">Savings</option>
@@ -279,7 +274,7 @@
             </div>
          </div>
          <div class="mb-3">
-            <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy *</label>
+            <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy </label>
             <input type="file" id="cancelled_cheque_file" name="cancelled_cheque_file" class="form-control" accept="application/pdf">
          </div>
       </div>
@@ -898,34 +893,6 @@
          }
       });
 
-   // State → Region
-   // $('#state').on('change', function() {
-   //     let state_id = $(this).val();
-   //     $('#region').empty().append('<option value="">-- Select Region --</option>');
-   //     $('#city').empty().append('<option value="">-- Select City --</option>');
-   
-   //     if (state_id) {
-   //         $.get('/get-regions/' + state_id, function(data) {
-   //             $.each(data, function(key, value) {
-   //                 $('#region').append('<option value="'+ key +'">'+ value +'</option>');
-   //             });
-   //         });
-   //     }
-   // });
-   
-   // // Region → City
-   // $('#region').on('change', function() {
-   //     let region_id = $(this).val();
-   //     $('#city').empty().append('<option value="">-- Select City --</option>');
-   
-   //     if (region_id) {
-   //         $.get('/get-cities/' + region_id, function(data) {
-   //             $.each(data, function(key, value) {
-   //                 $('#city').append('<option value="'+ key +'">'+ value +'</option>');
-   //             });
-   //         });
-   //     }
-   // });
 </script>
 
 <script>

@@ -6,7 +6,6 @@
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 <style>
    /* Custom CSS Variables */
    :root {
@@ -848,104 +847,86 @@
    .btn-primary:hover {
    background: linear-gradient(to right, #473fff, #5d54ff);
    }
-
-
-
    .confirmation-container {
-  padding: 2rem;
-  font-family: 'Inter', sans-serif;
-  color: #1f2937;
-  max-width: 700px;
-  margin: auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-}
-
-.planner-heading {
-  display: flex;
-  align-items: center;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #111827;
-}
-
-.planner-logo {
-  width: 40px;
-  margin-right: 10px;
-}
-
-.planner-subheading {
-  font-size: 1rem;
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-}
-
-.summary-card {
-  background-color: #e7f1ff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.summary-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #2563eb;
-  margin-bottom: 1rem;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 2rem;
-}
-
-.summary-grid strong {
-  color: #111827;
-}
-
-.success-banner {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  background-color: #d1fae5;
-  padding: 1rem 1.25rem;
-  border-radius: 10px;
-  color: #065f46;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.success-banner i {
-  font-size: 1.5rem;
-  color: #10b981;
-}
-
-.submit-wrapper {
-  text-align: right;
-}
-
-.btn-primary {
-  background: linear-gradient(to right, #6366f1, #8b5cf6);
-  border: none;
-  font-weight: 600;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  color: #fff;
-  transition: background 0.3s ease;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(to right, #4f46e5, #7c3aed);
-}
-
-.is-invalid {
-  border: 1px solid #e3342f !important;
-  background-color: #fff5f5;
-}
-
-
+   padding: 2rem;
+   font-family: 'Inter', sans-serif;
+   color: #1f2937;
+   max-width: 700px;
+   margin: auto;
+   background: #fff;
+   border-radius: 16px;
+   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+   }
+   .planner-heading {
+   display: flex;
+   align-items: center;
+   font-size: 1.75rem;
+   font-weight: 700;
+   color: #111827;
+   }
+   .planner-logo {
+   width: 40px;
+   margin-right: 10px;
+   }
+   .planner-subheading {
+   font-size: 1rem;
+   color: #6b7280;
+   margin-bottom: 1.5rem;
+   }
+   .summary-card {
+   background-color: #e7f1ff;
+   border-radius: 12px;
+   padding: 1.5rem;
+   margin-bottom: 1.5rem;
+   }
+   .summary-title {
+   font-size: 1.125rem;
+   font-weight: 600;
+   color: #2563eb;
+   margin-bottom: 1rem;
+   }
+   .summary-grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 1rem 2rem;
+   }
+   .summary-grid strong {
+   color: #111827;
+   }
+   .success-banner {
+   display: flex;
+   gap: 1rem;
+   align-items: flex-start;
+   background-color: #d1fae5;
+   padding: 1rem 1.25rem;
+   border-radius: 10px;
+   color: #065f46;
+   margin-bottom: 1.5rem;
+   font-size: 0.95rem;
+   }
+   .success-banner i {
+   font-size: 1.5rem;
+   color: #10b981;
+   }
+   .submit-wrapper {
+   text-align: right;
+   }
+   .btn-primary {
+   background: linear-gradient(to right, #6366f1, #8b5cf6);
+   border: none;
+   font-weight: 600;
+   padding: 0.6rem 1.5rem;
+   border-radius: 8px;
+   color: #fff;
+   transition: background 0.3s ease;
+   }
+   .btn-primary:hover {
+   background: linear-gradient(to right, #4f46e5, #7c3aed);
+   }
+   .is-invalid {
+   border: 1px solid #e3342f !important;
+   background-color: #fff5f5;
+   }
 </style>
 <div class="min-vh-100 position-relative">
    <!-- Enhanced Background -->
@@ -975,7 +956,6 @@
             <!-- Trust indicators -->
             <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 3rem; padding-top: 2rem;">
                <div class="trust-indicator">
-                
                </div>
             </div>
          </div>
@@ -1018,9 +998,8 @@
                               </div>
                            </div>
                         </div>
-                        
                      </div>
-                      <div class="col-lg-6">
+                     <div class="col-lg-6">
                         <!-- File Selector -->
                         <label class="form-label mt-2">
                            <div class="form-label-icon icon-green">
@@ -1038,9 +1017,7 @@
                            >
                         <small class="form-text text-muted">You can attach multiple files (PDF, DOC, JPG, PNG). Max 10MB each.</small>
                      </div>
-                     
                   </div>
-                 
                   <div class="row g-4 mb-4">
                      <div class="col-lg-12">
                         <label class="form-label">
@@ -1056,67 +1033,127 @@
                            ></textarea>
                      </div>
                      <div class="space-y-4">
-                        <!-- Agreement & Terms -->
-                        <div>
-                           <h3 class="font-medium text-gray-900 mb-2">Agreement & Terms <span class="text-red-500">*</span></h3>
+                      
+                         <div>
+                           <h3 class="font-medium text-gray-900 mb-2">
+                              Agreement & Terms <span class="text-red-500">*</span>
+                           </h3>
 
-                           <div class="space-y-2">
-                              <label class="flex items-start space-x-2">
-                              <input type="checkbox" name="terms" class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
-                              <span class="text-gray-700">
-                                 I accept the
-                                 <a href="#" class="text-indigo-600 hover:underline">Customer Terms &amp; Conditions</a>
-                                 and
-                                 <a href="#" class="text-indigo-600 hover:underline">Privacy Policy</a>.
-                              </span>
-                              </label>
+                           <div class="space-y-3">
+                              <!-- ✅ Checkbox 1: Terms & Conditions -->
+                              <div class="flex items-start space-x-3">
+                                 <input 
+                                    type="checkbox" 
+                                    name="terms_conditions" 
+                                    class="mt-1 w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                 >
+                                 <label class="text-gray-700 leading-6">
+                                    I accept the 
+                                    <a href="#" class="text-indigo-600 font-medium hover:underline">Customer Terms &amp; Conditions</a>.
+                                 </label>
+                              </div>
 
-                              <label class="flex items-start space-x-2">
-                              <input type="checkbox" name="no_bypass" class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
-                              <span class="text-gray-700">
-                                 I agree not to bypass ConstructKaro with vendors introduced via this platform.
-                              </span>
-                              </label>
+                              <!-- ✅ Checkbox 2: Privacy Policy -->
+                              <div class="flex items-start space-x-3">
+                                 <input 
+                                    type="checkbox" 
+                                    name="privacy_policy" 
+                                    class="mt-1 w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                 >
+                                 <label class="text-gray-700 leading-6">
+                                    I accept the 
+                                    <a href="#" class="text-indigo-600 font-medium hover:underline">Privacy Policy</a>.
+                                 </label>
+                              </div>
+
+                              <!-- ✅ Checkbox 3: No Bypass -->
+                              <div class="flex items-start space-x-3">
+                                 <input 
+                                    type="checkbox" 
+                                    name="no_bypass" 
+                                    class="mt-1 w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                 >
+                                 <label class="text-gray-700 leading-6">
+                                    I agree not to bypass ConstructKaro with vendors introduced via this platform.
+                                 </label>
+                              </div>
                            </div>
                         </div>
 
-                        <!-- Optional Add-ons -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
-                           <h4 class="font-medium text-gray-900 mb-3">Optional Add-ons (Custom Plan)</h4>
+                     @if($showFullAddons)
+                     <!-- ✅ Show all 3 Add-ons -->
+                     <div class="border rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-medium text-gray-900 mb-3">Optional Add-ons (Custom Plan)</h4>
+                        <p class="text-sm text-gray-500 mb-3">
+                           <i class="bi bi-info-circle me-1 text-indigo-500"></i>
+                           Complimentary add-on available for your <span class="font-medium text-indigo-600">first project</span> only.
+                        </p>
 
-                           <div class="space-y-3">
-                              <label class="flex items-start space-x-2">
+                        <div class="space-y-3">
+                           <label class="flex items-start space-x-2">
                               <input type="checkbox" name="addons[]" value="architect_boq"
-                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                                 class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
                               <span>
                                  <span class="font-medium text-gray-900">Get Architect &amp; BOQ package</span><br>
-                                 <span class="text-gray-600 text-sm">Design + Drawings + BOQ + 3D (charged separately)</span>
+                                 <span class="text-gray-600 text-sm">Design 2D & 3D + Drawings + BOQ </span>
                               </span>
-                              </label>
+                           </label>
 
-                              <label class="flex items-start space-x-2">
+                           <label class="flex items-start space-x-2">
                               <input type="checkbox" name="addons[]" value="quality_safety"
-                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                                 class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
                               <span>
                                  <span class="font-medium text-gray-900">Site Quality &amp; Safety checks</span><br>
                                  <span class="text-gray-600 text-sm">Periodic inspections during construction</span>
                               </span>
-                              </label>
+                           </label>
 
-                              <label class="flex items-start space-x-2">
+                           <label class="flex items-start space-x-2">
                               <input type="checkbox" name="addons[]" value="monitoring_dashboard"
-                                       class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                                 class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
                               <span>
                                  <span class="font-medium text-gray-900">Project Monitoring Dashboard</span><br>
                                  <span class="text-gray-600 text-sm">Progress tracking, photos, milestones</span>
                               </span>
-                              </label>
-                           </div>
+                           </label>
                         </div>
                      </div>
 
+                     @else
+                     <!-- ⚪ Show only 2 Add-ons -->
+                     <div class="border rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-medium text-gray-900 mb-3">Optional Add-ons (Custom Plan)</h4>
+                      <p class="text-sm text-gray-500 mb-3">
+   <i class="bi bi-info-circle me-1 text-indigo-500"></i>
+   Complimentary add-on available for your <span class="font-medium text-indigo-600">first project</span> only.
+</p>
+
+                        <div class="space-y-3">
+                           <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="addons[]" value="quality_safety"
+                                 class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span>
+                                 <span class="font-medium text-gray-900">Site Quality &amp; Safety checks</span><br>
+                                 <span class="text-gray-600 text-sm">Periodic inspections during construction</span>
+                              </span>
+                           </label>
+
+                           <label class="flex items-start space-x-2">
+                              <input type="checkbox" name="addons[]" value="monitoring_dashboard"
+                                 class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded">
+                              <span>
+                                 <span class="font-medium text-gray-900">Project Monitoring Dashboard</span><br>
+                                 <span class="text-gray-600 text-sm">Progress tracking, photos, milestones</span>
+                              </span>
+                           </label>
+                        </div>
+                     </div>
+                     @endif
+
+                       
+
+                     </div>
                   </div>
-                  
                   <div class="d-flex justify-content-between">
                      <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
                      Back
@@ -1193,7 +1230,6 @@
                            <p class="option-card-description">Work directly with our construction experts to design a completely customized solution tailored to your specific needs.</p>
                         </div>
                      </div>
-                   
                      <div class="option-card-status position-relative" style="z-index: 10;">
                         <div class="option-card-status-badge status-badge-default"
                            id="statusBadge2"
@@ -1207,7 +1243,6 @@
                </div>
             </div>
          </div>
-        
       </div>
    </main>
 </div>
@@ -1287,7 +1322,6 @@
       </div>
    </div>
 </div>
-
 <div class="modal fade" id="projectFormModal" tabindex="-1" aria-labelledby="projectFormModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -1353,32 +1387,27 @@
    </div>
 </div>
 <div class="modal fade" id="projectConfirmModal" tabindex="-1" aria-labelledby="projectConfirmModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-    
-      <div class="confirmation-container">
-         <h2 class="planner-heading">
-            <!-- <img src="your-logo.png" alt="Logo" class="planner-logo"> -->
-            Construction Project Planner
-         </h2>
-         <p class="planner-subheading">Review your project details and submit your request</p>
-
-         <div class="summary-card">
-            <h4 class="summary-title"><i class="bi bi-file-earmark-text"></i> Project Summary</h4>
-
-            <div class="summary-grid">
-               <div>
-               <strong>Project Name</strong><br>
-               <span id="modalProjectName">-</span>
-               </div>
-            
-               <div style="grid-column: span 2;">
-               <strong>Description</strong><br>
-               <span id="modalDescription">-</span>
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="confirmation-container">
+            <h2 class="planner-heading">
+               <!-- <img src="your-logo.png" alt="Logo" class="planner-logo"> -->
+               Construction Project Planner
+            </h2>
+            <p class="planner-subheading">Review your project details and submit your request</p>
+            <div class="summary-card">
+               <h4 class="summary-title"><i class="bi bi-file-earmark-text"></i> Project Summary</h4>
+               <div class="summary-grid">
+                  <div>
+                     <strong>Project Name</strong><br>
+                     <span id="modalProjectName">-</span>
+                  </div>
+                  <div style="grid-column: span 2;">
+                     <strong>Description</strong><br>
+                     <span id="modalDescription">-</span>
+                  </div>
                </div>
             </div>
-         </div>
-
             <div class="success-banner">
                <i class="bi bi-check-circle-fill"></i> 
                <div>
@@ -1386,138 +1415,206 @@
                   Your project details are set. Click submit to send your request. Our team will contact you soon.
                </div>
             </div>
-
-         <div class="submit-wrapper">
-            <button type="button" class="btn btn-outline-secondary me-3" data-bs-dismiss="modal">Edit</button>
-            <button type="button" class="btn btn-primary" id="confirmSubmitBtn">
+            <div class="submit-wrapper">
+               <button type="button" class="btn btn-outline-secondary me-3" data-bs-dismiss="modal">Edit</button>
+               <button type="button" class="btn btn-primary" id="confirmSubmitBtn">
                <i class="bi bi-rocket-fill me-2"></i> Submit Request
-            </button>
+               </button>
+            </div>
          </div>
-         </div>
-
       </div>
-  </div>
-</div> 
+   </div>
+</div>
 <!-- Thank You Modal -->
 <div class="modal fade" id="thankYouModal" tabindex="-1" aria-labelledby="thankYouModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content p-4">
-      <div class="modal-body text-center" id="thankYouSection">
-       <h4>Project Submitted Successfully!</h4>
-        <h3 class="fw-bold">Thank you! Your request has been submitted.</h3>
-        <p>Your project has been received and is now under review by the <strong>Constructkaro</strong> team.</p>
-         <h4>Your request has been submitted with ID: CST-2024-001</h4>
-
-         <h6>Expect up to 3 quotes from verified vendors within 24-48 hours.</h6>
-        <div class="border rounded p-3 text-start mb-4" style="background-color: #f6f9fc;">
-          <p><strong>⏱ Expected Response:</strong> Within 24 working hours</p>
-          <p><strong>📞 Next Step:</strong> Our executive will reach out to you if needed</p>
-          <p><strong>🗂 Submission ID:</strong> <span id="submissionId"></span></p>
-        </div>
-         <div class="p-4 bg-light rounded mt-4 text-start mx-auto" style="max-width: 600px;">
+   <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content p-4">
+         <div class="modal-body text-center" id="thankYouSection">
+            <h4>Project Submitted Successfully!</h4>
+            <h3 class="fw-bold">Thank you! Your request has been submitted.</h3>
+            <p>Your project has been received and is now under review by the <strong>Constructkaro</strong> team.</p>
+            <h4>Your request has been submitted with ID: <span id="submissionIdTop"></span></h4>
+            <h6>Expect up to 3 quotes from verified vendors within 24-48 hours.</h6>
+            <div class="border rounded p-3 text-start mb-4" style="background-color: #f6f9fc;">
+               <p><strong>⏱ Expected Response:</strong> Within 24 working hours</p>
+               <p><strong>📞 Next Step:</strong> Our executive will reach out to you if needed</p>
+               <p><strong>🗂 Submission ID:</strong> <span id="submissionIdBox"></span></p>
+            </div>
+            <div class="p-4 bg-light rounded mt-4 text-start mx-auto" style="max-width: 600px;">
                <h6 class="fw-semibold text-dark mb-3">What happens next?</h6>
                <ul class="mb-0 text-muted">
-               <li>We’ll match your requirements with verified vendors</li>
-               <li>Vendors will review your project and submit quotes</li>
-               <li>You’ll receive notifications via email and SMS</li>
-               <li>Compare quotes and choose the best vendor for your project</li>
+                  <li>We’ll match your requirements with verified vendors</li>
+                  <li>Vendors will review your project and submit quotes</li>
+                  <li>You’ll receive notifications via email and SMS</li>
+                  <li>Compare quotes and choose the best vendor for your project</li>
                </ul>
             </div>
             <br>
-        <button id="goToDashboardBtn" class="btn btn-warning">Go to My Dashboard</button>
-
-        <p class="mt-3 text-muted small">
-          Have questions? Contact our support team at<br>
-          <a href="mailto:support@constructkaro.com">support@constructkaro.com</a>
-        </p>
+            <button id="goToDashboardBtn" class="btn btn-warning">Go to My Dashboard</button>
+            <p class="mt-3 text-muted small">
+               Have questions? Contact our support team at<br>
+               <a href="mailto:support@constructkaro.com">support@constructkaro.com</a>
+            </p>
+         </div>
       </div>
-    </div>
-  </div>
+   </div>
 </div>
-
-
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script>
+   $(document).ready(function () {
+      // Ensure CSRF token is always attached
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+   
+     $('#projectForm').on('submit', function (e) {
+        e.preventDefault();
+   
+        let isValid = true;
+   
+        // ✅ Check normal required fields
+        $('#projectForm [required]').each(function () {
+           if (!$(this).val().trim()) {
+                 $(this).focus();
+                 isValid = false;
+                 return false; // break loop
+           }
+        });
+   
+        if (!isValid) return;
+   
+        // ✅ Check if Agreement checkboxes are ticked
+        if (!$('input[name="terms"]').is(':checked') || !$('input[name="no_bypass"]').is(':checked')) {
+           alert("You must accept the Agreement & Terms before continuing.");
+           return;
+        }
+   
+        // ✅ If all good, set modal data
+        $('#modalProjectName').text($('#project_name').val());
+        $('#modalProjectLocation').text($('#project_location').val());
+        $('#modalBudget').text($('#budget_range').val());
+        $('#modalTimeline').text($('#expectedTimeline').val());
+        $('#modalDescription').text($('#project_description').val());
+   
+        // ✅ Show modal
+        $('#projectConfirmModal').modal('show');
+     });
+   
+    // AJAX Submit after confirmation
+    $('#confirmSubmitBtn').on('click', function () {
+      let formData = new FormData($('#projectForm')[0]);
+   
+      $.ajax({
+        url: '/project_details_save', // your backend route
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          $('#projectConfirmModal').modal('hide');
+          $('#thankYouModal').modal('show');
+   
+          // Optional: Set dynamic submission ID
+          $('#submissionId').text(response.submission_id || 'BX-2025-011');
+        },
+        error: function (xhr) {
+          alert('Error submitting form. Please check console.');
+          console.error(xhr.responseText);
+        }
+      });
+    });
+   
+    // Redirect to Dashboard
+    $('#goToDashboardBtn').on('click', function () {
+     //  window.location.href = "{{route('Partner_Bids')}}";
+              window.location.href = "{{ route('customer.dashboard') }}";
+   
+    });
+   
+   });
+   
+</script> -->
 <script>
- $(document).ready(function () {
-    // Ensure CSRF token is always attached
+$(document).ready(function () {
+    // ✅ Ensure CSRF token is always attached
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-   $('#projectForm').on('submit', function (e) {
-      e.preventDefault();
+    // ✅ Handle Project Form Submission
+    $('#projectForm').on('submit', function (e) {
+        e.preventDefault();
 
-      let isValid = true;
+        let isValid = true;
 
-      // ✅ Check normal required fields
-      $('#projectForm [required]').each(function () {
-         if (!$(this).val().trim()) {
-               $(this).focus();
-               isValid = false;
-               return false; // break loop
-         }
-      });
+        // 🔍 Check required fields
+        $('#projectForm [required]').each(function () {
+            if (!$(this).val().trim()) {
+                $(this).focus();
+                isValid = false;
+                return false; // stop loop
+            }
+        });
 
-      if (!isValid) return;
+        if (!isValid) return;
 
-      // ✅ Check if Agreement checkboxes are ticked
-      if (!$('input[name="terms"]').is(':checked') || !$('input[name="no_bypass"]').is(':checked')) {
-         alert("You must accept the Agreement & Terms before continuing.");
-         return;
-      }
+        // ✅ Check if all agreement checkboxes are ticked
+        if (
+            !$('input[name="terms_conditions"]').is(':checked') ||
+            !$('input[name="privacy_policy"]').is(':checked') ||
+            !$('input[name="no_bypass"]').is(':checked')
+        ) {
+            alert("You must accept all Agreement & Terms before continuing.");
+            return;
+        }
 
-      // ✅ If all good, set modal data
-      $('#modalProjectName').text($('#project_name').val());
-      $('#modalProjectLocation').text($('#project_location').val());
-      $('#modalBudget').text($('#budget_range').val());
-      $('#modalTimeline').text($('#expectedTimeline').val());
-      $('#modalDescription').text($('#project_description').val());
+        // ✅ Populate confirmation modal
+        $('#modalProjectName').text($('#project_name').val());
+        $('#modalProjectLocation').text($('#project_location').val());
+        $('#modalBudget').text($('#budget_range').val());
+        $('#modalTimeline').text($('#expectedTimeline').val());
+        $('#modalDescription').text($('#project_description').val());
 
-      // ✅ Show modal
-      $('#projectConfirmModal').modal('show');
-   });
-
-  // AJAX Submit after confirmation
-  $('#confirmSubmitBtn').on('click', function () {
-    let formData = new FormData($('#projectForm')[0]);
-
-    $.ajax({
-      url: '/project_details_save', // your backend route
-      type: 'POST',
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (response) {
-        $('#projectConfirmModal').modal('hide');
-        $('#thankYouModal').modal('show');
-
-        // Optional: Set dynamic submission ID
-        $('#submissionId').text(response.submission_id || 'BX-2025-011');
-      },
-      error: function (xhr) {
-        alert('Error submitting form. Please check console.');
-        console.error(xhr.responseText);
-      }
+        // ✅ Show confirmation modal
+        $('#projectConfirmModal').modal('show');
     });
-  });
 
-  // Redirect to Dashboard
-  $('#goToDashboardBtn').on('click', function () {
-   //  window.location.href = "{{route('Partner_Bids')}}";
-            window.location.href = "{{ route('customer.dashboard') }}";
+    // ✅ Confirm & Submit via AJAX
+    $('#confirmSubmitBtn').on('click', function () {
+        let formData = new FormData($('#projectForm')[0]);
 
-  });
+        $.ajax({
+            url: '/project_details_save', // backend route
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $('#projectConfirmModal').modal('hide');
+                $('#thankYouModal').modal('show');
 
+                // Display submission ID dynamically
+               //  $('#submissionId').text(response.submission_id || 'BX-2025-011');
+               $('#submissionIdTop').text(response.submission_id);
+               $('#submissionIdBox').text(response.submission_id);
+            },
+            error: function (xhr) {
+                alert('Error submitting form. Please check console.');
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // ✅ Redirect to dashboard after success
+    $('#goToDashboardBtn').on('click', function () {
+        window.location.href = "{{ route('customer.dashboard') }}";
+    });
 });
-
-// });x
-
-
-
 </script>
 
 @endsection

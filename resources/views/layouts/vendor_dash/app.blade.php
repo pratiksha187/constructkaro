@@ -48,21 +48,6 @@
             --slate-900: #0f172a;
         }
 
-        /* Global Styles */
-        /* body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow-x: hidden;
-            font-size: 14px;
-            background: linear-gradient(135deg, var(--slate-50) 0%, rgba(239, 246, 255, 0.3) 50%, rgba(238, 242, 255, 0.2) 100%);
-        } */
-
-        /* Enhanced Background */
-        /* .dashboard-background {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-        } */
-           /* Footer */
          .custom-footer {
          background: rgba(15, 23, 42, 0.95);
          backdrop-filter: blur(20px);
@@ -191,15 +176,6 @@
             z-index: -1;
         }
 
-        /* Enhanced Header */
-        /* .enhanced-header {
-            position: relative;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(40px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15);
-        } */
 
         .brand-icon {
             position: relative;
@@ -534,12 +510,6 @@
             background: rgba(251, 146, 60, 0.1);
             color: var(--orange-600);
         }
-
-        /* .nav-tabs .nav-link.active {
-            background: linear-gradient(135deg, var(--orange-500), var(--pink-500));
-            color: white;
-            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
-        } */
 
         /* Progress Bars */
         .progress-bar-custom {

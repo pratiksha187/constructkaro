@@ -49,8 +49,7 @@
            
             <div class="relative">
                <div class="bg-gradient-to-br from-blue-50 to-orange-50 rounded-3xl p-6 shadow-xl relative h-[350px]"> 
-                  <!-- 👆 set container height (adjust as per your design) -->
-
+                  
                   <video controls autoplay muted loop 
                         class="w-full h-full object-cover rounded-2xl">
                      <source src="logo/intro.mp4" type="video/mp4">
@@ -87,7 +86,7 @@
                         Connect with verified construction professionals, manage your projects seamlessly, 
                         and turn your vision into reality — all on India's most trusted construction platform.
                     </p>
-                </div>
+               </div>
 
                <!-- Stats Cards -->
                <div class="row g-4 mt-5" id="statsCards">
@@ -218,9 +217,12 @@
                               Join thousands of satisfied customers who have built their dreams with CONSTRUCTKARO
                            </p>
                            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
-                              <button class="btn btn-primary btn-lg cta-btn-primary">
-                              Start Building Now
+                             
+                              <button type="button" class="btn btn-primary btn-lg cta-btn-primary"
+                                    onclick="window.location='{{ route('project') }}'">
+                                 Start Building Now
                               </button>
+
                               <button class="btn btn-outline-light btn-lg cta-btn-secondary">
                               Learn More
                               </button>
