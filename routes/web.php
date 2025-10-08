@@ -93,7 +93,11 @@ Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojects
 
 Route::post('/proceed-vendor', [ProjectController::class, 'proceedVendor'])->name('proceed.vendor');
 
-Route::get('/customer/project/{id}', [ProjectController::class, 'viewProject'])->name('customer.project.view');
+// Route::get('/customer/project/{id}', [ProjectController::class, 'viewProject'])->name('customer.project.view');
+Route::get('/customer/project/{encryptedId}', [ProjectController::class, 'viewProject'])->name('customer.project.view');
+
+Route::post('/customer/profile/update', [ProjectController::class, 'updateProfile'])
+    ->name('customer.profile.update');
 
 Route::post('/business/upload-file', [VendorController::class, 'uploadFile'])->name('business.uploadFile');
 Route::get('/project-details-vendor/{id}', [VendorController::class, 'projectshow']);

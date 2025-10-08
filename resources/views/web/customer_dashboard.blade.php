@@ -109,10 +109,15 @@
               {{ \Carbon\Carbon::parse($project->created_at)->format('d/m/Y') }}
             </p>
 
-            <a href="{{ route('customer.project.view', $project->id) }}" 
+            <!-- <a href="{{ route('customer.project.view', $project->id) }}" 
                 class="w-full inline-flex justify-center items-center bg-navy hover:bg-orange text-white py-2 rounded-lg mt-2 transition gap-2">
                 View Details <i class="bi bi-arrow-right"></i>
+            </a> -->
+            <a href="{{ route('customer.project.view', encrypt($project->id)) }}" 
+              class="w-full inline-flex justify-center items-center bg-navy hover:bg-orange text-white py-2 rounded-lg mt-2 transition gap-2">
+              View Details <i class="bi bi-arrow-right"></i>
             </a>
+
           </div>
         @endforeach
       </div>
@@ -173,33 +178,196 @@
   </div>
 
   <!-- ======================== PROFILE TAB ======================== -->
-  <div class="mt-10" x-show="tab === 'profile'" x-transition>
-    <h2 class="text-xl font-semibold text-navy mb-4">Your Profile</h2>
-    <div class="bg-white p-6 rounded-xl border-l-4 border-orange shadow-md max-w-8xl mx-auto">
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="text-sm text-gray-500">Full Name</label>
-          <input type="text" value="{{ $cust_details->full_name }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none" readonly>
+ 
+<div class="mt-10" x-show="tab === 'profile'" x-transition>
+  <h2 class="text-2xl font-semibold text-navy mb-6 flex items-center gap-2">
+    <i class="bi bi-person-circle text-orange text-2xl"></i> Your Profile
+  </h2>
+
+  <div class="bg-white p-8 rounded-2xl shadow-md border-l-4 border-orange max-w-8xl mx-auto">
+
+    <form action="{{ route('customer.profile.update') }}" method="POST" enctype="multipart/form-data">
+      @csrf
+      <input type="hidden" name="project_id" value="{{ $cust_details->id ?? '' }}">
+
+      <!-- ================= PROFILE PHOTO ================= -->
+      <div class="flex flex-col sm:flex-row items-center gap-6 border-b pb-6 mb-8">
+        <div class="relative">
+          <img 
+            id="photoPreview" 
+            src="{{ asset('storage/'.($cust_details->profile_photo ?? 'images/default-avatar.png')) }}" 
+            class="w-28 h-28 rounded-full object-cover border-4 border-orange shadow-sm" 
+            alt="Profile Photo">
+          <label 
+            for="profile_photo"
+            class="absolute bottom-0 right-0 bg-orange text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-[#d84f03]">
+            Change
+          </label>
+          <input type="file" name="profile_photo" id="profile_photo" class="hidden" accept="image/*" onchange="previewImage(event)">
         </div>
         <div>
-          <label class="text-sm text-gray-500">Email</label>
-          <input type="email" value="{{ $cust_details->email }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none" readonly>
-        </div>
-        <div>
-          <label class="text-sm text-gray-500">Phone</label>
-          <input type="text" value="{{ $cust_details->phone_number }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none" readonly>
-        </div>
-        <div>
-          <label class="text-sm text-gray-500">Location</label>
-          <input type="text" value="{{ Auth::user()->location ?? '' }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+          <h3 class="text-lg font-semibold text-navy mb-1">{{ $cust_details->full_name ?? '' }}</h3>
+          <p class="text-gray-500 text-sm"><i class="bi bi-envelope me-2"></i>{{ $cust_details->email ?? '' }}</p>
+          <p class="text-gray-500 text-sm"><i class="bi bi-telephone me-2"></i>{{ $cust_details->phone_number ?? '' }}</p>
         </div>
       </div>
-      <div class="text-center mt-6">
-        <button class="bg-navy hover:bg-orange text-white px-6 py-2 rounded-lg">Update Profile</button>
+
+      <!-- ================= BASIC DETAILS ================= -->
+      <h3 class="text-lg font-semibold text-navy mb-3 flex items-center gap-2">
+        <i class="bi bi-info-circle text-orange"></i> Basic Information
+      </h3>
+
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <div>
+          <label class="text-sm text-gray-500">Full Name</label>
+          <input type="text" name="full_name" value="{{ $cust_details->full_name }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none bg-gray-50" readonly>
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">Email</label>
+          <input type="email" name="email" value="{{ $cust_details->email }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none bg-gray-50" readonly>
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">Phone</label>
+          <input type="text" name="phone_number" value="{{ $cust_details->phone_number }}" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">Occupation</label>
+          <select required id="role_id" name="role_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all">
+            <option value="">Select your role</option>
+            @foreach($role_types as $role)
+              <option value="{{ $role->id }}" {{ ($cust_details->role_id ?? '') == $role->id ? 'selected' : '' }}>
+                {{ $role->role }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+
+        <div>
+          <label class="text-sm text-gray-500">Gender</label>
+          <select name="gender" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+            <option value="">Select Gender</option>
+            <option value="Male" {{ $cust_details->gender == 'Male' ? 'selected' : '' }}>Male</option>
+            <option value="Female" {{ $cust_details->gender == 'Female' ? 'selected' : '' }}>Female</option>
+            <option value="Other" {{ $cust_details->gender == 'Other' ? 'selected' : '' }}>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ================= DOCUMENT SECTION ================= -->
+      <h3 class="text-lg font-semibold text-navy mb-3 flex items-center gap-2">
+        <i class="bi bi-file-earmark-text text-orange"></i> Business Documents
+      </h3>
+
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <div>
+          <label class="text-sm text-gray-500">GST Number</label>
+          <input type="text" name="gst_no" value="{{ $cust_details->gst_no ?? '' }}" placeholder="Enter GST No" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">GST Certificate</label>
+          <input type="file" name="gst_certificate" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none bg-gray-50">
+          @if(!empty($cust_details->gst_certificate))
+            <a href="{{ asset('storage/'.$cust_details->gst_certificate) }}" target="_blank" class="text-sm text-blue-600 hover:underline mt-1 inline-block">View Uploaded File</a>
+          @endif
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">TDS Certificate</label>
+          <input type="file" name="tds_certificate" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none bg-gray-50">
+          @if(!empty($cust_details->tds_certificate))
+            <a href="{{ asset('storage/'.$cust_details->tds_certificate) }}" target="_blank" class="text-sm text-blue-600 hover:underline mt-1 inline-block">View Uploaded File</a>
+          @endif
+        </div>
+      </div>
+
+      <!-- ================= LOCATION SECTION ================= -->
+      <h3 class="text-lg font-semibold text-navy mb-3 flex items-center gap-2">
+        <i class="bi bi-geo-alt text-orange"></i> Location Details
+      </h3>
+
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <div>
+          <label class="text-sm text-gray-500">Select State</label>
+          <select name="state" id="state" class="w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+            <option value="">Select State</option>
+            @foreach($states as $state)
+              <option value="{{ $state->id }}" {{ ($cust_details->state ?? '') == $state->id ? 'selected' : '' }}>
+                {{ $state->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">Select Region</label>
+          <select name="region" id="region" class="form-control w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+            <option value="">-- Select Region --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-500">Select City</label>
+          <select name="city" id="city" class="form-control w-full border border-gray-300 rounded-lg p-2 focus:border-orange outline-none">
+            <option value="">-- Select City --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ================= SUBMIT BUTTON ================= -->
+      <div class="text-center">
+        <button type="submit" class="bg-navy hover:bg-orange text-white px-8 py-3 rounded-lg text-sm font-medium transition shadow-md hover:shadow-lg">
+          <i class="bi bi-save me-2"></i> Update Profile
+        </button>
+      </div>
+
+    </form>
+    
+    <!-- ================= COMPANY SOCIAL LINKS (AFTER SUBMIT BUTTON) ================= -->
+    <div class="mt-10 text-center">
+      <h3 class="text-lg font-semibold text-navy mb-3 flex items-center justify-center gap-2">
+        <i class="bi bi-hand-thumbs-up-fill text-orange"></i>
+        Like & Follow Us
+      </h3>
+
+      <p class="text-gray-600 text-sm mb-4">Stay connected with us on social media for updates, news, and offers.</p>
+
+      <div class="flex flex-wrap justify-center gap-6 mt-4">
+        @if(!empty($company_socials['facebook']))
+          <a href="{{ $company_socials['facebook'] }}" target="_blank" 
+             class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition">
+            <i class="bi bi-facebook text-2xl"></i> Facebook
+          </a>
+        @endif
+
+        @if(!empty($company_socials['linkedin']))
+          <a href="{{ $company_socials['linkedin'] }}" target="_blank" 
+             class="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-medium transition">
+            <i class="bi bi-linkedin text-2xl"></i> LinkedIn
+          </a>
+        @endif
+
+        @if(!empty($company_socials['instagram']))
+          <a href="{{ $company_socials['instagram'] }}" target="_blank" 
+             class="flex items-center gap-2 text-pink-600 hover:text-pink-800 font-medium transition">
+            <i class="bi bi-instagram text-2xl"></i> Instagram
+          </a>
+        @endif
+
+        @if(!empty($company_socials['twitter']))
+          <a href="{{ $company_socials['twitter'] }}" target="_blank" 
+             class="flex items-center gap-2 text-sky-500 hover:text-sky-700 font-medium transition">
+            <i class="bi bi-twitter text-2xl"></i> Twitter
+          </a>
+        @endif
       </div>
     </div>
   </div>
-
+</div>
   <!-- ======================== DOCUMENTS TAB ======================== -->
   <div class="mt-10" x-show="tab === 'documents'" x-transition>
     <h2 class="text-xl font-semibold text-navy mb-4">Uploaded Documents</h2>
@@ -223,4 +391,73 @@
 
 </body>
 </html>
+<!-- ✅ Load jQuery before using $ -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+function previewImage(event) {
+  const reader = new FileReader();
+  reader.onload = function(){
+    const output = document.getElementById('photoPreview');
+    output.src = reader.result;
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+
+</script>
+<script>
+$(document).ready(function() {
+
+    let selectedState = "{{ $cust_details->state ?? '' }}";
+    let selectedRegion = "{{ $cust_details->region ?? '' }}";
+    let selectedCity = "{{ $cust_details->city ?? '' }}";
+
+    // 🔹 When state changes
+    $('#state').on('change', function() {
+        let state_id = $(this).val();
+        $('#region').empty().append('<option value="">-- Select Region --</option>');
+        $('#city').empty().append('<option value="">-- Select City --</option>');
+
+        if (state_id) {
+            $.get('/get-regions/' + state_id, function(data) {
+                $.each(data, function(key, value) {
+                    $('#region').append('<option value="'+ key +'">'+ value +'</option>');
+                });
+
+                // ✅ Auto-select saved region if state matches
+                if (selectedRegion && selectedState == state_id) {
+                    $('#region').val(selectedRegion).trigger('change');
+                }
+            });
+        }
+    });
+
+    // 🔹 When region changes
+    $('#region').on('change', function() {
+        let region_id = $(this).val();
+        $('#city').empty().append('<option value="">-- Select City --</option>');
+
+        if (region_id) {
+            $.get('/get-cities/' + region_id, function(data) {
+                $.each(data, function(key, value) {
+                    $('#city').append('<option value="'+ key +'">'+ value +'</option>');
+                });
+
+                // ✅ Auto-select saved city if region matches
+                if (selectedCity && selectedRegion == region_id) {
+                    $('#city').val(selectedCity);
+                }
+            });
+        }
+    });
+
+    // 🔹 Auto-load saved state’s regions and cities on page load
+    if (selectedState) {
+        $('#state').trigger('change');
+    }
+});
+</script>
+
+
 @endsection

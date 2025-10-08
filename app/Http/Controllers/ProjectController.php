@@ -290,8 +290,17 @@ public function project_details()
         $vendors = DB::table('business_registrations')
                 ->where('user_id', '11')
                 ->get();
-    // dd($vendors);
-        return view('web.customer_dashboard', compact('projects', 'cust_details', 'projectKey','vendors'));
+
+        $states = DB::table('states')->where('is_active',1)->get(); 
+        $role_types = DB::table('role')->get();
+
+        $company_socials = [
+                'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
+                'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
+                'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
+            ];
+    // dd($states);
+        return view('web.customer_dashboard', compact('projects', 'cust_details', 'projectKey','vendors','states','role_types','company_socials'));
     }
 
 
@@ -393,19 +402,124 @@ public function project_details()
         ]);
     }
 
-    public function viewProject($id)
-    {
-        $project = DB::table('projects_details')->find($id);
-// dd($project);
-        // if (!$project) {
-        //     return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
-        // }
+//     public function viewProject($id)
+//     {
+//         $project = DB::table('projects_details')->find($id);
+//         // dd($project);
+//         //  $user = session('user'); 
+//         //   $projectKey = $projectId ?: $user->id;
+//         // ✅ Always fetch customer details by user_id (same as project_id)
+//         $projcet_details = DB::table('projects_details')
+//                             ->where('id', $project->id)
+//                             ->first();
+//         $cust_details =  $projcet_details->project_id;
+                           
+// // dd($projcet_details_id);
+//         // if (!$project) {
+//         //     return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
+//         // }
 
-        // $milestones = DB::table('project_milestones')->where('project_id', $id)->get();
-        // $payments = DB::table('project_payments')->where('project_id', $id)->get();
-        // $vendor = DB::table('vendors')->where('id', $project->vendor_id)->first();
-// , 'milestones', 'payments', 'vendor'
-        return view('web.customer_project_details', compact('project'));
+//         // $milestones = DB::table('project_milestones')->where('project_id', $id)->get();
+//         // $payments = DB::table('project_payments')->where('project_id', $id)->get();
+//         // $vendor = DB::table('vendors')->where('id', $project->vendor_id)->first();
+// // , 'milestones', 'payments', 'vendor'
+//         return view('web.customer_project_details', compact('project','cust_details'));
+//     }
+// public function viewProject($id)
+// {
+//     $project = DB::table('projects_details')->find($id);
+
+//     if (!$project) {
+//         return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
+//     }
+
+//     // Fetch project details
+//     $projcet_details = DB::table('projects_details')
+//                         ->where('id', $project->id)
+//                         ->first();
+//     $p_id = $projcet_details->project_id;
+
+//     // Fetch customer details using the project_id (which is actually user_id)
+//     $cust_details = DB::table('projects')
+//                         ->where('id', $p_id)
+//                         ->first();
+// // dd($cust_details);
+//     return view('web.customer_project_details', compact('project', 'cust_details'));
+// }
+public function viewProject($encryptedId)
+{
+    try {
+        // 🔒 Decrypt the ID safely
+        $id = decrypt($encryptedId);
+    } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+        // If tampered or invalid link
+        return redirect()->route('customer.dashboard')->with('error', 'Invalid project link.');
     }
+// dd($id);
+    // ✅ Fetch project safely
+    $project = DB::table('projects_details')->find($id);
+// dd($project);
+    if (!$project) {
+        return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
+    }
+
+    // ✅ Fetch project details
+    $projcet_details = DB::table('projects_details')
+        ->where('id', $project->id)
+        ->first();
+
+    $p_id = $projcet_details->project_id;
+
+    // ✅ Fetch customer details using project_id (user_id)
+    $cust_details = DB::table('projects')
+        ->where('id', $p_id)
+        ->first();
+
+    return view('web.customer_project_details', compact('project', 'cust_details','projcet_details'));
+}
+
+public function updateProfile(Request $request)
+{
+    
+    $user = $request->project_id; // or fetch via $cust_details if separate table
+// dd($user);
+    // ✅ Validate incoming data
+    $validated = $request->validate([
+        'phone_number' => 'nullable|string|max:15',
+        'role_id' => 'nullable|string|max:100',
+        'gender' => 'nullable|string|max:10',
+        'gst_no' => 'nullable|string|max:20',
+        'gst_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+        'tds_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'state' => 'nullable|integer',
+        'region' => 'nullable|integer',
+        'city' => 'nullable|integer',
+        'facebook' => 'nullable|url',
+        'linkedin' => 'nullable|url',
+        'instagram' => 'nullable|url',
+    ]);
+
+    // ✅ File uploads
+    if ($request->hasFile('gst_certificate')) {
+        $validated['gst_certificate'] = $request->file('gst_certificate')->store('certificates', 'public');
+    }
+
+    if ($request->hasFile('tds_certificate')) {
+        $validated['tds_certificate'] = $request->file('tds_certificate')->store('certificates', 'public');
+    }
+
+    if ($request->hasFile('profile_photo')) {
+        $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', 'public');
+    }
+
+    // ✅ Update in your DB table
+    DB::table('projects')
+        ->where('id', $user)
+        ->update($validated);
+
+    return redirect()->back()->with('success', 'Profile updated successfully!');
+}
+
 
 }
