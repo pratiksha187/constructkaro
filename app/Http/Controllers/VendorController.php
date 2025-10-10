@@ -304,7 +304,7 @@ class VendorController extends Controller
             'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
             'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
             'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
-            'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
+            // 'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
             'work_completion_certificates_file1'  => 'nullable|file|mimes:pdf|max:20480',
             'work_completion_certificates_file2'  => 'nullable|file|mimes:pdf|max:20480',
             'work_completion_certificates_file3'  => 'nullable|file|mimes:pdf|max:20480',
@@ -321,11 +321,11 @@ class VendorController extends Controller
         ]);
 
         $userId = session('vendor_id');
-
+// turnover_certificate_file
         // 🔹 Handle single file uploads
         $singleFiles = [
             'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
-            'certificate_of_incorporation_file', 'itr_file', 'turnover_certificate_file',
+            'certificate_of_incorporation_file', 'itr_file', 
             'work_completion_certificates_file1', 'work_completion_certificates_file2',
             'work_completion_certificates_file3', 'pf_documents_file', 'esic_documents_file',
             'company_profile_file', 'portfolio_file', 'license_certificate_file', 'uploadadharpanFile'

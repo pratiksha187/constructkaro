@@ -324,10 +324,10 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <label class="form-label required">Turnover Certificate (CA Certified)</label>
                     <input accept="application/pdf" type="file" id="turnover_certificate_file" name="turnover_certificate_file" class="form-control">
-                </div>
+                </div> -->
                 <div class="col-md-6"></div>
 
                 <div class="col-md-4">
