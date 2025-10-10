@@ -271,7 +271,7 @@ class VendorController extends Controller
 
    public function business_store(Request $request)
     {
-        try {
+        // try {
             // ✅ Validate form fields
             $validated = $request->validate([
                 'experience_years'           => 'required|numeric',
@@ -392,7 +392,7 @@ class VendorController extends Controller
 
             // ✅ Merge uploaded file paths into payload
             $payload = array_merge($payload, $uploadedFiles);
-
+// dd($payload);
             // ✅ Insert into DB
             DB::table('business_registrations')->insert($payload);
 
@@ -401,30 +401,39 @@ class VendorController extends Controller
                 'message' => '✅ Business registration saved successfully!'
             ], 200);
 
-        } catch (PostTooLargeException $e) {
-            // 🔴 Handle too large uploads gracefully
-            return response()->json([
-                'status' => false,
-                'message' => 'The uploaded files are too large. Please reduce file size and try again.'
-            ], 413);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // 🔴 Handle validation errors
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation failed.',
-                'errors'  => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            // 🔴 Log unexpected exceptions
-            Log::error('Business registration error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
+        // } catch (PostTooLargeException $e) {
+        //     // 🔴 Handle too large uploads gracefully
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'The uploaded files are too large. Please reduce file size and try again.'
+        //     ], 413);
+        // } catch (\Illuminate\Validation\ValidationException $e) {
+        //     // 🔴 Handle validation errors
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Validation failed.',
+        //         'errors'  => $e->errors()
+        //     ], 422);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => $e->getMessage(), // 👈 show real error temporarily
+        //         'trace' => $e->getLine()
+        //     ], 500);
+        // }
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Something went wrong while saving your data. Please try again later.'
-            ], 500);
-        }
+        
+        // catch (\Exception $e) {
+        //     // 🔴 Log unexpected exceptions
+        //     Log::error('Business registration error: ' . $e->getMessage(), [
+        //         'trace' => $e->getTraceAsString()
+        //     ]);
+
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Something went wrong while saving your data. Please try again later.'
+        //     ], 500);
+        // }
     }
 
 
