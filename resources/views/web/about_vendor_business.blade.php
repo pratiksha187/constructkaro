@@ -646,65 +646,164 @@
       });
 </script>
 <script>
-    $(document).ready(function() {
-        $('#businessForm').on('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
+    // $(document).ready(function() {
+    //     $('#businessForm').on('submit', function(e) {
+    //         e.preventDefault(); // Prevent default form submission
     
-            // Validate declaration checkbox (optional)
-            if (!$('#agreed_declaration').is(':checked')) {
-                alert('Please agree to the declaration.');
-                return;
-            }
+    //         // Validate declaration checkbox (optional)
+    //         if (!$('#agreed_declaration').is(':checked')) {
+    //             alert('Please agree to the declaration.');
+    //             return;
+    //         }
     
-            var form = this;
-            var formData = new FormData(form); // Collect all form data including files
-            $('.past_work_photos').each(function(index, input) {
-                  if (input.files.length > 0) {
-                      for (let i = 0; i < input.files.length; i++) {
-                          formData.append('past_work_photos[]', input.files[i]);
-                      }
-                  }
-              });
+    //         var form = this;
+    //         var formData = new FormData(form); // Collect all form data including files
+    //         $('.past_work_photos').each(function(index, input) {
+    //               if (input.files.length > 0) {
+    //                   for (let i = 0; i < input.files.length; i++) {
+    //                       formData.append('past_work_photos[]', input.files[i]);
+    //                   }
+    //               }
+    //           });
     
-            $.ajax({ 
-                url: '{{ route("business.store") }}', // Replace with your actual route
-                type: 'POST',
-                data: formData,
-                processData: false, // Important for file uploads
-                contentType: false, // Important for file uploads
-                beforeSend: function() {
-                    // Optional: show a loader
-                    $('button[type="submit"]').prop('disabled', true).text('Submitting...');
-                },
-                success: function(response) {
-                    // Handle success response
-                    alert(response.message || 'Form submitted successfully!');
-                    // form.reset(); // Reset form
-                      $('#step5Modal').modal('show');
-                    //  window.location.href = '{{ route("vendor_confiermetion") }}';
-                    $('#certificate_label').text('Certificate of Incorpration/ LLPIN/ SHOP ACT (FOR Proprietor) *'); // Reset label
-                },
-                error: function(xhr) {
-                    // Handle error response
-                    if(xhr.responseJSON && xhr.responseJSON.errors){
-                        var errors = xhr.responseJSON.errors;
-                        var errorMessage = '';
-                        $.each(errors, function(key, value) {
-                            errorMessage += value + "\n";
-                        });
-                        alert(errorMessage);
-                    } else {
-                        alert('Something went wrong. Please try again.');
-                    }
-                },
-                complete: function() {
-                    $('button[type="submit"]').prop('disabled', false).text('Submit for Verification');
-                }
+    //         $.ajax({ 
+    //             url: '{{ route("business.store") }}', // Replace with your actual route
+    //             type: 'POST',
+    //             data: formData,
+    //             processData: false, // Important for file uploads
+    //             contentType: false, // Important for file uploads
+    //             beforeSend: function() {
+    //                 // Optional: show a loader
+    //                 $('button[type="submit"]').prop('disabled', true).text('Submitting...');
+    //             },
+    //             success: function(response) {
+    //                 // Handle success response
+    //                 alert(response.message || 'Form submitted successfully!');
+    //                 // form.reset(); // Reset form
+    //                   $('#step5Modal').modal('show');
+    //                 //  window.location.href = '{{ route("vendor_confiermetion") }}';
+    //                 $('#certificate_label').text('Certificate of Incorpration/ LLPIN/ SHOP ACT (FOR Proprietor) *'); // Reset label
+    //             },
+    //             error: function(xhr) {
+    //                 // Handle error response
+    //                 if(xhr.responseJSON && xhr.responseJSON.errors){
+    //                     var errors = xhr.responseJSON.errors;
+    //                     var errorMessage = '';
+    //                     $.each(errors, function(key, value) {
+    //                         errorMessage += value + "\n";
+    //                     });
+    //                     alert(errorMessage);
+    //                 } else {
+    //                     alert('Something went wrong. Please try again.');
+    //                 }
+    //             },
+    //             complete: function() {
+    //                 $('button[type="submit"]').prop('disabled', false).text('Submit for Verification');
+    //             }
+    //         });
+    //     });
+    // });
+
+$(document).ready(function() {
+
+    $('#businessForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // 🔹 Step 1: Declaration checkbox validation
+        if (!$('#agreed_declaration').is(':checked')) {
+            showAlert('Please agree to the declaration before submitting.', 'warning');
+            return;
+        }
+
+        // 🔹 Step 2: Check total file size before sending
+        let totalSize = 0;
+        $('input[type="file"]').each(function() {
+            $.each(this.files, function(_, file) {
+                totalSize += file.size;
             });
         });
+
+        const MAX_SIZE = 200 * 1024 * 1024; // 200 MB limit
+        if (totalSize > MAX_SIZE) {
+            showAlert('Total upload size exceeds 200MB. Please reduce file size.', 'danger');
+            return;
+        }
+
+        // 🔹 Step 3: Prepare FormData
+        var form = this;
+        var formData = new FormData(form);
+        $('.past_work_photos').each(function(index, input) {
+            if (input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    formData.append('past_work_photos[]', input.files[i]);
+                }
+            }
+        });
+
+        // 🔹 Step 4: AJAX submit
+        $.ajax({
+            url: '{{ route("business.store") }}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $('button[type="submit"]').prop('disabled', true).text('Submitting...');
+                showAlert('Uploading... Please wait.', 'info');
+            },
+            success: function(response) {
+                if (response.status) {
+                    showAlert(response.message || 'Form submitted successfully!', 'success');
+                    // $('#businessForm')[0].reset();
+                    $('#step5Modal').modal('show');
+                } else {
+                    showAlert(response.message || 'Something went wrong. Please try again.', 'danger');
+                }
+            },
+            error: function(xhr) {
+                let message = 'Something went wrong. Please try again.';
+
+                // 🔹 Laravel 413: PostTooLargeException
+                if (xhr.status === 413) {
+                    message = 'Uploaded files are too large. Please upload smaller files.';
+                }
+
+                // 🔹 Laravel 422: Validation errors
+                else if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    message = '<strong>Validation failed:</strong><br>';
+                    $.each(xhr.responseJSON.errors, function(key, value) {
+                        message += `• ${value}<br>`;
+                    });
+                }
+
+                // 🔹 Laravel 500 or other server errors
+                else if (xhr.status === 500) {
+                    message = 'Server error. Please try again later.';
+                }
+
+                showAlert(message, 'danger');
+            },
+            complete: function() {
+                $('button[type="submit"]').prop('disabled', false).text('Submit for Verification');
+            }
+        });
     });
-     
-    
+
+    // 🔹 Step 5: Helper — Show Bootstrap Alert dynamically
+    function showAlert(message, type = 'info') {
+        $('.ajax-alert').remove(); // remove old alerts if any
+        const alertHtml = `
+            <div class="alert alert-${type} ajax-alert alert-dismissible fade show mt-3" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+        $('#businessForm').prepend(alertHtml);
+        $('html, body').animate({ scrollTop: $("#businessForm").offset().top - 100 }, 400);
+    }
+
+});
+
+
     
       document.getElementById('completeBtn').addEventListener('click', function () {
           let terms = document.getElementById('terms_policy').checked;

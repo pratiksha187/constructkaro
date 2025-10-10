@@ -14,6 +14,8 @@ use App\Models\ProjectLike;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Exceptions\PostTooLargeException;
+use Illuminate\Support\Facades\Log;
 
 class VendorController extends Controller
 {
@@ -267,136 +269,164 @@ class VendorController extends Controller
     //     ], 200);
     // }
 
-    public function business_store(Request $request)
+   public function business_store(Request $request)
     {
-        // 🔹 Validate input
-        $validated = $request->validate([
-            'experience_years'           => 'required|numeric',
-            'team_size'                  => 'required|numeric',
-            'min_project_value'          => 'required|numeric',
-            'company_name'               => 'required|string',
-            'entity_type'                => 'required|string', 
-            'registered_address'         => 'required|string',
-            'contact_person_designation' => 'required|string',
-            'gst_number'                 => 'required|string',
-            'pan_number'                 => 'required|string',
-            'tan_number'                 => 'nullable|string',
-            'esic_number'                => 'nullable|string',
-            'pf_code'                    => 'nullable|string',
-            'msme_registered'            => ['required', Rule::in(['yes','no'])],
-            'bank_name'                  => 'nullable|string',
-            'account_number'             => 'nullable|string',
-            'ifsc_code'                  => 'nullable|string',
-            'account_type'               => 'nullable|string',
-            'agreed_declaration'         => 'required',
-            'llpin_no'                   => 'nullable|string',
-            'state'                      => 'required',
-            'region'                     => 'required',
-            'client_name'                => 'required|array',
-            'organization'               => 'required|array',
-            'phone'                      => 'required|array',
-            'email'                      => 'required|array',
-            'year_of_completion'         => 'required|array',
+        try {
+            // ✅ Validate form fields
+            $validated = $request->validate([
+                'experience_years'           => 'required|numeric',
+                'team_size'                  => 'required|numeric',
+                'min_project_value'          => 'required|numeric',
+                'company_name'               => 'required|string',
+                'entity_type'                => 'required|string',
+                'registered_address'         => 'required|string',
+                'contact_person_designation' => 'required|string',
+                'gst_number'                 => 'required|string',
+                'pan_number'                 => 'required|string',
+                'tan_number'                 => 'nullable|string',
+                'esic_number'                => 'nullable|string',
+                'pf_code'                    => 'nullable|string',
+                'msme_registered'            => ['required', Rule::in(['yes','no'])],
+                'bank_name'                  => 'nullable|string',
+                'account_number'             => 'nullable|string',
+                'ifsc_code'                  => 'nullable|string',
+                'account_type'               => 'nullable|string',
+                'agreed_declaration'         => 'required',
+                'llpin_no'                   => 'nullable|string',
+                'state'                      => 'required',
+                'region'                     => 'required',
+                'client_name'                => 'required|array',
+                'organization'               => 'required|array',
+                'phone'                      => 'required|array',
+                'email'                      => 'required|array',
+                'year_of_completion'         => 'required|array',
 
-            // Single file uploads
-            'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
-            'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
-            'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
-            'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
-            'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
-            // 'turnover_certificate_file'           => 'nullable|file|mimes:pdf|max:20480',
-            'work_completion_certificates_file1'  => 'nullable|file|mimes:pdf|max:20480',
-            'work_completion_certificates_file2'  => 'nullable|file|mimes:pdf|max:20480',
-            'work_completion_certificates_file3'  => 'nullable|file|mimes:pdf|max:20480',
-            'pf_documents_file'                   => 'nullable|file|mimes:pdf|max:20480',
-            'esic_documents_file'                 => 'nullable|file|mimes:pdf|max:20480',
-            'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
-            'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
-            'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
-            'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
+                // ✅ Single file uploads (PDF only)
+                'cancelled_cheque_file'               => 'nullable|file|mimes:pdf|max:20480',
+                'pan_card_file'                       => 'nullable|file|mimes:pdf|max:20480',
+                'aadhaar_card_file'                   => 'nullable|file|mimes:pdf|max:20480',
+                'certificate_of_incorporation_file'   => 'nullable|file|mimes:pdf|max:20480',
+                'itr_file'                            => 'nullable|file|mimes:pdf|max:40960',
+                'work_completion_certificates_file1'  => 'nullable|file|mimes:pdf|max:20480',
+                'work_completion_certificates_file2'  => 'nullable|file|mimes:pdf|max:20480',
+                'work_completion_certificates_file3'  => 'nullable|file|mimes:pdf|max:20480',
+                'pf_documents_file'                   => 'nullable|file|mimes:pdf|max:20480',
+                'esic_documents_file'                 => 'nullable|file|mimes:pdf|max:20480',
+                'company_profile_file'                => 'nullable|file|mimes:pdf|max:40960',
+                'portfolio_file'                      => 'nullable|file|mimes:pdf|max:40960',
+                'license_certificate_file'            => 'nullable|file|mimes:pdf|max:20480',
+                'uploadadharpanFile'                  => 'nullable|file|mimes:pdf|max:20480',
 
-            // Multiple files
-            'past_work_photos'                    => 'nullable',
-            'past_work_photos.*'                  => 'file|image|mimes:jpeg,png,jpg,gif|max:10240',
-        ]);
+                // ✅ Multiple file uploads (images)
+                'past_work_photos'                    => 'nullable',
+                'past_work_photos.*'                  => 'file|image|mimes:jpeg,png,jpg,gif|max:10240',
+            ]);
 
-        $userId = session('vendor_id');
-// turnover_certificate_file
-        // 🔹 Handle single file uploads
-        $singleFiles = [
-            'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
-            'certificate_of_incorporation_file', 'itr_file', 
-            'work_completion_certificates_file1', 'work_completion_certificates_file2',
-            'work_completion_certificates_file3', 'pf_documents_file', 'esic_documents_file',
-            'company_profile_file', 'portfolio_file', 'license_certificate_file', 'uploadadharpanFile'
-        ];
+            $userId = session('vendor_id') ?? auth()->id();
 
-        $uploadedFiles = [];
-        foreach ($singleFiles as $field) {
-            if ($request->hasFile($field)) {
-                $uploadedFiles[$field] = $request->file($field)->store('vendor_docs', 'public');
+            // ✅ Define file fields
+            $singleFiles = [
+                'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
+                'certificate_of_incorporation_file', 'itr_file', 
+                'work_completion_certificates_file1', 'work_completion_certificates_file2',
+                'work_completion_certificates_file3', 'pf_documents_file', 'esic_documents_file',
+                'company_profile_file', 'portfolio_file', 'license_certificate_file', 'uploadadharpanFile'
+            ];
+
+            $uploadedFiles = [];
+
+            // ✅ Handle single file uploads
+            foreach ($singleFiles as $field) {
+                if ($request->hasFile($field)) {
+                    $uploadedFiles[$field] = $request->file($field)->store('vendor_docs', 'public');
+                } else {
+                    $uploadedFiles[$field] = null;
+                }
+            }
+
+            // ✅ Handle multiple file uploads (past work photos)
+            if ($request->hasFile('past_work_photos')) {
+                $pastPhotos = [];
+                foreach ($request->file('past_work_photos') as $file) {
+                    $pastPhotos[] = $file->store('vendor_docs/past_photos', 'public');
+                }
+                $uploadedFiles['past_work_photos'] = json_encode($pastPhotos);
             } else {
-                $uploadedFiles[$field] = null;
+                $uploadedFiles['past_work_photos'] = null;
             }
+
+            // ✅ Build database payload
+            $payload = [
+                'user_id'                    => $userId,
+                'experience_years'           => $validated['experience_years'],
+                'team_size'                  => $validated['team_size'],
+                'min_project_value'          => $validated['min_project_value'],
+                'company_name'               => $validated['company_name'],
+                'entity_type'                => $validated['entity_type'],
+                'registered_address'         => $validated['registered_address'],
+                'contact_person_designation' => $validated['contact_person_designation'],
+                'gst_number'                 => $validated['gst_number'],
+                'pan_number'                 => $validated['pan_number'],
+                'tan_number'                 => $validated['tan_number'] ?? null,
+                'esic_number'                => $validated['esic_number'] ?? null,
+                'pf_code'                    => $validated['pf_code'] ?? null,
+                'msme_registered'            => $validated['msme_registered'],
+                'bank_name'                  => $validated['bank_name'] ?? null,
+                'account_number'             => $validated['account_number'] ?? null,
+                'ifsc_code'                  => $validated['ifsc_code'] ?? null,
+                'account_type'               => $validated['account_type'] ?? null,
+                'agreed_declaration'         => $request->boolean('agreed_declaration') ? 1 : 0,
+                'llpin_no'                   => $validated['llpin_no'] ?? null,
+                'state'                      => is_array($validated['state']) ? json_encode($validated['state']) : $validated['state'],
+                'region'                     => is_array($validated['region']) ? json_encode($validated['region']) : $validated['region'],
+                'client_name'                => json_encode($validated['client_name']),
+                'organization'               => json_encode($validated['organization']),
+                'phone'                      => json_encode($validated['phone']),
+                'email'                      => json_encode($validated['email']),
+                'year_of_completion'         => json_encode($validated['year_of_completion']),
+                'past_work_photos'           => $uploadedFiles['past_work_photos'],
+                'approved'                   => 0,
+                'created_at'                 => now(),
+                'updated_at'                 => now(),
+            ];
+
+            // ✅ Merge uploaded file paths into payload
+            $payload = array_merge($payload, $uploadedFiles);
+
+            // ✅ Insert into DB
+            DB::table('business_registrations')->insert($payload);
+
+            return response()->json([
+                'status' => true,
+                'message' => '✅ Business registration saved successfully!'
+            ], 200);
+
+        } catch (PostTooLargeException $e) {
+            // 🔴 Handle too large uploads gracefully
+            return response()->json([
+                'status' => false,
+                'message' => 'The uploaded files are too large. Please reduce file size and try again.'
+            ], 413);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // 🔴 Handle validation errors
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'errors'  => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            // 🔴 Log unexpected exceptions
+            Log::error('Business registration error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong while saving your data. Please try again later.'
+            ], 500);
         }
-
-        // 🔹 Handle multiple past work photos
-        if ($request->hasFile('past_work_photos')) {
-            $pastPhotos = [];
-            foreach ($request->file('past_work_photos') as $file) {
-                $pastPhotos[] = $file->store('vendor_docs/past_photos', 'public');
-            }
-            $uploadedFiles['past_work_photos'] = json_encode($pastPhotos);
-        } else {
-            $uploadedFiles['past_work_photos'] = null;
-        }
-
-        // 🔹 Build DB payload
-        $payload = [
-            'user_id'                    => $userId,
-            'experience_years'           => $validated['experience_years'],
-            'team_size'                  => $validated['team_size'],
-            'min_project_value'          => $validated['min_project_value'],
-            'company_name'               => $validated['company_name'],
-            'entity_type'                => $validated['entity_type'],
-            'registered_address'         => $validated['registered_address'],
-            'contact_person_designation' => $validated['contact_person_designation'],
-            'gst_number'                 => $validated['gst_number'],
-            'pan_number'                 => $validated['pan_number'],
-            'tan_number'                 => $validated['tan_number'] ?? null,
-            'esic_number'                => $validated['esic_number'] ?? null,
-            'pf_code'                    => $validated['pf_code'] ?? null,
-            'msme_registered'            => $validated['msme_registered'],
-            'bank_name'                  => $validated['bank_name'] ?? null,
-            'account_number'             => $validated['account_number'] ?? null,
-            'ifsc_code'                  => $validated['ifsc_code'] ?? null,
-            'account_type'               => $validated['account_type'] ?? null,
-            'agreed_declaration'         => $request->boolean('agreed_declaration') ? 1 : 0,
-            'llpin_no'                   => $validated['llpin_no'] ?? null,
-            'state'                      => is_array($validated['state']) ? json_encode($validated['state']) : $validated['state'],
-            'region'                     => is_array($validated['region']) ? json_encode($validated['region']) : $validated['region'],
-            'client_name'                => json_encode($validated['client_name']),
-            'organization'               => json_encode($validated['organization']),
-            'phone'                      => json_encode($validated['phone']),
-            'email'                      => json_encode($validated['email']),
-            'year_of_completion'         => json_encode($validated['year_of_completion']),
-            'past_work_photos'           => $uploadedFiles['past_work_photos'],
-            'approved'                   => 0,
-            'created_at'                 => now(),
-            'updated_at'                 => now(),
-        ];
-
-        // 🔹 Merge uploaded file paths into payload
-        $payload = array_merge($payload, $uploadedFiles);
-
-        // 🔹 Save to DB
-        DB::table('business_registrations')->insert($payload);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Business registration saved successfully!'
-        ], 200);
     }
+
 
     public function vendor_confiermetion()
     {
