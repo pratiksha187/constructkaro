@@ -346,15 +346,14 @@ public function project_details()
             ->first();
 
         $projects_details_id = $projects_details->id;
-
         // default value
         $updated = 0;
 
         $exists = DB::table('project_likes')
-            ->where('project_id', $projects_details_id)
-            ->where('vendor_id', $vendorId)
-            ->where('selected_vendor', '1')
-            ->exists();
+                ->where('project_id', $projects_details_id)
+                ->where('vendor_id', $vendorId)
+                ->where('selected_vendor', '1')
+                ->exists();
 
         if ($exists) {
             // Already selected vendor
