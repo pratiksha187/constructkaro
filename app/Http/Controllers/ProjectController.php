@@ -178,24 +178,6 @@ class ProjectController extends Controller
     }
 
 
-
-    // public function project_details(){
-    //     $projectId = session('current_project_id');
-        
-    //     // dd($projectId);
-    //     if (!$projectId) {
-    //         return redirect('/')->with('error', 'No project found in session.');
-    //     }
-
-    //     $project = Project::findOrFail($projectId);
-
-    //     $project_data = DB::table('projects')
-    //                         ->where('id', $projectId)
-    //                         ->first();
-    //     dd($project_data);
-
-    //     return view('web.project_details', compact('project'));
-    // }
 public function project_details()
 {
     $projectId = session('current_project_id');
@@ -402,50 +384,6 @@ public function project_details()
         ]);
     }
 
-//     public function viewProject($id)
-//     {
-//         $project = DB::table('projects_details')->find($id);
-//         // dd($project);
-//         //  $user = session('user'); 
-//         //   $projectKey = $projectId ?: $user->id;
-//         // ✅ Always fetch customer details by user_id (same as project_id)
-//         $projcet_details = DB::table('projects_details')
-//                             ->where('id', $project->id)
-//                             ->first();
-//         $cust_details =  $projcet_details->project_id;
-                           
-// // dd($projcet_details_id);
-//         // if (!$project) {
-//         //     return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
-//         // }
-
-//         // $milestones = DB::table('project_milestones')->where('project_id', $id)->get();
-//         // $payments = DB::table('project_payments')->where('project_id', $id)->get();
-//         // $vendor = DB::table('vendors')->where('id', $project->vendor_id)->first();
-// // , 'milestones', 'payments', 'vendor'
-//         return view('web.customer_project_details', compact('project','cust_details'));
-//     }
-// public function viewProject($id)
-// {
-//     $project = DB::table('projects_details')->find($id);
-
-//     if (!$project) {
-//         return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
-//     }
-
-//     // Fetch project details
-//     $projcet_details = DB::table('projects_details')
-//                         ->where('id', $project->id)
-//                         ->first();
-//     $p_id = $projcet_details->project_id;
-
-//     // Fetch customer details using the project_id (which is actually user_id)
-//     $cust_details = DB::table('projects')
-//                         ->where('id', $p_id)
-//                         ->first();
-// // dd($cust_details);
-//     return view('web.customer_project_details', compact('project', 'cust_details'));
-// }
 public function viewProject($encryptedId)
 {
     try {

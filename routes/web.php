@@ -194,8 +194,10 @@ Route::get('/vendor-agreement', [VendorController::class, 'vendor_terms_conditio
 
 
 Route::get('/make-hash', function () {
-    $password = "Applesmart@97";
+    // $password = "Applesmart@97";
+     $password = "Civilworker123@";
     $hash = Hash::make($password);
 
-    return $hash; // Example: $2y$12$Z9R3PzFUhP...
+    return $hash; 
 });
+// $2y$12$xiAUe2zbuD2cP9gkOtoYcuJsnOg.d0PdtprkuT7nWCbdpxS36/H8y

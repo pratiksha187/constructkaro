@@ -218,7 +218,7 @@
                         <input type="file" id="msme_file" name="msme_file" class="form-control" accept="application/pdf">
                     </div>
                 </div>
-                <div class="col-md-6" id="aadhar_pan_link_section" style="display: none;">
+                <!-- <div class="col-md-6" id="aadhar_pan_link_section" style="display: none;">
                     <label class="form-label">PAN-Aadhar Seeded? *</label>
                     <br>
                     <div class="form-check form-check-inline">
@@ -238,7 +238,7 @@
                   Click here to link PAN with Aadhar
                   </a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <hr>
@@ -266,16 +266,19 @@
                         <option value="">Select account type</option>
                         <option value="1">Savings</option>
                         <option value="2">Current</option>
-                        <option value="3">Salary</option>
+                        <option value="3">Client Referance</option>
                         <option value="4">Fixed Deposit</option>
                         <option value="5">Recurring Deposit</option>
                         <option value="6">NRO (Non-Resident Ordinary)</option>
                         <option value="7">NRE (Non-Resident External)</option>
+                        <option value="8">Overdraft</option>
+                        <option value="9">Cash Credit</option>
+
                     </select>
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy </label>
+                <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy <small class="text-muted">(PDF, max 20 MB)</small></label>
                 <input type="file" id="cancelled_cheque_file" name="cancelled_cheque_file" class="form-control" accept="application/pdf">
             </div>
         </div>
@@ -285,30 +288,30 @@
 
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label required">PAN Card</label>
+                    <label class="form-label required">PAN Card<small class="text-muted">(PDF, max 20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="pan_card_file" name="pan_card_file" class="form-control">
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label required">GST Certificate</label>
+                    <label class="form-label required">GST Certificate<small class="text-muted">(PDF, max 20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="gst_certificate_file" name="gst_certificate_file" class="form-control">
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label required">Aadhaar Card (Authorised Person)</label>
+                    <label class="form-label required">Aadhaar Card (Authorised Person)<small class="text-muted">(PDF, max 20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="aadhaar_card_file" name="aadhaar_card_file" class="form-control">
                 </div>
 
                 <div class="col-md-6">
                     <label id="certificate_label" class="form-label required">
-                        Certificate of Incorporation / LLPIN / SHOP ACT (For Proprietor)
+                        Certificate of Incorporation / LLPIN / SHOP ACT (For Proprietor)<small class="text-muted">(PDF, max 20 MB)</small>
                     </label>
                     <input accept="application/pdf" type="file" id="certificate_of_incorporation_file" name="certificate_of_incorporation_file" class="form-control" multiple>
                     <ul id="file_list" class="file-list"></ul>
                 </div>
 
                 <div class="col-md-12" id="itr_section" style="display:none; margin-top:15px;">
-                    <label class="form-label required">Upload ITR PDFs</label>
+                    <label class="form-label required">Upload ITR PDFs<small class="text-muted">(PDF, max 20 MB)</small></label>
 
                     <div class="mb-2">
                         <label>FY 24–25 *</label>
@@ -328,10 +331,10 @@
                     <label class="form-label required">Turnover Certificate (CA Certified)</label>
                     <input accept="application/pdf" type="file" id="turnover_certificate_file" name="turnover_certificate_file" class="form-control">
                 </div> -->
-                <div class="col-md-6"></div>
+                <!-- <div class="col-md-6"></div> -->
 
-                <div class="col-md-4">
-                    <label class="form-label required">Work Completion Certificate(Add 3 Documents)</label>
+                <!-- <div class="col-md-4">
+                    <label class="form-label required">Work Completion Certificate(Add 3 Documents)<small class="text-muted">(PDF,20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="work_completion_certificates_file1" name="work_completion_certificates_file1" class="form-control">
                     <ul id="work_completion_certificates_list1" class="file-list"></ul>
                 </div>
@@ -346,15 +349,53 @@
                     <label class="form-label required"></label>
                     <input accept="application/pdf" type="file" id="work_completion_certificates_file3" name="work_completion_certificates_file3" class="form-control">
                     <ul id="work_completion_certificates_list3" class="file-list"></ul>
+                </div> -->
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">
+                            Work Completion Certificate <span class="text-danger">(Add 3 Documents)</span>
+                            <small class="text-muted">(PDF only, max 20 MB each)</small>
+                        </label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-semibold">File 1</span>
+                            <input type="file" id="work_completion_certificates_file1"
+                                name="work_completion_certificates_file1"
+                                class="form-control" accept="application/pdf">
+                        </div>
+                        <div id="file-error1" class="text-danger small mt-1" style="display:none;"></div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-semibold">File 2</span>
+                            <input type="file" id="work_completion_certificates_file2"
+                                name="work_completion_certificates_file2"
+                                class="form-control" accept="application/pdf">
+                        </div>
+                        <div id="file-error2" class="text-danger small mt-1" style="display:none;"></div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-semibold">File 3</span>
+                            <input type="file" id="work_completion_certificates_file3"
+                                name="work_completion_certificates_file3"
+                                class="form-control" accept="application/pdf">
+                        </div>
+                        <div id="file-error3" class="text-danger small mt-1" style="display:none;"></div>
+                    </div>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">PF Registration Documents</label>
+                    <label class="form-label">PF Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="pf_documents_file" name="pf_documents_file" class="form-control">
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">ESIC Registration Documents</label>
+                    <label class="form-label">ESIC Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
                     <input accept="application/pdf" type="file" id="esic_documents_file" name="esic_documents_file" class="form-control">
                 </div>
             </div>
@@ -364,11 +405,11 @@
         <div class="form-section">
             <h5>Portfolio & Work Samples</h5>
             <div class="mb-3">
-                <label class="form-label">Upload Portfolio / Company Profile(PDFs) *</label>
+                <label class="form-label">Upload Portfolio / Company Profile(PDFs) * <small class="text-muted">(PDF, max 20 MB)</small></label>
                 <input type="file" id="portfolio_file" name="portfolio_file" class="form-control" accept="application/pdf">
             </div>
             <div class="mb-3">
-                <label class="form-label">License/Certification Upload (PWD,ZP,CIDCO,MJP,CERTIFICATE,ETC)</label>
+                <label class="form-label">License/Certification Upload (PWD,ZP,CIDCO,MJP,CERTIFICATE,ETC)<small class="text-muted">(PDF, max 20 MB)</small></label>
                 <input type="file" id="license_certificate_file" name="license_certificate_file" class="form-control" accept="application/pdf">
             </div>
         </div>
@@ -376,7 +417,7 @@
             <h6 class="fw-bold mb-3">
             Client References 
             <span class="text-muted">(Add minimum 3)</span>
-         </h6>
+            </h6>
             <div id="reference-container">
 
                 <div class="reference-row row g-3 mb-3">
@@ -390,7 +431,7 @@
                         <input type="text" name="phone[]" class="form-control" placeholder="Phone *" required>
                     </div>
                     <div class="col-md-3">
-                        <input type="email" name="email[]" class="form-control" placeholder="Email *" required>
+                        <input type="email" name="email[]" class="form-control" placeholder="Email" required>
                     </div>
                     <div class="col-md-3">
                         <input type="number" name="year_of_completion[]" class="form-control" placeholder="Year of Completion *" min="1900" max="2099" required>

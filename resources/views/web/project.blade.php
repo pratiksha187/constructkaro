@@ -146,7 +146,7 @@
 
                         <!-- Work Type -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Find Your Construction Vendor *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Type of Contractor/Professional*<small class="text-muted">(Civil,Interior,Electrical,Architect,etc..)</small></label>
                             <select id="work_type" name="work_type" class="form-control select2">
                                 <option value="">Select Construction Type</option>
                                 @foreach($workTypes as $type)
@@ -157,7 +157,7 @@
 
                         <!-- Work Subtype -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Project Type *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">What Kind Of Work Do You Want To Start? *<small class="text-muted">(Bungalow,Road Work,Factory,Interior,Plot Development,Renovation,etc..)</small></label>
                             <select id="work_subtype" name="work_subtype" class="form-control select2">
                                 <option value="">Select Work Subtype</option>
                             </select>
@@ -165,7 +165,7 @@
 
                         <!-- Vendor Type -->
                         <div>
-                            <label>Work/Service Model *:</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">How Do You Want The Work To Be Done? *<small class="text-muted">(Labour Only,Labour + Material,Turnkey,Consultancy,Supervision,etc..)</small></label>
                             <select id="vendor_type" name="vendor_type" class="form-control select2">
                                 <option value="">Select Vendor</option>
                             </select>
@@ -173,7 +173,8 @@
 
                         <!-- Sub Vendor Type -->
                         <div>
-                            <label>Work/Service Category *:</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Your Work Category? *<small class="text-muted">(civil Work,Plumbing,Elecrtical,Painting,etc..)</small></label>
+
                             <select id="sub_vendor_type_dropdown" name="sub_vendor_types" class="form-control select2">
                                 <option value="">Select Sub Vendor Type</option>
                             </select>
