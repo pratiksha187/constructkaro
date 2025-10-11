@@ -85,8 +85,10 @@ class AuthController extends Controller
                 $projects_details = DB::table('projects_details')->where('project_id', $user->id)->exists();
               
                 if (!$projects_details) {
-                    return redirect()->route('project');
+                    return redirect()->route('project_details');
                 }
+
+                
 
                 $projects = DB::table('projects_details')
                             ->where('project_id', $user->id)

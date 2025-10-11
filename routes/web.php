@@ -45,8 +45,6 @@ Route::post('/get-vendors', [DropdownController::class, 'getVendors'])->name('ge
 
 Route::get('/get-sub-vendors/{id}', [DropdownController::class, 'getVendorssubcategories']);
 
-
-
 // Route::get('/get-subtypes/{workTypeId}', [ProjectController::class, 'getSubtypes']);
 Route::get('/get-vendors-id/{subtypeId}', [DropdownController::class, 'getVendors_id'])->name('get-vendors-id');
 // Route::get('/get-sub-vendors/{vendorId}', [ProjectController::class, 'getSubVendors']);
