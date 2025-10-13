@@ -212,45 +212,104 @@ public function project_details()
 }
 
 
-  
-    public function project_details_save(Request $request)
-    {
-        $projectId = session('current_project_id');
-        $lastProject = DB::table('projects_details')->latest('id')->first();
-        $pro_id = $lastProject->id;
-        $request->validate([
-            'project_name' => 'required|string',
-            'project_description' => 'nullable|string',
-            'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
-        ]);
+  public function project_details_save(Request $request)
+{
+    $projectId = session('current_project_id');
 
-        $filePaths = [];
+    // Step 1: Validate incoming request
+    $request->validate([
+        'project_name' => 'required|string',
+        'project_description' => 'nullable|string',
+        'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
+    ]);
 
-        // Handle file upload first
-        if ($request->hasFile('file_path')) {
-            foreach ($request->file('file_path') as $file) {
-                $path = $file->store('file_path', 'public'); // store in storage/app/public/project_files
-                $filePaths[] = $path;
-            }
-        }
-
-        // $submission_id = 'PI'.'/'.$projectId;
-        $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
-
-        // Insert project into DB
-        $projectId = DB::table('projects_details')->insertGetId([
-            'project_id' => $projectId,
-            'submission_id' =>$submission_id ,
-            'project_name' => $request->project_name,
-           
-            'project_description' => $request->project_description,
-            'file_path' => !empty($filePaths) ? json_encode($filePaths) : null, 
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return response()->json(['success' => true, 'project_id' => $projectId,'submission_id' => $submission_id]);
+    // Step 2: Handle missing session project ID
+    if (!$projectId) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No active project found in session.'
+        ], 400);
     }
+
+    // Step 3: Get last record safely (can be null)
+    $lastProject = DB::table('projects_details')->latest('id')->first();
+
+    // Step 4: Prevent "read property on null"
+    $pro_id = $lastProject ? $lastProject->id + 1 : 1;
+
+    // Step 5: Handle file upload
+    $filePaths = [];
+    if ($request->hasFile('file_path')) {
+        foreach ($request->file('file_path') as $file) {
+            $path = $file->store('file_path', 'public');
+            $filePaths[] = $path;
+        }
+    }
+
+    // Step 6: Generate unique submission ID
+    $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
+
+    // Step 7: Insert new project detail
+    $newProjectId = DB::table('projects_details')->insertGetId([
+        'project_id' => $projectId,
+        'submission_id' => $submission_id,
+        'project_name' => $request->project_name,
+        'project_description' => $request->project_description,
+        'file_path' => !empty($filePaths) ? json_encode($filePaths) : null,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Step 8: Return success response
+    return response()->json([
+        'success' => true,
+        'project_id' => $newProjectId,
+        'submission_id' => $submission_id,
+    ]);
+}
+
+    // public function project_details_save(Request $request)
+    // {
+    //     $projectId = session('current_project_id');
+    //     $lastProject = DB::table('projects_details')->latest('id')->first();
+        
+    //      $pro_id = $lastProject ? $lastProject->id + 1 : 1;
+         
+    //     // dd($pro_id);
+    //     $pro_id = $lastProject->id;
+    //     $request->validate([
+    //         'project_name' => 'required|string',
+    //         'project_description' => 'nullable|string',
+    //         'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
+    //     ]);
+
+    //     $filePaths = [];
+
+    //     // Handle file upload first
+    //     if ($request->hasFile('file_path')) {
+    //         foreach ($request->file('file_path') as $file) {
+    //             $path = $file->store('file_path', 'public'); // store in storage/app/public/project_files
+    //             $filePaths[] = $path;
+    //         }
+    //     }
+
+    //     // $submission_id = 'PI'.'/'.$projectId;
+    //     $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
+
+    //     // Insert project into DB
+    //     $projectId = DB::table('projects_details')->insertGetId([
+    //         'project_id' => $projectId,
+    //         'submission_id' =>$submission_id ,
+    //         'project_name' => $request->project_name,
+           
+    //         'project_description' => $request->project_description,
+    //         'file_path' => !empty($filePaths) ? json_encode($filePaths) : null, 
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //     ]);
+
+    //     return response()->json(['success' => true, 'project_id' => $projectId,'submission_id' => $submission_id]);
+    // }
 
     public function customer_dashboard()
     {

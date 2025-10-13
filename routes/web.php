@@ -155,6 +155,10 @@ Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadB
 Route::post('/engineer/project/tender', [EngginerController::class, 'storetender'])
     ->name('engineer.project.tender');
 
+Route::get('/Vender-list', [EngginerController::class, 'get_all_vender_list'])->name('get_all_vender_list');
+
+
+
 // routes/web.php or routes/api.php
 Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp']);
 Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp']);
