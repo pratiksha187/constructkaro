@@ -4,6 +4,8 @@
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
 <div class="min-h-screen flex bg-gradient-to-br from-[#f6f8fa] to-[#eef2f7]">
 
@@ -35,7 +37,7 @@
                     <select name="login_as" id="login_as"
                         class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#f25c05]" required>
                         <option value="">-- Select Role --</option>
-                       <option value="staff">Staff</option>
+                        <option value="staff">Staff</option>
                         <option value="vendor">Vendor</option>
                         <option value="customer">Customer</option>
                     </select>
@@ -85,6 +87,9 @@
     </div>
 </div>
 
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 function togglePassword() {
     const passwordInput = document.getElementById('password');
@@ -97,6 +102,16 @@ function togglePassword() {
         toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
     }
 }
-</script>
 
+// SweetAlert for Laravel error message
+@if(session('error'))
+Swal.fire({
+    icon: 'error',
+    title: 'Login Failed',
+    text: '{{ session('error') }}',
+    confirmButtonColor: '#f25c05',
+    confirmButtonText: 'Try Again'
+});
+@endif
+</script>
 @endsection

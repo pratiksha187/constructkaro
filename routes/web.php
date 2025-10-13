@@ -55,6 +55,7 @@ Route::get('/', function () {
 Route::get('/test', [AdminController::class, 'test'])->name('test');
 
 Route::get('/project', [ProjectController::class, 'project'])->name('project');
+Route::get('/customer_basic_info', [ProjectController::class, 'customer_basic_info'])->name('customer_basic_info');
 
 Route::get('/get-sub-categories', [ProjectController::class, 'getSubCategories']);
 Route::get('/get-project-types', [ProjectController::class, 'getProjectTypes']);
@@ -67,6 +68,9 @@ Route::get('/project-details', [ProjectController::class, 'project_details'])->n
 Route::post('/project_details_save', [ProjectController::class, 'project_details_save'])->name('project_details_save');
 
 Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard'])->name('customer.dashboard');
+
+Route::post('/submit-basicinfo', [ProjectController::class, 'storebasicinfo'])->name('customer.basicinfo.store');
+
 
 
 

@@ -249,7 +249,7 @@
 
          <!-- Buttons -->
          <div class="flex flex-col space-y-4">
-            <a href="" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-semibold transition">
+            <a href="{{route('login')}}" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-semibold transition">
             Vendor/Customer
             </a>
          

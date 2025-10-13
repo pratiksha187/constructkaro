@@ -39,7 +39,7 @@
         <li class="nav-item"><a href="{{ url('contactus') }}" class="nav-link">Contact Us</a></li>
         <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
         <li class="nav-item">
-          <a href="{{ route('project') }}" class="btn btn-primary ms-lg-3 mt-2 mt-lg-0">
+          <a href="{{ route('customer_basic_info') }}" class="btn btn-primary ms-lg-3 mt-2 mt-lg-0">
             Post Project
           </a>
         </li>

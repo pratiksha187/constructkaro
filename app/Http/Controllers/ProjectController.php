@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
+    public function customer_basic_info(){
+        $workTypes = DB::table('work_types')->get();
+        $construction_types = DB::table('categories')->orderBy('id')->get();
+        $expected_timeline =DB::table('expected_timeline')->orderBy('id')->get();
+        $budgets = DB::table('budget_range')->orderBy('id')->get();
+        $role_types = DB::table('role')->get();
+        $states = DB::table('states')->where('is_active',1)->get(); 
+        return view('web.customer_basic_info',compact('construction_types','states','role_types','expected_timeline','budgets','workTypes'));
+    }
     public function project(){
         $workTypes = DB::table('work_types')->get();
         $construction_types = DB::table('categories')->orderBy('id')->get();
@@ -50,15 +59,104 @@ class ProjectController extends Controller
         return response()->json($types);
     }
 
+    // public function storebasicinfo(Request $request){
+
+    //     // ✅ Validation
+    //     $validated = $request->validate([
+    //         'full_name'        => 'required|string|max:255',
+    //         'phone_number'     => 'required|string|max:20',
+    //         'email'            => 'required|email|max:255',
+    //         'password'         => 'required|string|min:6|confirmed',
+    //         'role_id'          => 'required|integer',
+    //         'region'        => 'required',
+    //         'city'        => 'required',
+    //         'state'        => 'required'
+        
+    //     ]);
+
+      
+    //     // ✅ Create project
+    //     $project = Project::create([
+    //         'full_name'        => $request->full_name,
+    //         'phone_number'     => $request->phone_number,
+    //         'email'            => $request->email,
+    //         'password'         => Hash::make($request->password),
+    //         'role_id'          => $request->role_id,
+    //         'region'        => $request->region,
+    //         'city'        => $request->city,
+    //         'state'           => $request->state,
+ 
+    //     ]);
+
+    //     session(['current_project_id' => $project->id]);
+
+    //     return response()->json([
+    //         'success'  => true,
+    //         'redirect' => route('project'),
+    //     ]);
+       
+    // }
+public function storebasicinfo(Request $request)
+{
+    // ✅ Step 1: Validate incoming request
+    $validated = $request->validate([
+        'full_name'     => 'required|string|max:255',
+        'phone_number'  => 'required|string|max:20',
+        'email'         => 'required|email|max:255',
+        'gender'        => 'required',
+        'password'      => 'required|string|min:6|confirmed',
+        'role_id'       => 'required|integer',
+        'region'        => 'required|string|max:255',
+        'city'          => 'required|string|max:255',
+        'state'         => 'required|string|max:255',
+    ]);
+
+    // ✅ Step 2: Check if email already exists
+    $existing = DB::table('customer_basic_info')->where('email', $request->email)->exists();
+    if ($existing) {
+        return response()->json([
+            'success' => false,
+            'message' => 'This email is already registered. Please use another email or log in.'
+        ], 400);
+    }
+
+    // ✅ Step 3: Insert into database
+    $projectId = DB::table('customer_basic_info')->insertGetId([
+        'full_name'     => $request->full_name,
+        'phone_number'  => $request->phone_number,
+        'email'         => $request->email,
+        'password'      => Hash::make($request->password),
+        'role_id'       => $request->role_id,
+        'gender'        =>$request->gender,
+        'region'        => $request->region,
+        'city'          => $request->city,
+        'state'         => $request->state,
+        'created_at'    => now(),
+        'updated_at'    => now(),
+    ]);
+
+    // ✅ Step 4: Store current project ID in session
+    session(['current_project_id' => $projectId]);
+
+    // ✅ Step 5: Send response
+    return response()->json([
+        'success'  => true,
+        'message'  => 'Basic info saved successfully.',
+        'redirect' => route('project'),
+        'project_id' => $projectId,
+    ]);
+}
     public function storeproject(Request $request)
     {
+        $projectId = session('current_project_id');
+        // dd($projectId);
         // ✅ Validation
         $validated = $request->validate([
-            'full_name'        => 'required|string|max:255',
-            'phone_number'     => 'required|string|max:20',
-            'email'            => 'required|email|max:255',
-            'password'         => 'required|string|min:6|confirmed',
-            'role_id'          => 'required|integer',
+            // 'full_name'        => 'required|string|max:255',
+            // 'phone_number'     => 'required|string|max:20',
+            // 'email'            => 'required|email|max:255',
+            // 'password'         => 'required|string|min:6|confirmed',
+            // 'role_id'          => 'required|integer',
             'expected_start'   => 'nullable|date',
             'land_area'        => 'nullable|numeric',
             'site_status'      => 'nullable',
@@ -86,9 +184,9 @@ class ProjectController extends Controller
             'vendor_type'     => 'nullable',
             'sub_vendor_types'=> 'nullable',
 
-            'region'        => 'required',
-            'city'        => 'required',
-            'state'        => 'required'
+            // 'region'        => 'required',
+            // 'city'        => 'required',
+            // 'state'        => 'required'
             
             
             
@@ -124,11 +222,12 @@ class ProjectController extends Controller
 
         // ✅ Create project
         $project = Project::create([
-            'full_name'        => $request->full_name,
-            'phone_number'     => $request->phone_number,
-            'email'            => $request->email,
-            'password'         => Hash::make($request->password),
-            'role_id'          => $request->role_id,
+            'user_id' => $projectId,
+            // 'full_name'        => $request->full_name,
+            // 'phone_number'     => $request->phone_number,
+            // 'email'            => $request->email,
+            // 'password'         => Hash::make($request->password),
+            // 'role_id'          => $request->role_id,
 
             'site_ready'       => $request->has('site_ready'),
             'land_location'    => $request->land_location,
@@ -161,9 +260,9 @@ class ProjectController extends Controller
             'sub_vendor_types' => $subVendorTypes,
 
 
-            'region'        => $request->region,
-            'city'        => $request->city,
-            'state'           => $request->state,
+            // 'region'        => $request->region,
+            // 'city'        => $request->city,
+            // 'state'           => $request->state,
             // ✅ Save JSON file paths
             'arch_files'       => !empty($archPaths) ? json_encode($archPaths) : null,
             'struct_files'     => !empty($structPaths) ? json_encode($structPaths) : null,
@@ -177,139 +276,98 @@ class ProjectController extends Controller
         ]);
     }
 
+    
+    public function project_details()
+    {
+        $projectId = session('current_project_id');
 
-public function project_details()
-{
-    $projectId = session('current_project_id');
-
-    if (!$projectId) {
-        return redirect('/')->with('error', 'No project found in session.');
-    }
-
-    $project = DB::table('projects')->where('id', $projectId)->first();
-
-    if (!$project) {
-        return redirect('/')->with('error', 'Project not found.');
-    }
-
-    // Default state
-    $showFullAddons = false;
-
-    // ✅ Apply same logic for work_type 1 and 4
-    if (in_array($project->work_type, [1, 4])) {
-        if (
-            $project->arch_drawings == 0 ||
-            $project->struct_drawings == 0 ||
-            $project->has_boq == 0
-        ) {
-            $showFullAddons = true;
+        if (!$projectId) {
+            return redirect('/')->with('error', 'No project found in session.');
         }
+
+        $project = DB::table('projects')->where('id', $projectId)->first();
+
+        if (!$project) {
+            return redirect('/')->with('error', 'Project not found.');
+        }
+
+        // Default state
+        $showFullAddons = false;
+
+        // ✅ Apply same logic for work_type 1 and 4
+        if (in_array($project->work_type, [1, 4])) {
+            if (
+                $project->arch_drawings == 0 ||
+                $project->struct_drawings == 0 ||
+                $project->has_boq == 0
+            ) {
+                $showFullAddons = true;
+            }
+        }
+
+        // dd($showFullAddons);
+
+        return view('web.project_details', compact('project', 'showFullAddons'));
     }
 
-    // dd($showFullAddons);
 
-    return view('web.project_details', compact('project', 'showFullAddons'));
-}
+    public function project_details_save(Request $request)
+    {
+        $projectId = session('current_project_id');
 
+        // Step 1: Validate incoming request
+        $request->validate([
+            'project_name' => 'required|string',
+            'project_description' => 'nullable|string',
+            'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
+        ]);
 
-  public function project_details_save(Request $request)
-{
-    $projectId = session('current_project_id');
+        // Step 2: Handle missing session project ID
+        if (!$projectId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No active project found in session.'
+            ], 400);
+        }
 
-    // Step 1: Validate incoming request
-    $request->validate([
-        'project_name' => 'required|string',
-        'project_description' => 'nullable|string',
-        'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
-    ]);
+        // Step 3: Get last record safely (can be null)
+        $lastProject = DB::table('projects_details')->latest('id')->first();
 
-    // Step 2: Handle missing session project ID
-    if (!$projectId) {
+        // Step 4: Prevent "read property on null"
+        $pro_id = $lastProject ? $lastProject->id + 1 : 1;
+
+        // Step 5: Handle file upload
+        $filePaths = [];
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $file) {
+                $path = $file->store('file_path', 'public');
+                $filePaths[] = $path;
+            }
+        }
+
+        // Step 6: Generate unique submission ID
+        $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
+
+        // Step 7: Insert new project detail
+        $newProjectId = DB::table('projects_details')->insertGetId([
+            'project_id' => $projectId,
+            'submission_id' => $submission_id,
+            'project_name' => $request->project_name,
+            'project_description' => $request->project_description,
+            'file_path' => !empty($filePaths) ? json_encode($filePaths) : null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Step 8: Return success response
         return response()->json([
-            'success' => false,
-            'message' => 'No active project found in session.'
-        ], 400);
+            'success' => true,
+            'project_id' => $newProjectId,
+            'submission_id' => $submission_id,
+        ]);
     }
 
-    // Step 3: Get last record safely (can be null)
-    $lastProject = DB::table('projects_details')->latest('id')->first();
 
-    // Step 4: Prevent "read property on null"
-    $pro_id = $lastProject ? $lastProject->id + 1 : 1;
-
-    // Step 5: Handle file upload
-    $filePaths = [];
-    if ($request->hasFile('file_path')) {
-        foreach ($request->file('file_path') as $file) {
-            $path = $file->store('file_path', 'public');
-            $filePaths[] = $path;
-        }
-    }
-
-    // Step 6: Generate unique submission ID
-    $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
-
-    // Step 7: Insert new project detail
-    $newProjectId = DB::table('projects_details')->insertGetId([
-        'project_id' => $projectId,
-        'submission_id' => $submission_id,
-        'project_name' => $request->project_name,
-        'project_description' => $request->project_description,
-        'file_path' => !empty($filePaths) ? json_encode($filePaths) : null,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-    // Step 8: Return success response
-    return response()->json([
-        'success' => true,
-        'project_id' => $newProjectId,
-        'submission_id' => $submission_id,
-    ]);
-}
-
-    // public function project_details_save(Request $request)
-    // {
-    //     $projectId = session('current_project_id');
-    //     $lastProject = DB::table('projects_details')->latest('id')->first();
-        
-    //      $pro_id = $lastProject ? $lastProject->id + 1 : 1;
-         
-    //     // dd($pro_id);
-    //     $pro_id = $lastProject->id;
-    //     $request->validate([
-    //         'project_name' => 'required|string',
-    //         'project_description' => 'nullable|string',
-    //         'file_path.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
-    //     ]);
-
-    //     $filePaths = [];
-
-    //     // Handle file upload first
-    //     if ($request->hasFile('file_path')) {
-    //         foreach ($request->file('file_path') as $file) {
-    //             $path = $file->store('file_path', 'public'); // store in storage/app/public/project_files
-    //             $filePaths[] = $path;
-    //         }
-    //     }
-
-    //     // $submission_id = 'PI'.'/'.$projectId;
-    //     $submission_id = 'PI/' . date('Y') . '/' . str_pad($pro_id, 6, '0', STR_PAD_LEFT);
-
-    //     // Insert project into DB
-    //     $projectId = DB::table('projects_details')->insertGetId([
-    //         'project_id' => $projectId,
-    //         'submission_id' =>$submission_id ,
-    //         'project_name' => $request->project_name,
-           
-    //         'project_description' => $request->project_description,
-    //         'file_path' => !empty($filePaths) ? json_encode($filePaths) : null, 
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ]);
-
-    //     return response()->json(['success' => true, 'project_id' => $projectId,'submission_id' => $submission_id]);
-    // }
 
     public function customer_dashboard()
     {

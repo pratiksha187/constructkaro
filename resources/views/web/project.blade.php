@@ -40,106 +40,10 @@
             {{-- IMPORTANT: novalidate so our JS shows custom messages --}}
             <form id="projectForm" class="space-y-10" action="{{ route('project.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                 @csrf
-                <!-- 1. Basic Information -->
+                
                 <div class="section-divider">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                   <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">1</span>
-                  Basic Information
-               </h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="relative">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                            <input type="text" id="full_name" name="full_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Enter your full name">
-                        </div>
-                        <div class="relative">
-                            <label>Mobile Number *</label>
-                            <input type="text" name="phone_number" id="phone_number" class="form-control" required maxlength="10" pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$" title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
-                            <button type="button" id="sendOtpBtn" class="btn btn-primary mt-2">Send OTP</button>
-                        </div>
-                        <div class="relative">
-                            <label>Enter OTP *</label>
-                            <input type="text" id="otp" name="otp" class="form-control" maxlength="6" pattern="\d{6}" title="Enter the 6-digit OTP">
-                            <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
-                            <span id="otpStatus" class="ms-2 fw-bold"></span>
-                        </div>
-
-                        <div class="mb-3 position-relative">
-                            <label for="email" class="form-label">Email ID *</label>
-                            <input type="email" name="email" id="email" class="form-control" required autocomplete="off">
-
-                            <!-- Suggestion dropdown -->
-                            <div id="suggestions" class="position-absolute bg-white border rounded w-100 mt-1 shadow-sm hidden" style="z-index: 1000;"></div>
-
-                            <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">
-                                Send Email OTP
-                            </button>
-                        </div>
-                        <div class="relative">
-                            <label>Enter Email OTP *</label>
-                            <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
-                            <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
-                        </div>
-                        <div class="relative">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
-                            <div class="relative">
-                                <input type="password" name="password" id="passwordInput" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Create a password">
-                                <button type="button" id="passwordToggleBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Toggle password visibility">
-                                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
-                            <div class="relative">
-                                <input type="password" name="password_confirmation" id="confirmPasswordInput" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all" placeholder="Confirm your password">
-                                <button type="button" id="confirmPasswordToggleBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Toggle confirm password visibility">
-                                    <svg id="eyeIconConfirm" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Role *</label>
-                            <select required id="role_id" name="role_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all">
-                                <option value="">Select your role</option>
-                                @foreach($role_types as $role)
-                                <option value="{{ $role->id }}">{{ $role->role }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="relative">
-                            <label for="state" class="form-label">Select State</label>
-                            <select name="state" id="state" class="form-control">
-                                <option value="">-- Select State --</option>
-                                @foreach ($states as $state)
-                                <option value="{{ $state->id }}">{{ $state->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="relative">
-                            <label for="region" class="form-label">Select Region</label>
-                            <select name="region" id="region" class="form-control">
-                                <option value="">-- Select Region --</option>
-                            </select>
-                        </div>
-                        <div class="relative">
-                            <label for="city" class="form-label">Select City</label>
-                            <select name="city" id="city" class="form-control">
-                                <option value="">-- Select City --</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <!-- 2. Project Details -->
-
-                <div class="section-divider">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">2</span>
                   Project Details
                </h2>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -185,7 +89,7 @@
                 <!-- 3. Site Information -->
                 <div class="section-divider">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">3</span>
+                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">2</span>
                   Site Information
                </h2>
                     <div class="mb-6">
@@ -276,7 +180,7 @@
                 <!-- 4. Documentation -->
                 <div class="section-divider">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">4</span>
+                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">3</span>
                   Documentation
                </h2>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -344,7 +248,7 @@
                 <!-- 5. Timeline & Budget -->
                 <div class="section-divider">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">5</span>
+                  <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">4</span>
                   Timeline & Budget
                </h2>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -703,45 +607,7 @@
          if(['0123456789','1234567890','9876543210'].includes(digits)) return false; // obvious sequences
          return true;
        }
-       
-       /* Clamp phone input: digits only, max 10 */
-       const phoneInput = document.getElementById('phone_number');
-       const phoneError = document.getElementById('phone_error');
-       phoneInput.addEventListener('input', function(){
-         this.value = this.value.replace(/\D/g,'').slice(0,10);
-         phoneError.textContent = '';
-       });
-       
-       /* Password toggles */
-       document.getElementById('passwordToggleBtn').addEventListener('click', () => {
-         const input = document.getElementById('passwordInput');
-         const icon = document.getElementById('eyeIcon');
-         if(input.type === 'password'){
-           input.type = 'text';
-           icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.056 10.056 0 012.59-4.263M6.423 6.423A9.956 9.956 0 0112 5c4.477 0 8.267 2.943 9.541 7a10.05 10.05 0 01-4.421 5.681M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`;
-         }else{
-           input.type = 'password';
-           icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-         }
-       });
-       document.getElementById('confirmPasswordToggleBtn').addEventListener('click', () => {
-         const input = document.getElementById('confirmPasswordInput');
-         const icon = document.getElementById('eyeIconConfirm');
-         if (input.type === 'password') {
-           input.type = 'text';
-           icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.056 10.056 0 012.59-4.263M6.423 6.423A9.956 9.956 0 0112 5c4.477 0 8.267 2.943 9.541 7a10.05 10.05 0 01-4.421 5.681M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`;
-         } else {
-           input.type = 'password';
-           icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-         }
-       });
-       
+         
        /* Land details & BOQ toggles */
        document.getElementById('siteReady').addEventListener('change', function(){
          const d = document.getElementById('landDetails');
@@ -758,26 +624,7 @@
          clearAllErrors(form);
          let ok = true;
        
-         const fullName = form.querySelector('#full_name');
-         if(!fullName.value.trim() || fullName.value.trim().length < 2){ setError(fullName, 'Enter your full name.'); ok = false; }
-       
-         const phone = form.querySelector('#phone_number');
-         if(!isValidIndianMobile(phone.value)){ setError(phone, 'Enter a valid Indian mobile number (10 digits starting 6–9).'); ok = false; }
-       
-       
-         const email = form.querySelector('#email');
-         if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())){ setError(email, 'Enter a valid email address.'); ok = false; }
-       
-         const pass = form.querySelector('#passwordInput');
-         if(!pass.value || pass.value.length < 6){ setError(pass, 'Password must be at least 6 characters.'); ok = false; }
-       
-         const confirmPass = form.querySelector('#confirmPasswordInput');
-         if(!confirmPass.value){ setError(confirmPass, 'Please confirm your password.'); ok = false; }
-         else if(confirmPass.value !== pass.value){ setError(confirmPass, 'Passwords do not match.'); ok = false; }
-       
-         const role = form.querySelector('#role_id');
-         if(!role.value){ setError(role, 'Select your role.'); ok = false; }
-       
+        
          const siteReady = form.querySelector('#siteReady')?.checked;
          if(siteReady){
            const landLoc = form.querySelector('#land_location');
@@ -856,84 +703,12 @@
        }
 </script>
 <script>
-    let otpVerified = false; // global flag
        
-       // --- SEND OTP ---
-       document.getElementById('sendOtpBtn').addEventListener('click', function() {
-           let mobile = document.getElementById('phone_number').value.trim();
-       
-           if (!/^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$/.test(mobile)) {
-               alert("Please enter a valid mobile number.");
-               return;
-           }
-       
-           fetch("{{ url('/send-otp') }}", {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-                   'X-CSRF-TOKEN': '{{ csrf_token() }}'
-               },
-               body: JSON.stringify({ mobile: mobile })
-           })
-           .then(res => res.json())
-           .then(data => {
-               if (data.status === 'success') {
-                   alert('OTP sent successfully!');
-               } else {
-                   alert('Error: ' + data.message);
-               }
-           })
-           .catch(error => console.error('Error:', error));
-       });
-       
-       // --- VERIFY OTP ---
-       document.getElementById('verifyOtpBtn').addEventListener('click', function() {
-        let otp = document.getElementById('otp').value.trim();
-        let otpStatus = document.getElementById('otpStatus');
-        let verifyBtn = document.getElementById('verifyOtpBtn');
-       
-        if (!/^\d{6}$/.test(otp)) {
-            otpStatus.innerHTML = "<span style='color:red'>❌ Please enter a valid 6-digit OTP.</span>";
-            return;
-        }
-       
-        fetch("{{ url('/verify-otp') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ otp: otp })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                otpVerified = true;
-       
-                // ✅ Replace button with message
-                verifyBtn.style.display = "none";  
-                otpStatus.innerHTML = "<span style='color:green'>✅ OTP Verified</span>";
-       
-                // Optional: disable OTP input after success
-                document.getElementById('otp').readOnly = true;
-       
-            } else {
-                otpVerified = false;
-                otpStatus.innerHTML = "<span style='color:red'>❌ Invalid OTP</span>";
-            }
-        })
-        .catch(error => console.error('Error:', error));
-       });
-       
-       // --- FORM SUBMIT ---
        document.getElementById('projectForm').addEventListener('submit', function(e) {
            e.preventDefault();
            const form = this;
        
-           if (!otpVerified) {
-               alert("Please verify your OTP before submitting the form.");
-               return;
-           }
+        
        
            if (!validateForm(form)) return;
        
@@ -970,94 +745,5 @@
            });
        });
 </script>
-<script>
-    // State → Region
-       $('#state').on('change', function() {
-           let state_id = $(this).val();
-           $('#region').empty().append('<option value="">-- Select Region --</option>');
-           $('#city').empty().append('<option value="">-- Select City --</option>');
-       
-           if (state_id) {
-               $.get('/get-regions/' + state_id, function(data) {
-                   $.each(data, function(key, value) {
-                       $('#region').append('<option value="'+ key +'">'+ value +'</option>');
-                   });
-               });
-           }
-       });
-       
-       // Region → City
-       $('#region').on('change', function() {
-           let region_id = $(this).val();
-           $('#city').empty().append('<option value="">-- Select City --</option>');
-       
-           if (region_id) {
-               $.get('/get-cities/' + region_id, function(data) {
-                   $.each(data, function(key, value) {
-                       $('#city').append('<option value="'+ key +'">'+ value +'</option>');
-                   });
-               });
-           }
-       });
-       
-       
-       
-           // Send Email OTP
-       $('#sendEmailOtpBtn').on('click', function() {
-        let email = $('#email').val();
-       
-        fetch('/send-email-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ email: email })
-        })
-        .then(res => res.json())
-       
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Email OTP sent successfully!');
-            } else {
-                alert('Error: ' + data.message);
-            }
-        });
-        // .then(data => alert(data.message));
-       });
-       
-       // Verify Email OTP
-       $('#verifyEmailOtpBtn').on('click', function() {
-        let otp = $('#emailOtp').val();
-       
-        fetch('/verify-email-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ otp: otp })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Change button state
-                let btn = document.getElementById('verifyEmailOtpBtn');
-                btn.innerText = "Email OTP Verified ✅";
-                btn.classList.remove("btn-success");
-                btn.classList.add("btn-outline-success");
-                btn.disabled = true;
-       
-                // Show a green success message
-                let msgBox = document.createElement("div");
-                msgBox.classList.add("text-success", "mt-2");
-                // msgBox.innerText = "Email OTP verified successfully!";
-                btn.parentNode.appendChild(msgBox);
-            } else {
-                alert('Invalid Email OTP');
-            }
-        });
-        // .then(data => alert(data.message));
-       });
-</script>
+
 @endsection
