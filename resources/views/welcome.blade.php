@@ -37,7 +37,7 @@
                   Get quotes, compare contractors, and start building today.
                </p>
                <div class="flex gap-4 mb-10 flex-wrap">
-                  <a href="{{ route('project') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow font-semibold">
+                  <a href="{{ route('customer_basic_info') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow font-semibold">
                   Post a Project
                   </a>
                   <a href="{{route('vendor')}}" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg shadow font-semibold">
