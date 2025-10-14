@@ -251,7 +251,6 @@ public function get_all_vender_list()
             'br.email as br_email',
             'br.year_of_completion as br_year_of_completion',
             'br.esic_documents_file as br_esic_documents_file',
-
             'br.created_at as br_created_at',
             'br.updated_at as br_updated_at',
             'br.user_id as br_user_id',
