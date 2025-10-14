@@ -255,7 +255,8 @@ public function get_all_vender_list()
             'br.updated_at as br_updated_at',
             'br.user_id as br_user_id',
             'br.approved as br_approved',
-
+            'br.call_status as call_status',
+         
             'br.state as br_state',
             'br.region as br_region',
             'br.city as br_city',
@@ -272,5 +273,41 @@ public function get_all_vender_list()
 
     return view('engg.get_all_vender_list', compact('allvendor'));
 }
+
+public function updateVendorCallStatus(Request $request)
+{
+    $request->validate([
+        'vendor_id' => 'required|integer',
+        'call_status' => 'required|string|max:255',
+        'call_remarks' => 'nullable|string',
+    ]);
+
+    // Check if vendor already has a call entry
+    $existing = DB::table('vendor_calls')->where('vendor_id', $request->vendor_id)->first();
+
+    if ($existing) {
+        // ✅ Update existing
+        DB::table('vendor_calls')
+            ->where('vendor_id', $request->vendor_id)
+            ->update([
+                'call_status' => $request->call_status,
+                'call_remarks' => $request->call_remarks,
+                'updated_at' => now(),
+            ]);
+    } else {
+        // ✅ Or insert new
+        DB::table('vendor_calls')->insert([
+            'vendor_id' => $request->vendor_id,
+            'call_status' => $request->call_status,
+            'call_remarks' => $request->call_remarks,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    return response()->json(['success' => true]);
+}
+
+
 
 }

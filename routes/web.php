@@ -161,7 +161,8 @@ Route::post('/engineer/project/tender', [EngginerController::class, 'storetender
 
 Route::get('/Vender-list', [EngginerController::class, 'get_all_vender_list'])->name('get_all_vender_list');
 
-
+Route::post('/engineer/vendor/update-call-status', [EngginerController::class, 'updateVendorCallStatus'])
+     ->name('engineer.vendor.updateCallStatus');
 
 // routes/web.php or routes/api.php
 Route::post('/send-email-otp', [OtpController::class, 'sendEmailOtp']);
