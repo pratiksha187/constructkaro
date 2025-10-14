@@ -164,7 +164,7 @@
               <td class="fw-semibold">{{ $vendor->vendor_name }}</td>
               <td class="text-muted">{{ $vendor->vendor_mobile }}</td>
               <td class="text-muted">{{ $vendor->vendor_email }}</td>
-              <td class="text-muted">{{ $vendor->vendor_work_type_id }}</td>
+              <td class="text-muted">{{ $vendor->vendor_work_type_name }}</td>
 
               <td class="text-muted">{{ $vendor->vendor_business_name }}</td>
               
