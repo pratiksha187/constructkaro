@@ -75,9 +75,9 @@
   <div class="mt-10" x-show="tab === 'projects'" x-transition>
     <h2 class="text-xl font-semibold text-navy mb-4">Your Projects</h2>
 
-    @if($projects->count() > 0)
+    @if($projects_details->count() > 0)
       <div class="grid md:grid-cols-3 gap-6">
-        @foreach($projects as $index => $project)
+        @foreach($projects_details as $index => $project)
           @php
             $status = $project->confirm == 1 ? 'Confirmed' : 'Pending';
             $statusColor = $project->confirm == 1 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
@@ -215,7 +215,7 @@
       <!-- ================= BASIC DETAILS ================= -->
       <h3 class="text-lg font-semibold text-navy mb-3 flex items-center gap-2">
         <i class="bi bi-info-circle text-orange"></i> Basic Information
-      </h3>
+      </h3> 
 
       <div class="grid md:grid-cols-2 gap-4 mb-8">
         <div>

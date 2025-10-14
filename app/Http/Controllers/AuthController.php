@@ -202,13 +202,14 @@ public function login(Request $request)
     if ($role === 'customer') {
         // Step 1: Find user in customer_basic_info
         $user = DB::table('customer_basic_info')->where('email', $request->email)->first();
-
+// dd( $user);
         if (!$user) {
             return back()->with('error', 'No account found. Please register first.');
         }
 
         // Step 2: Verify password
         if (!Hash::check($request->password, $user->password)) {
+          
             return back()->with('error', 'Invalid email or password.');
         }
 
@@ -216,7 +217,7 @@ public function login(Request $request)
         $projectExists = DB::table('projects')
             ->where('user_id', $user->id)
             ->exists();
-
+//   dd($projectExists);
         if (!$projectExists) {
             // No project found → send to project page
             session(['user' => $user]);

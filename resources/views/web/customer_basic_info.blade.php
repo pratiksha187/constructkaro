@@ -74,7 +74,14 @@
                                 Send Email OTP
                             </button>
                         </div>
+                       
+
                         <div class="relative">
+                            <label>Enter Email OTP *</label>
+                            <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
+                            <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
+                        </div>
+                         <div class="relative">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
                             <select name="gender" id="gender" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-blue focus:border-custom-blue transition-all">
@@ -83,12 +90,6 @@
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
-                        </div>
-
-                        <div class="relative">
-                            <label>Enter Email OTP *</label>
-                            <input type="text" id="emailOtp" name="email_otp" class="form-control" maxlength="6">
-                            <button type="button" id="verifyEmailOtpBtn" class="btn btn-success mt-2">Verify Email OTP</button>
                         </div>
                         <div class="relative">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>

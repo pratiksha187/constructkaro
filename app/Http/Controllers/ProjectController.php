@@ -367,40 +367,103 @@ public function storebasicinfo(Request $request)
         ]);
     }
 
-
-
-    public function customer_dashboard()
-    {
-        $user = session('user'); // ✅ user from login
-       
-        $projectId = session('current_project_id'); // ✅ project from form (optional)
-
-        $projectKey = $projectId ?: $user->id;
-        // ✅ Always fetch customer details by user_id (same as project_id)
-        $cust_details = DB::table('projects')
-                            ->where('id', $projectKey)
-                            ->first();
-// dd($cust_details);
-        $projects = DB::table('projects_details')
-                        ->where('project_id', $projectKey)
-                        ->get();
-// dd($projects);
-
-        $vendors = DB::table('business_registrations')
-                ->where('user_id', '11')
-                ->get();
-
-        $states = DB::table('states')->where('is_active',1)->get(); 
-        $role_types = DB::table('role')->get();
-
-        $company_socials = [
-                'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-                'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-                'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-            ];
-    // dd($states);
-        return view('web.customer_dashboard', compact('projects', 'cust_details', 'projectKey','vendors','states','role_types','company_socials'));
+public function customer_dashboard()
+{
+    $user = session('user'); // ✅ user info from session
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Please login first.');
     }
+
+    $projectId = session('current_project_id'); // ✅ optional project from form
+    $projectKey = $user->id;
+
+    // ✅ Fetch customer details using user_id
+    $cust_details = DB::table('customer_basic_info')
+                        ->where('id', $projectKey)
+                        ->first();
+
+    // ✅ Fetch all projects for this user
+    $projects = DB::table('projects')
+                    ->where('user_id', $projectKey)
+                    ->get();
+
+    // ✅ Fetch project details only if projectId is available
+    $projects_details = collect(); // Empty by default
+   
+    if (!empty($projectId)) {
+        $projects_details = DB::table('projects_details')
+                                ->where('project_id', $projectId)
+                                ->get();
+    }
+//  dd($projects_details);
+    // ✅ Fetch vendors (change logic if you need dynamic vendors later)
+    // $vendors = DB::table('business_registrations')
+    //                 ->where('is_active', 1)
+    //                 ->get();
+
+    // ✅ Fetch states and role types
+    $states = DB::table('states')
+                    ->where('is_active', 1)
+                    ->get();
+
+    $role_types = DB::table('role')->get();
+
+    // ✅ Company social links
+    $company_socials = [
+        'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
+        'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
+        'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
+    ];
+
+    return view('web.customer_dashboard', compact(
+        'projects',
+        'cust_details',
+        'projects_details',
+        'projectKey',
+        // 'vendors',
+        'states',
+        'role_types',
+        'company_socials'
+    ));
+}
+
+//     public function customer_dashboard()
+//     {
+//         $user = session('user'); // ✅ user from login
+//     //  dd($user);
+//         $projectId = session('current_project_id'); // ✅ project from form (optional)
+
+//         // $projectKey = $projectId ?: $user->id;
+//        $projectKey =$user->id;
+// // dd( $projectKey );
+//         // ✅ Always fetch customer details by user_id (same as project_id)
+//         $cust_details = DB::table('customer_basic_info')
+//                             ->where('id', $projectKey)
+//                             ->first();
+// // dd( $cust_details );
+//         $projects = DB::table('projects')
+//                         ->where('user_id', $projectKey)
+//                         ->get();
+//         $projects_details = DB::table('projects_details')
+//                         ->where('project_id', $projectId)
+//                         ->get();
+// // dd($projects);
+
+//         $vendors = DB::table('business_registrations')
+//                 ->where('user_id', '11')
+//                 ->get();
+
+//         $states = DB::table('states')->where('is_active',1)->get(); 
+//         $role_types = DB::table('role')->get();
+
+//         $company_socials = [
+//                 'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
+//                 'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
+//                 'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
+//             ];
+//     // dd($states);
+//         return view('web.customer_dashboard', compact('projects', 'cust_details','projects_details', 'projectKey','vendors','states','role_types','company_socials'));
+//     }
 
 
     

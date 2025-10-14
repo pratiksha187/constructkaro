@@ -137,22 +137,22 @@ class EngginerController extends Controller
 
     // }
     public function get_all_vender_list()
-{
-    $allvendor = DB::table('service_provider as sp')
-        ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
-        ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
-        ->select(
-            'sp.*',
-           
-            'asv.*',
-           
-            'br.*'
-        )
-        ->orderBy('sp.id', 'desc')
-        ->paginate(10);
-dd($allvendor);
-    return view('engg.get_all_vender_list', compact('allvendor'));
-}
+    {
+        $allvendor = DB::table('service_provider as sp')
+            ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
+            ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
+            ->select(
+                'sp.*',
+            
+                'asv.*',     
+            
+                'br.*'
+            )
+            ->orderBy('sp.id', 'desc')
+            ->paginate(10);
+    // dd($allvendor);
+        return view('engg.get_all_vender_list', compact('allvendor'));
+    }
 
 
 }
