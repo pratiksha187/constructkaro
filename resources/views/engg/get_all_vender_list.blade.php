@@ -161,22 +161,22 @@
   @forelse($allvendor as $index => $vendor)
     <tr>
       <td>{{ $allvendor->firstItem() + $index }}</td>
-      <td class="fw-semibold">{{ $vendor->name }}</td>
-      <td class="text-muted">{{ $vendor->mobile }}</td>
-      <td class="text-muted">{{ $vendor->email }}</td>
-      <td class="text-muted">{{ $vendor->business_name }}</td>
+      <td class="fw-semibold">{{ $vendor->vendor_name }}</td>
+      <td class="text-muted">{{ $vendor->vendor_mobile }}</td>
+      <td class="text-muted">{{ $vendor->vendor_email }}</td>
+      <td class="text-muted">{{ $vendor->vendor_business_name }}</td>
       
       <td>
         <button class="btn btn-outline-primary btn-sm" 
                 data-bs-toggle="modal" 
-                data-bs-target="#viewVendorModal{{ $vendor->id }}">
+                data-bs-target="#viewVendorModal{{ $vendor->vendor_id }}">
           <i class="bi bi-eye"></i> View
         </button>
       </td>
     </tr>
 
     {{-- View Modal --}}
-    <div class="modal fade" id="viewVendorModal{{ $vendor->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="viewVendorModal{{ $vendor->vendor_id }}" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg rounded-4">
           <div class="modal-header bg-light">
@@ -192,23 +192,23 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Vendor Name</p>
-    <p class="fw-bold">{{ $vendor->name ?? 'No added data' }}</p>
+    <p class="fw-bold">{{ $vendor->vendor_name ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Email</p>
-    <p class="fw-bold">{{ $vendor->email ?? 'No added data' }}</p>
+    <p class="fw-bold">{{ $vendor->vendor_email ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Phone</p>
-    <p class="fw-bold">{{ $vendor->mobile ?? 'No added data' }}</p>
+    <p class="fw-bold">{{ $vendor->vendor_mobile ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Business Name</p>
-    <p class="fw-bold">{{ $vendor->business_name ?? 'No added data' }}</p>
+    <p class="fw-bold">{{ $vendor->vendor_business_name ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">GST Number</p>
-    <p class="fw-bold">{{ $vendor->gst_number ?? 'No added data' }}</p>
+    <p class="fw-bold">{{ $vendor->vendor_gst_number ?? 'No added data' }}</p>
   </div>
 </div>
 
@@ -217,15 +217,15 @@
 <div class="row mt-2">
   <div class="col-md-6">
     <p class="fw-semibold text-muted mb-1">Company Name</p>
-    <p>{{ $vendor->company_name ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_company_name ?? 'No added data' }}</p>
   </div>
   <div class="col-md-6">
     <p class="fw-semibold text-muted mb-1">Type of Entity</p>
-    <p>{{ $vendor->entity_type ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_entity_type ?? 'No added data' }}</p>
   </div>
   <div class="col-md-12">
     <p class="fw-semibold text-muted mb-1">Registered Address</p>
-    <p>{{ $vendor->registered_address ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_registered_address ?? 'No added data' }}</p>
   </div>
 </div>
 
@@ -234,23 +234,23 @@
 <div class="row mt-2">
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">PAN Number</p>
-    <p>{{ $vendor->pan_number ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_pan_number ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Bank Name</p>
-    <p>{{ $vendor->bank_name ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_bank_name ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Account Number</p>
-    <p>{{ $vendor->account_number ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_account_number ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">IFSC Code</p>
-    <p>{{ $vendor->ifsc_code ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_ifsc_code ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Account Type</p>
-    <p>{{ $vendor->account_type ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_account_type ?? 'No added data' }}</p>
   </div>
 </div>
 
@@ -259,19 +259,19 @@
 <div class="row mt-2">
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Experience Years</p>
-    <p>{{ $vendor->experience_years ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_experience_years ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Team Size</p>
-    <p>{{ $vendor->team_size ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_team_size ?? 'No added data' }}</p>
   </div>
   <div class="col-md-4">
     <p class="fw-semibold text-muted mb-1">Minimum Project Value</p>
-    <p>{{ $vendor->min_project_value ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_min_project_value ?? 'No added data' }}</p>
   </div>
   <div class="col-md-12">
     <p class="fw-semibold text-muted mb-1">Service Coverage Area</p>
-    <p>{{ $vendor->service_coverage_area ?? 'No added data' }}</p>
+    <p>{{ $vendor->br_service_coverage_area ?? 'No added data' }}</p>
   </div>
 </div>
 
