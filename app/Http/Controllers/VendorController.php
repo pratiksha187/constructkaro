@@ -83,7 +83,7 @@ class VendorController extends Controller
     public function types_of_agency()
     {
         $agencyTypes = DB::table('work_subtypes')->get();
-         $workTypes = DB::table('work_types')->get();
+        $workTypes = DB::table('work_types')->get();
         // dd($agencyTypes);
         return view('web.types_of_agency', compact('agencyTypes','workTypes'));
     }

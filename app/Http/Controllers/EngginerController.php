@@ -183,6 +183,7 @@ public function get_all_vender_list()
     $allvendor = DB::table('service_provider as sp')
         ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
         ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
+        ->leftJoin('work_types as wt', 'wt.id', '=', 'asv.work_type_id')
         ->select(
             // ========================== SERVICE PROVIDER (sp) ==========================
             'sp.id as vendor_id',
@@ -198,6 +199,7 @@ public function get_all_vender_list()
 
             // ========================== AGENCY SERVICES (asv) ==========================
             'asv.work_type_id as vendor_work_type_id',
+            'wt.work_type as vendor_work_type_name',
             'asv.work_subtype_id as vendor_work_subtype_id',
             'asv.vendor_type_id as vendor_type_id',
             'asv.sub_vendor_types as sub_vendor_types',
