@@ -262,7 +262,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Type of Account </label>
-                    <select class="form-select" id="account_type" name="account_type" required>
+                    <select class="form-select" id="account_type" name="account_type">
                         <option value="">Select account type</option>
                         <option value="1">Savings</option>
                         <option value="2">Current</option>

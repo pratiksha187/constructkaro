@@ -213,7 +213,7 @@
                         <p class="fw-bold">{{ $vendor->vendor_gst_number ?? 'No added data' }}</p>
                       </div>
                     </div>
- {{-- Company Info --}}
+                    {{-- Company Info --}}
                     <h6 class="fw-bold border-bottom pb-2 mt-3">Working Information</h6>
                     <div class="row mt-2">
                       <div class="col-md-6">
@@ -238,8 +238,6 @@
                         <p>{{ $vendor->br_registered_address ?? 'No added data' }}</p>
                       </div>
                     </div>
-
-                   
 
                     {{-- Registration & Bank --}}
                     <h6 class="fw-bold border-bottom pb-2 mt-4">Registration & Bank Details</h6>
