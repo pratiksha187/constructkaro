@@ -146,137 +146,231 @@ public function storebasicinfo(Request $request)
         'project_id' => $projectId,
     ]);
 }
+    // public function storeproject(Request $request)
+    // {
+    //     $user = session('user');
+
+
+    //     $projectId = session('current_project_id');
+    //     dd($user);
+    //     // ✅ Validation
+    //     $validated = $request->validate([
+    //         'expected_start'   => 'nullable|date',
+    //         'land_area'        => 'nullable|numeric',
+    //         'site_status'      => 'nullable',
+    //         'floors'           => 'nullable',
+    //         'water'            => 'nullable',
+    //         'electricity'      => 'nullable',
+    //         'drainage'         => 'nullable',
+    //         'payment_preference'  => 'nullable',
+    //         'quality_preference'  => 'nullable',
+    //         'vendor_preference'   => 'nullable',
+    //         'best_time'           => 'nullable',
+
+    //         // Drawings + multi-pdf uploads
+    //         'arch_drawings'   => 'nullable',
+    //         'arch_files'      => 'required_if:arch_drawings,1|array',
+    //         'arch_files.*'    => 'file|mimes:pdf,application/pdf|max:10240',
+
+    //         'struct_drawings' => 'nullable',
+    //         'struct_files'    => 'required_if:struct_drawings,1|array',
+    //         'struct_files.*'  => 'file|mimes:pdf,application/pdf|max:10240',
+
+    //         // Dropdowns (can be arrays if multi-select)
+    //         'work_subtype'    => 'nullable',
+    //         'work_type'       => 'nullable',
+    //         'vendor_type'     => 'nullable',
+    //         'sub_vendor_types'=> 'nullable',
+
+            
+    //     ]);
+
+    //     // ✅ Handle BOQ upload
+    //     $boqPath = null;
+    //     if ($request->hasFile('boq_file')) {
+    //         $boqPath = $request->file('boq_file')->store('boq_files', 'public');
+    //     }
+
+    //     // ✅ Handle multiple Architectural Drawing PDFs
+    //     $archPaths = [];
+    //     if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
+    //         foreach ($request->file('arch_files') as $file) {
+    //             $archPaths[] = $file->store('arch_drawings', 'public');
+    //         }
+    //     }
+
+    //     // ✅ Handle multiple Structural Drawing PDFs
+    //     $structPaths = [];
+    //     if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
+    //         foreach ($request->file('struct_files') as $file) {
+    //             $structPaths[] = $file->store('struct_drawings', 'public');
+    //         }
+    //     }
+
+    //     // ✅ Convert possible arrays into strings/JSON
+    //     $workType        = is_array($request->work_type) ? json_encode($request->work_type) : $request->work_type;
+    //     $workSubtype     = is_array($request->work_subtype) ? json_encode($request->work_subtype) : $request->work_subtype;
+    //     $vendorType      = is_array($request->vendor_type) ? json_encode($request->vendor_type) : $request->vendor_type;
+    //     $subVendorTypes  = is_array($request->sub_vendor_types) ? json_encode($request->sub_vendor_types) : $request->sub_vendor_types;
+
+    //     // ✅ Create project
+    //     $project = Project::create([
+    //         'user_id' => $projectId,
+          
+    //         'site_ready'       => $request->has('site_ready'),
+    //         'land_location'    => $request->land_location,
+    //         'survey_number'    => $request->survey_number,
+    //         'land_type'        => $request->land_type,
+    //         'land_area'        => $request->land_area,
+    //         'land_unit'        => $request->land_unit,
+
+    //         'arch_drawings'    => $request->has('arch_drawings'),
+    //         'struct_drawings'  => $request->has('struct_drawings'),
+    //         'has_boq'          => $request->has('has_boq'),
+    //         'boq_file'         => $boqPath,
+    //         'expected_start'   => $request->expected_start,
+    //         'project_duration' => $request->project_duration,
+    //         'budget_range'     => $request->budget_range,
+    //         'site_status'      => $request->site_status,
+    //         'floors'           => $request->floors,
+    //         'water'            => $request->water,
+    //         'electricity'      => $request->electricity,
+    //         'drainage'         => $request->drainage,
+    //         'payment_preference'=> $request->payment_preference,
+    //         'quality_preference'=> $request->quality_preference,
+    //         'vendor_preference'=> $request->vendor_preference,
+    //         'best_time'        => $request->best_time,
+
+    //         // ✅ Store converted arrays
+    //         'work_type'        => $workType,
+    //         'work_subtype'     => $workSubtype,
+    //         'vendor_type'      => $vendorType,
+    //         'sub_vendor_types' => $subVendorTypes,
+
+    //         'arch_files'       => !empty($archPaths) ? json_encode($archPaths) : null,
+    //         'struct_files'     => !empty($structPaths) ? json_encode($structPaths) : null,
+    //     ]);
+
+    //     session(['current_project_id' => $project->id]);
+
+    //     return response()->json([
+    //         'success'  => true,
+    //         'redirect' => route('project_details'),
+    //     ]);
+    // }
+
     public function storeproject(Request $request)
-    {
-        $projectId = session('current_project_id');
-        // dd($projectId);
-        // ✅ Validation
-        $validated = $request->validate([
-            // 'full_name'        => 'required|string|max:255',
-            // 'phone_number'     => 'required|string|max:20',
-            // 'email'            => 'required|email|max:255',
-            // 'password'         => 'required|string|min:6|confirmed',
-            // 'role_id'          => 'required|integer',
-            'expected_start'   => 'nullable|date',
-            'land_area'        => 'nullable|numeric',
-            'site_status'      => 'nullable',
-            'floors'           => 'nullable',
-            'water'            => 'nullable',
-            'electricity'      => 'nullable',
-            'drainage'         => 'nullable',
-            'payment_preference'  => 'nullable',
-            'quality_preference'  => 'nullable',
-            'vendor_preference'   => 'nullable',
-            'best_time'           => 'nullable',
+{
+    // ✅ Get logged-in user
+    $user = session('user');
 
-            // Drawings + multi-pdf uploads
-            'arch_drawings'   => 'nullable',
-            'arch_files'      => 'required_if:arch_drawings,1|array',
-            'arch_files.*'    => 'file|mimes:pdf,application/pdf|max:10240',
-
-            'struct_drawings' => 'nullable',
-            'struct_files'    => 'required_if:struct_drawings,1|array',
-            'struct_files.*'  => 'file|mimes:pdf,application/pdf|max:10240',
-
-            // Dropdowns (can be arrays if multi-select)
-            'work_subtype'    => 'nullable',
-            'work_type'       => 'nullable',
-            'vendor_type'     => 'nullable',
-            'sub_vendor_types'=> 'nullable',
-
-            // 'region'        => 'required',
-            // 'city'        => 'required',
-            // 'state'        => 'required'
-            
-            
-            
-        ]);
-
-        // ✅ Handle BOQ upload
-        $boqPath = null;
-        if ($request->hasFile('boq_file')) {
-            $boqPath = $request->file('boq_file')->store('boq_files', 'public');
-        }
-
-        // ✅ Handle multiple Architectural Drawing PDFs
-        $archPaths = [];
-        if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
-            foreach ($request->file('arch_files') as $file) {
-                $archPaths[] = $file->store('arch_drawings', 'public');
-            }
-        }
-
-        // ✅ Handle multiple Structural Drawing PDFs
-        $structPaths = [];
-        if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
-            foreach ($request->file('struct_files') as $file) {
-                $structPaths[] = $file->store('struct_drawings', 'public');
-            }
-        }
-
-        // ✅ Convert possible arrays into strings/JSON
-        $workType        = is_array($request->work_type) ? json_encode($request->work_type) : $request->work_type;
-        $workSubtype     = is_array($request->work_subtype) ? json_encode($request->work_subtype) : $request->work_subtype;
-        $vendorType      = is_array($request->vendor_type) ? json_encode($request->vendor_type) : $request->vendor_type;
-        $subVendorTypes  = is_array($request->sub_vendor_types) ? json_encode($request->sub_vendor_types) : $request->sub_vendor_types;
-
-        // ✅ Create project
-        $project = Project::create([
-            'user_id' => $projectId,
-            // 'full_name'        => $request->full_name,
-            // 'phone_number'     => $request->phone_number,
-            // 'email'            => $request->email,
-            // 'password'         => Hash::make($request->password),
-            // 'role_id'          => $request->role_id,
-
-            'site_ready'       => $request->has('site_ready'),
-            'land_location'    => $request->land_location,
-            'survey_number'    => $request->survey_number,
-            'land_type'        => $request->land_type,
-            'land_area'        => $request->land_area,
-            'land_unit'        => $request->land_unit,
-
-            'arch_drawings'    => $request->has('arch_drawings'),
-            'struct_drawings'  => $request->has('struct_drawings'),
-            'has_boq'          => $request->has('has_boq'),
-            'boq_file'         => $boqPath,
-            'expected_start'   => $request->expected_start,
-            'project_duration' => $request->project_duration,
-            'budget_range'     => $request->budget_range,
-            'site_status'      => $request->site_status,
-            'floors'           => $request->floors,
-            'water'            => $request->water,
-            'electricity'      => $request->electricity,
-            'drainage'         => $request->drainage,
-            'payment_preference'=> $request->payment_preference,
-            'quality_preference'=> $request->quality_preference,
-            'vendor_preference'=> $request->vendor_preference,
-            'best_time'        => $request->best_time,
-
-            // ✅ Store converted arrays
-            'work_type'        => $workType,
-            'work_subtype'     => $workSubtype,
-            'vendor_type'      => $vendorType,
-            'sub_vendor_types' => $subVendorTypes,
-
-
-            // 'region'        => $request->region,
-            // 'city'        => $request->city,
-            // 'state'           => $request->state,
-            // ✅ Save JSON file paths
-            'arch_files'       => !empty($archPaths) ? json_encode($archPaths) : null,
-            'struct_files'     => !empty($structPaths) ? json_encode($structPaths) : null,
-        ]);
-
-        session(['current_project_id' => $project->id]);
-
+    if (!$user) {
         return response()->json([
-            'success'  => true,
-            'redirect' => route('project_details'),
-        ]);
+            'success' => false,
+            'message' => 'User not logged in.',
+        ], 401);
     }
 
-    
+    // ✅ Now you have user ID
+    $userId = $user->id;
+
+    // ✅ Validation
+    $validated = $request->validate([
+        'expected_start'   => 'nullable|date',
+        'land_area'        => 'nullable|numeric',
+        'site_status'      => 'nullable',
+        'floors'           => 'nullable',
+        'water'            => 'nullable',
+        'electricity'      => 'nullable',
+        'drainage'         => 'nullable',
+        'payment_preference'  => 'nullable',
+        'quality_preference'  => 'nullable',
+        'vendor_preference'   => 'nullable',
+        'best_time'           => 'nullable',
+
+        // Drawings + multi-pdf uploads
+        'arch_drawings'   => 'nullable',
+        'arch_files'      => 'required_if:arch_drawings,1|array',
+        'arch_files.*'    => 'file|mimes:pdf,application/pdf|max:10240',
+
+        'struct_drawings' => 'nullable',
+        'struct_files'    => 'required_if:struct_drawings,1|array',
+        'struct_files.*'  => 'file|mimes:pdf,application/pdf|max:10240',
+
+        // Dropdowns (can be arrays if multi-select)
+        'work_subtype'    => 'nullable',
+        'work_type'       => 'nullable',
+        'vendor_type'     => 'nullable',
+        'sub_vendor_types'=> 'nullable',
+    ]);
+
+    // ✅ Handle file uploads
+    $boqPath = $request->hasFile('boq_file')
+        ? $request->file('boq_file')->store('boq_files', 'public')
+        : null;
+
+    $archPaths = [];
+    if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
+        foreach ($request->file('arch_files') as $file) {
+            $archPaths[] = $file->store('arch_drawings', 'public');
+        }
+    }
+
+    $structPaths = [];
+    if ($request->boolean('struct_drawings') && $request->hasFile('struct_files')) {
+        foreach ($request->file('struct_files') as $file) {
+            $structPaths[] = $file->store('struct_drawings', 'public');
+        }
+    }
+
+    // ✅ Convert arrays to JSON
+    $workType        = is_array($request->work_type) ? json_encode($request->work_type) : $request->work_type;
+    $workSubtype     = is_array($request->work_subtype) ? json_encode($request->work_subtype) : $request->work_subtype;
+    $vendorType      = is_array($request->vendor_type) ? json_encode($request->vendor_type) : $request->vendor_type;
+    $subVendorTypes  = is_array($request->sub_vendor_types) ? json_encode($request->sub_vendor_types) : $request->sub_vendor_types;
+
+    // ✅ Create project
+    $project = Project::create([
+        'user_id'           => $userId, // ✅ FIXED
+        'site_ready'        => $request->has('site_ready'),
+        'land_location'     => $request->land_location,
+        'survey_number'     => $request->survey_number,
+        'land_type'         => $request->land_type,
+        'land_area'         => $request->land_area,
+        'land_unit'         => $request->land_unit,
+        'arch_drawings'     => $request->has('arch_drawings'),
+        'struct_drawings'   => $request->has('struct_drawings'),
+        'has_boq'           => $request->has('has_boq'),
+        'boq_file'          => $boqPath,
+        'expected_start'    => $request->expected_start,
+        'project_duration'  => $request->project_duration,
+        'budget_range'      => $request->budget_range,
+        'site_status'       => $request->site_status,
+        'floors'            => $request->floors,
+        'water'             => $request->water,
+        'electricity'       => $request->electricity,
+        'drainage'          => $request->drainage,
+        'payment_preference'=> $request->payment_preference,
+        'quality_preference'=> $request->quality_preference,
+        'vendor_preference' => $request->vendor_preference,
+        'best_time'         => $request->best_time,
+        'work_type'         => $workType,
+        'work_subtype'      => $workSubtype,
+        'vendor_type'       => $vendorType,
+        'sub_vendor_types'  => $subVendorTypes,
+        'arch_files'        => !empty($archPaths) ? json_encode($archPaths) : null,
+        'struct_files'      => !empty($structPaths) ? json_encode($structPaths) : null,
+    ]);
+
+    // ✅ Save project ID in session for next step
+    session(['current_project_id' => $project->id]);
+
+    return response()->json([
+        'success'  => true,
+        'redirect' => route('project_details'),
+    ]);
+}
+
     public function project_details()
     {
         $projectId = session('current_project_id');
@@ -367,44 +461,48 @@ public function storebasicinfo(Request $request)
         ]);
     }
 
-public function customer_dashboard()
+    public function customer_dashboard()
 {
     $user = session('user'); // ✅ user info from session
+
     if (!$user) {
         return redirect()->route('login')->with('error', 'Please login first.');
     }
 
-    $projectId = session('current_project_id'); // ✅ optional project from form
     $projectKey = $user->id;
 
-    // ✅ Fetch customer details using user_id
+    // ✅ Fetch customer details
     $cust_details = DB::table('customer_basic_info')
                         ->where('id', $projectKey)
                         ->first();
 
-    // ✅ Fetch all projects for this user
-    $projects = DB::table('projects')
-                    ->where('user_id', $projectKey)
-                    ->get();
-
-    // ✅ Fetch project details only if projectId is available
-    $projects_details = collect(); // Empty by default
-   
-    if (!empty($projectId)) {
-        $projects_details = DB::table('projects_details')
-                                ->where('project_id', $projectId)
-                                ->get();
+    if (!$cust_details) {
+        return redirect()->back()->with('error', 'Customer details not found.');
     }
-//  dd($projects_details);
-    // ✅ Fetch vendors (change logic if you need dynamic vendors later)
-    // $vendors = DB::table('business_registrations')
-    //                 ->where('is_active', 1)
-    //                 ->get();
 
-    // ✅ Fetch states and role types
-    $states = DB::table('states')
-                    ->where('is_active', 1)
+    // ✅ Fetch all projects for this customer
+    $projects = DB::table('projects')
+                    ->where('user_id', $cust_details->id)
                     ->get();
+
+    // ✅ Fetch project details for each project
+    $projects_with_details = [];
+
+    foreach ($projects as $project) {
+        $project_details = DB::table('projects_details')
+                            ->where('project_id', $project->id)
+                            ->get();
+
+        $projects_with_details[] = [
+            'project' => $project,
+            'details' => $project_details,
+        ];
+    }
+
+    // ✅ Other master data
+    $states = DB::table('states')
+                ->where('is_active', 1)
+                ->get();
 
     $role_types = DB::table('role')->get();
 
@@ -414,56 +512,20 @@ public function customer_dashboard()
         'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
         'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
     ];
+    // dd($projects_with_details);
 
+    // ✅ Return to view with all data
     return view('web.customer_dashboard', compact(
         'projects',
+        'projects_with_details',
         'cust_details',
-        'projects_details',
         'projectKey',
-        // 'vendors',
         'states',
         'role_types',
         'company_socials'
     ));
 }
 
-//     public function customer_dashboard()
-//     {
-//         $user = session('user'); // ✅ user from login
-//     //  dd($user);
-//         $projectId = session('current_project_id'); // ✅ project from form (optional)
-
-//         // $projectKey = $projectId ?: $user->id;
-//        $projectKey =$user->id;
-// // dd( $projectKey );
-//         // ✅ Always fetch customer details by user_id (same as project_id)
-//         $cust_details = DB::table('customer_basic_info')
-//                             ->where('id', $projectKey)
-//                             ->first();
-// // dd( $cust_details );
-//         $projects = DB::table('projects')
-//                         ->where('user_id', $projectKey)
-//                         ->get();
-//         $projects_details = DB::table('projects_details')
-//                         ->where('project_id', $projectId)
-//                         ->get();
-// // dd($projects);
-
-//         $vendors = DB::table('business_registrations')
-//                 ->where('user_id', '11')
-//                 ->get();
-
-//         $states = DB::table('states')->where('is_active',1)->get(); 
-//         $role_types = DB::table('role')->get();
-
-//         $company_socials = [
-//                 'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-//                 'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-//                 'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-//             ];
-//     // dd($states);
-//         return view('web.customer_dashboard', compact('projects', 'cust_details','projects_details', 'projectKey','vendors','states','role_types','company_socials'));
-//     }
 
 
     

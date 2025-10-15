@@ -72,77 +72,113 @@
   </div>
 
   <!-- ======================== PROJECTS TAB ======================== -->
-  <div class="mt-10" x-show="tab === 'projects'" x-transition>
-    <h2 class="text-xl font-semibold text-navy mb-4">Your Projects</h2>
+<div class="mt-10" x-show="tab === 'projects'" x-transition>
+  <h2 class="text-xl font-semibold text-navy mb-4">Your Projects</h2>
 
-    @if($projects_details->count() > 0)
-      <div class="grid md:grid-cols-3 gap-6">
-        @foreach($projects_details as $index => $project)
-          @php
-            $status = $project->confirm == 1 ? 'Confirmed' : 'Pending';
-            $statusColor = $project->confirm == 1 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-            $filePaths = json_decode($project->file_path, true);
-           
-          @endphp
+  @if(count($projects_with_details) > 0)
+    <div class="grid md:grid-cols-3 gap-6">
+      @foreach($projects_with_details as $index => $item)
+        @php
+          $project = $item['project'];
+          $details = $item['details'];
 
-          <!-- Each project card -->
-          <div 
-            x-show="{{ $index }} < visibleCount" 
-            class="bg-white rounded-xl border-l-4 border-orange shadow-md hover:shadow-lg transition p-6">
+          // ✅ Use the first details record to show top-level info
+          $mainDetail = $details->first();
 
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-semibold text-navy">{{ $project->project_name ?? 'Unnamed Project' }}</h3>
-              <span class="{{ $statusColor }} text-sm px-3 py-1 rounded-full">
-                {{ $status == 'Confirmed' ? '✔ Confirmed' : '⏳ Pending' }}
-              </span>
-            </div>
+          // ✅ Fallback if some fields are missing
+          $projectName = $mainDetail->project_name ?? 'Unnamed Project';
+          $projectDescription = $mainDetail->project_description ?? 'No description available.';
+          $submissionId = $mainDetail->submission_id ?? '-';
+          $confirm = $mainDetail->confirm ?? 0;
+          $filePaths = json_decode($mainDetail->file_path ?? '[]', true);
 
-         
+          // ✅ Status colors
+          $status = $confirm == 1 ? 'Confirmed' : 'Pending';
+          $statusColor = $confirm == 1 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
+        @endphp
 
-            <p class="text-gray-600 text-sm mb-4">{{ $project->project_description ?? 'No description available.' }}</p>
+        <!-- Each project card -->
+        <div 
+          x-show="{{ $index }} < visibleCount" 
+          class="bg-white rounded-xl border-l-4 border-orange shadow-md hover:shadow-lg transition p-6">
 
-            <p class="text-sm text-gray-500 mb-1">Submission ID: 
-              <span class="font-semibold text-navy">{{ $project->submission_id }}</span>
-            </p>
-            <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
-              <i class="bi bi-calendar"></i> 
-              {{ \Carbon\Carbon::parse($project->created_at)->format('d/m/Y') }}
-            </p>
-
-            <!-- <a href="{{ route('customer.project.view', $project->id) }}" 
-                class="w-full inline-flex justify-center items-center bg-navy hover:bg-orange text-white py-2 rounded-lg mt-2 transition gap-2">
-                View Details <i class="bi bi-arrow-right"></i>
-            </a> -->
-            <a href="{{ route('customer.project.view', encrypt($project->id)) }}" 
-              class="w-full inline-flex justify-center items-center bg-navy hover:bg-orange text-white py-2 rounded-lg mt-2 transition gap-2">
-              View Details <i class="bi bi-arrow-right"></i>
-            </a>
-
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-semibold text-navy">
+              {{ $projectName }}
+            </h3>
+            <span class="{{ $statusColor }} text-sm px-3 py-1 rounded-full">
+              {{ $status == 'Confirmed' ? '✔ Confirmed' : '⏳ Pending' }}
+            </span>
           </div>
-        @endforeach
-      </div>
 
-      <!-- Load More Button -->
-      <div class="text-center mt-8" x-show="visibleCount < {{ $projects->count() }}">
-        <button 
-          @click="visibleCount += 6"
-          class="bg-orange hover:bg-[#d84d03] text-white px-6 py-2 rounded-full font-medium shadow-md transition">
-          Load More <i class="bi bi-chevron-down ml-2"></i>
-        </button>
-      </div>
+          <p class="text-gray-600 text-sm mb-4">
+            {{ $projectDescription }}
+          </p>
 
-      <!-- All projects loaded message -->
-      <div class="text-center mt-4 text-gray-500" x-show="visibleCount >= {{ $projects->count() }}">
-        <p>All projects loaded.</p>
-      </div>
+          <p class="text-sm text-gray-500 mb-1">
+            Submission ID: 
+            <span class="font-semibold text-navy">{{ $submissionId }}</span>
+          </p>
 
-    @else
-      <div class="text-center text-gray-600 bg-white rounded-xl p-10 shadow-sm">
-        <i class="bi bi-folder2-open text-4xl text-orange mb-3"></i>
-        <p>No projects found.</p>
-      </div>
-    @endif
-  </div>
+          <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+            <i class="bi bi-calendar"></i> 
+            {{ \Carbon\Carbon::parse($mainDetail->created_at)->format('d/m/Y') }}
+          </p>
+
+       
+
+          <!-- ✅ Show all detail entries -->
+          @if(count($details) > 0)
+            <div class="mt-3 border-t pt-3">
+              <h4 class="font-semibold text-navy mb-2 text-sm">Project Submissions:</h4>
+              <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
+                @foreach($details as $detail)
+                  <li>
+                    <span class="font-semibold text-navy">
+                      {{ $detail->project_name }}
+                    </span> — {{ $detail->project_description }}
+                    <br>
+                    <span class="text-xs text-gray-500">
+                      Submission: {{ $detail->submission_id }} • 
+                      {{ \Carbon\Carbon::parse($detail->created_at)->format('d/m/Y') }}
+                    </span>
+                  </li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
+          <a href="{{ route('customer.project.view', encrypt($project->id)) }}" 
+            class="w-full inline-flex justify-center items-center bg-navy hover:bg-orange text-white py-2 rounded-lg mt-4 transition gap-2">
+            View Details <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      @endforeach
+    </div>
+
+    <!-- Load More Button -->
+    <div class="text-center mt-8" x-show="visibleCount < {{ count($projects_with_details) }}">
+      <button 
+        @click="visibleCount += 6"
+        class="bg-orange hover:bg-[#d84d03] text-white px-6 py-2 rounded-full font-medium shadow-md transition">
+        Load More <i class="bi bi-chevron-down ml-2"></i>
+      </button>
+    </div>
+
+    <!-- All projects loaded message -->
+    <div class="text-center mt-4 text-gray-500" x-show="visibleCount >= {{ count($projects_with_details) }}">
+      <p>All projects loaded.</p>
+    </div>
+
+  @else
+    <div class="text-center text-gray-600 bg-white rounded-xl p-10 shadow-sm">
+      <i class="bi bi-folder2-open text-4xl text-orange mb-3"></i>
+      <p>No projects found.</p>
+    </div>
+  @endif
+</div>
+
+
 
   <!-- ======================== PACKAGES TAB ======================== -->
   <div class="mt-10" x-show="tab === 'packages'" x-transition>

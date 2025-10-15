@@ -128,7 +128,21 @@
   }
 </style>
 
-<header class="navbar navbar-expand-lg custom-header px-3">
+<!-- ✅ Alpine.js-powered Customer Header -->
+<header 
+  class="navbar navbar-expand-lg custom-header px-3"
+  x-data="{
+      projectCount: {{ count($projects_with_details ?? []) }},
+      showModal: false,
+      handleAddProject() {
+          if (this.projectCount < 3) {
+              window.location.href = '{{ route('project') }}'; // ✅ route to add new project page
+          } else {
+              this.showModal = true;
+          }
+      }
+  }"
+>
   <div class="container-fluid justify-content-between align-items-center">
 
     <!-- 🔹 Left: Logo -->
@@ -139,15 +153,12 @@
     <!-- 🔸 Right: Profile + Button -->
     <div class="navbar-right d-none d-lg-flex">
 
-    
-
-      <!-- Add Project Button -->
-      <button class="add-project-btn" onclick="window.location.href='{{ route('project') }}'">
+      <!-- ✅ Add Project Button -->
+      <button class="add-project-btn" @click="handleAddProject">
         <i class="bi bi-plus-circle"></i> Add New Project
       </button>
 
-
-        <!-- Profile Dropdown -->
+      <!-- Profile Dropdown -->
       <div class="dropdown">
         <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           <div class="profile-box">
@@ -160,8 +171,6 @@
 
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
           <li><a class="dropdown-item" href="{{ route('customer.dashboard') }}"><i class="bi bi-house-door me-2 text-orange"></i>Dashboard</a></li>
-          <!-- <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2 text-orange"></i>Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2 text-orange"></i>Settings</a></li> -->
           <li><hr class="dropdown-divider"></li>
           <li class="px-3">
             <form method="POST" action="{{ route('logout') }}">
@@ -178,13 +187,48 @@
       <span class="navbar-toggler-icon"></span>
     </button>
   </div>
+
+  <!-- ================= Subscription Modal ================= -->
+  <div 
+    x-show="showModal"
+    x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-lg text-center">
+      <i class="bi bi-lock text-orange text-5xl mb-4"></i>
+      <h3 class="text-xl font-semibold text-navy mb-2">Upgrade Required</h3>
+      <p class="text-gray-600 mb-6">
+        You’ve reached your free project limit (3 projects).  
+        Upgrade your plan to add more projects and unlock premium features.
+      </p>
+
+      <div class="flex justify-center gap-4">
+        <button 
+          @click="showModal = false"
+          class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition">
+          Cancel
+        </button>
+
+        <button 
+          @click="window.location.href='{{ route('customer.dashboard') }}#packages'"
+          class="px-6 py-2 rounded-lg bg-orange hover:bg-[#d84d03] text-white font-medium transition">
+          View Packages
+        </button>
+      </div>
+    </div>
+  </div>
 </header>
 
-<!-- ✅ Bootstrap JS (Already in app.blade.php) -->
+<!-- Prevent modal flicker -->
+<style>
+  [x-cloak] { display: none !important; }
+</style>
+
+<!-- ✅ Bootstrap Dropdown Activation -->
 <script>
-  // No manual toggle needed; Bootstrap handles it automatically.
   document.addEventListener('DOMContentLoaded', function () {
     const dropdowns = document.querySelectorAll('[data-bs-toggle="dropdown"]');
     dropdowns.forEach(el => new bootstrap.Dropdown(el));
   });
 </script>
+

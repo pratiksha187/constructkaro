@@ -484,11 +484,11 @@ class VendorController extends Controller
 
     
         $projects_by_month = DB::table('business_registrations')
-        ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as total'))
-        ->where('user_id', $vendor->id)
-        ->groupBy('month')
-        ->orderBy('month')
-        ->pluck('total', 'month');
+                            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as total'))
+                            ->where('user_id', $vendor->id)
+                            ->groupBy('month')
+                            ->orderBy('month')
+                            ->pluck('total', 'month');
 
 
 
@@ -611,6 +611,7 @@ class VendorController extends Controller
 
         return response()->json(['message' => 'Tender documents uploaded successfully!'], 200);
     }
+    
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
