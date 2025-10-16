@@ -153,7 +153,7 @@
             <th>Email</th>
             <th>Work Type</th>
             <th>Company Name</th>
-            <th>profile</th>
+           
             <th>view</th>
           
           </tr>
