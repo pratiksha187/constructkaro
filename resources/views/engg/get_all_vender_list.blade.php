@@ -153,6 +153,7 @@
             <th>Email</th>
             <th>Work Type</th>
             <th>Company Name</th>
+            <th>profile</th>
             <th>view</th>
           
           </tr>
@@ -161,7 +162,16 @@
           @forelse($allvendor as $index => $vendor)
             <tr>
               <td>{{ $allvendor->firstItem() + $index }}</td>
-              <td class="fw-semibold">{{ $vendor->vendor_name }}</td>
+              <!-- <td class="fw-semibold">{{ $vendor->vendor_name }}</td> -->
+              <td class="fw-semibold">
+                {{ $vendor->vendor_name }}
+                @if($vendor->is_profile_complete)
+                  <span class="badge bg-success ms-2">Completed Profile</span>
+                @else
+                  <span class="badge bg-warning text-dark ms-2">Incomplete</span>
+                @endif
+              </td>
+
               <td class="text-muted">{{ $vendor->vendor_mobile }}</td>
               <td class="text-muted">{{ $vendor->vendor_email }}</td>
               <td class="text-muted">{{ $vendor->vendor_work_type_name }}</td>
@@ -196,6 +206,7 @@
                         <p class="fw-semibold text-muted mb-1">Vendor Name</p>
                         <p class="fw-bold">{{ $vendor->vendor_name ?? 'No added data' }}</p>
                       </div>
+                      
                       <div class="col-md-4">
                         <p class="fw-semibold text-muted mb-1">Email</p>
                         <p class="fw-bold">{{ $vendor->vendor_email ?? 'No added data' }}</p>
