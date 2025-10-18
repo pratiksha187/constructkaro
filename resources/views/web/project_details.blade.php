@@ -984,7 +984,7 @@
                               <div class="form-label-icon icon-orange">
                                  <i data-lucide="building-2" class="text-white" style="width: 1rem; height: 1rem;"></i>
                               </div>
-                              <span>Project Name</span>
+                              <span>Project Name *</span>
                            </label>
                            <div class="position-relative">
                               <input 
@@ -1024,7 +1024,7 @@
                            <div class="form-label-icon icon-indigo">
                               <i data-lucide="file-text" class="text-white" style="width: 1rem; height: 1rem;"></i>
                            </div>
-                           <span>Project Description</span>
+                           <span>Project Description *</span>
                         </label>
                         <textarea 
                            id="project_description" name="project_description"

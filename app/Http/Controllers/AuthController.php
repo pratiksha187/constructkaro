@@ -258,7 +258,7 @@ public function login(Request $request)
             'totalProjects' => $totalProjects,
         ]);
 
-        return redirect()->route('customer_dashboard');
+        return redirect()->route('customer.dashboard');
     }
 
     /* ============================================================
