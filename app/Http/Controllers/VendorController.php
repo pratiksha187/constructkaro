@@ -128,7 +128,7 @@ class VendorController extends Controller
         $services = DB::table('suggested_vendor_types')
             ->where('work_subtype_id', $agency_id)
             ->pluck('vendor_type', 'id');
-// dd($services);
+        // dd($services);
         return response()->json($services);
     }
 
@@ -200,8 +200,7 @@ class VendorController extends Controller
         ]);
 
         $userId = session('vendor_id');
-// turnover_certificate_file
-        // 🔹 Handle single file uploads
+
         $singleFiles = [
             'cancelled_cheque_file', 'pan_card_file', 'aadhaar_card_file',
             'certificate_of_incorporation_file', 'itr_file', 

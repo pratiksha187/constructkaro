@@ -116,13 +116,13 @@ class ProjectController extends Controller
     {
         // ✅ Get logged-in user
         $user = session('user');
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not logged in.',
-            ], 401);
-        }
+// dd($user);
+        // if (!$user) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'User not logged in.',
+        //     ], 401);
+        // }
 
         // ✅ Now you have user ID
         $userId = $user->id;
@@ -315,73 +315,70 @@ class ProjectController extends Controller
     }
 
     public function customer_dashboard()
-{
-    $user = session('user'); // ✅ user info from session
+    {
+        $user = session('user'); // ✅ user info from session
 
-    if (!$user) {
-        return redirect()->route('login')->with('error', 'Please login first.');
-    }
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login first.');
+        }
 
-    $projectKey = $user->id;
+        $projectKey = $user->id;
 
-    // ✅ Fetch customer details
-    $cust_details = DB::table('customer_basic_info')
-                        ->where('id', $projectKey)
-                        ->first();
+        // ✅ Fetch customer details
+        $cust_details = DB::table('customer_basic_info')
+                            ->where('id', $projectKey)
+                            ->first();
 
-    if (!$cust_details) {
-        return redirect()->back()->with('error', 'Customer details not found.');
-    }
+        if (!$cust_details) {
+            return redirect()->back()->with('error', 'Customer details not found.');
+        }
 
-    // ✅ Fetch all projects for this customer
-    $projects = DB::table('projects')
-                    ->where('user_id', $cust_details->id)
+        // ✅ Fetch all projects for this customer
+        $projects = DB::table('projects')
+                        ->where('user_id', $cust_details->id)
+                        ->get();
+
+        // ✅ Fetch project details for each project
+        $projects_with_details = [];
+
+        foreach ($projects as $project) {
+            $project_details = DB::table('projects_details')
+                                ->where('project_id', $project->id)
+                                ->get();
+
+            $projects_with_details[] = [
+                'project' => $project,
+                'details' => $project_details,
+            ];
+        }
+
+        // ✅ Other master data
+        $states = DB::table('states')
+                    ->where('is_active', 1)
                     ->get();
 
-    // ✅ Fetch project details for each project
-    $projects_with_details = [];
+        $role_types = DB::table('role')->get();
 
-    foreach ($projects as $project) {
-        $project_details = DB::table('projects_details')
-                            ->where('project_id', $project->id)
-                            ->get();
-
-        $projects_with_details[] = [
-            'project' => $project,
-            'details' => $project_details,
+        // ✅ Company social links
+        $company_socials = [
+            'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
+            'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
+            'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
         ];
+        // dd($projects_with_details);
+
+        // ✅ Return to view with all data
+        return view('web.customer_dashboard', compact(
+            'projects',
+            'projects_with_details',
+            'cust_details',
+            'projectKey',
+            'states',
+            'role_types',
+            'company_socials'
+        ));
     }
 
-    // ✅ Other master data
-    $states = DB::table('states')
-                ->where('is_active', 1)
-                ->get();
-
-    $role_types = DB::table('role')->get();
-
-    // ✅ Company social links
-    $company_socials = [
-        'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-        'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-        'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-    ];
-    // dd($projects_with_details);
-
-    // ✅ Return to view with all data
-    return view('web.customer_dashboard', compact(
-        'projects',
-        'projects_with_details',
-        'cust_details',
-        'projectKey',
-        'states',
-        'role_types',
-        'company_socials'
-    ));
-}
-
-
-
-    
     public function Partner_Bids()
     {
         $projectId = session('current_project_id');
@@ -399,7 +396,7 @@ class ProjectController extends Controller
         $vendor_details = DB::table('project_likes')
             ->where('project_id', $projects_details_id) 
             ->get();
-// dd($vendor_details);
+
         $vendorIds = $vendor_details->pluck('vendor_id')->toArray();
     
     
@@ -421,7 +418,6 @@ class ProjectController extends Controller
                     ->orderBy('tender_documents.vendor_cost', 'asc')
                     ->get();
 
-    // dd($vendor);
         return view('web.Partner_Bids', compact('vendor'));
     }
 
@@ -478,80 +474,85 @@ class ProjectController extends Controller
         ]);
     }
 
-public function viewProject($encryptedId)
-{
-    try {
-        // 🔒 Decrypt the ID safely
-        $id = decrypt($encryptedId);
-    } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-        // If tampered or invalid link
-        return redirect()->route('customer.dashboard')->with('error', 'Invalid project link.');
-    }
-// dd($id);
-    // ✅ Fetch project safely
-    $project = DB::table('projects_details')->find($id);
-// dd($project);
-    if (!$project) {
-        return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
-    }
+    public function viewProject($encryptedId)
+    {
+        try {
+            // 🔒 Decrypt the ID safely
+            $id = decrypt($encryptedId);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            // If tampered or invalid link
+            return redirect()->route('customer.dashboard')->with('error', 'Invalid project link.');
+        }
+        // dd($id);
+        // ✅ Fetch project safely
+        $project = DB::table('projects_details')->find($id);
+        // dd($project);
+        if (!$project) {
+            return redirect()->route('customer.dashboard')->with('error', 'Project not found.');
+        }
 
-    // ✅ Fetch project details
-    $projcet_details = DB::table('projects_details')
-        ->where('id', $project->id)
-        ->first();
+        // ✅ Fetch project details
+        $projcet_details = DB::table('projects_details')
+            ->where('id', $project->id)
+            ->first();
 
-    $p_id = $projcet_details->project_id;
+        $p_id = $projcet_details->project_id;
 
-    // ✅ Fetch customer details using project_id (user_id)
-    $cust_details = DB::table('projects')
-        ->where('id', $p_id)
-        ->first();
+        // ✅ Fetch customer details using project_id (user_id)
+        $cust_details = DB::table('projects')
+            ->where('id', $p_id)
+            ->first();
 
-    return view('web.customer_project_details', compact('project', 'cust_details','projcet_details'));
-}
-
-public function updateProfile(Request $request)
-{
-    
-    $user = $request->project_id; // or fetch via $cust_details if separate table
-// dd($user);
-    // ✅ Validate incoming data
-    $validated = $request->validate([
-        'phone_number' => 'nullable|string|max:15',
-        'role_id' => 'nullable|string|max:100',
-        'gender' => 'nullable|string|max:10',
-        'gst_no' => 'nullable|string|max:20',
-        'gst_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
-        'tds_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
-        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'state' => 'nullable|integer',
-        'region' => 'nullable|integer',
-        'city' => 'nullable|integer',
-        'facebook' => 'nullable|url',
-        'linkedin' => 'nullable|url',
-        'instagram' => 'nullable|url',
-    ]);
-
-    // ✅ File uploads
-    if ($request->hasFile('gst_certificate')) {
-        $validated['gst_certificate'] = $request->file('gst_certificate')->store('certificates', 'public');
+        return view('web.customer_project_details', compact('project', 'cust_details','projcet_details'));
     }
 
-    if ($request->hasFile('tds_certificate')) {
-        $validated['tds_certificate'] = $request->file('tds_certificate')->store('certificates', 'public');
+    public function updateProfile(Request $request)
+    {
+        
+        $user = $request->project_id; // or fetch via $cust_details if separate table
+        // dd($user);
+        // ✅ Validate incoming data
+        $validated = $request->validate([
+            'phone_number' => 'nullable|string|max:15',
+            'role_id' => 'nullable|string|max:100',
+            'gender' => 'nullable|string|max:10',
+            'gst_no' => 'nullable|string|max:20',
+            'gst_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'tds_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'state' => 'nullable|integer',
+            'region' => 'nullable|integer',
+            'city' => 'nullable|integer',
+            'facebook' => 'nullable|url',
+            'linkedin' => 'nullable|url',
+            'instagram' => 'nullable|url',
+        ]);
+
+        // ✅ File uploads
+        if ($request->hasFile('gst_certificate')) {
+            $validated['gst_certificate'] = $request->file('gst_certificate')->store('certificates', 'public');
+        }
+
+        if ($request->hasFile('tds_certificate')) {
+            $validated['tds_certificate'] = $request->file('tds_certificate')->store('certificates', 'public');
+        }
+
+        if ($request->hasFile('profile_photo')) {
+            $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', 'public');
+        }
+
+        // ✅ Update in your DB table
+        DB::table('projects')
+            ->where('id', $user)
+            ->update($validated);
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
-    if ($request->hasFile('profile_photo')) {
-        $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', 'public');
+    public function customer_agreement(){
+        $user = session('user');
+        
+        // dd($user); 
+        return view('web.customer_agreement',compact('user'));
     }
-
-    // ✅ Update in your DB table
-    DB::table('projects')
-        ->where('id', $user)
-        ->update($validated);
-
-    return redirect()->back()->with('success', 'Profile updated successfully!');
-}
-
-
 }

@@ -156,4 +156,4 @@
     new bootstrap.Toast(el, { delay: 2200 }).show();
   }
 </script>
-@endpush
+@endpush  

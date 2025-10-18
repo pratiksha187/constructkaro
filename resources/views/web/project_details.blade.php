@@ -1049,7 +1049,7 @@
                                  >
                                  <label class="text-gray-700 leading-6">
                                     I accept the 
-                                    <a href="#" class="text-indigo-600 font-medium hover:underline">Customer Terms &amp; Conditions</a>.
+                                    <a href="{{route('customer.agreement')}}" class="text-indigo-600 font-medium hover:underline">Customer Terms &amp; Conditions</a>.
                                  </label>
                               </div>
 

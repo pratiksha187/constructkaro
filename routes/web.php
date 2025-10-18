@@ -198,6 +198,7 @@ Route::get('/test-email', function () {
 
 Route::get('/vendor-agreement', [VendorController::class, 'vendor_terms_condition'])->name('vendor.agreement');
 
+Route::get('/customer-agreement', [ProjectController::class, 'customer_agreement'])->name('customer.agreement');
 
 
 Route::get('/make-hash', function () {
