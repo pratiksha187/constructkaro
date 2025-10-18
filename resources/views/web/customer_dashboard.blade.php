@@ -122,7 +122,7 @@
 
           <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
             <i class="bi bi-calendar"></i> 
-            {{ \Carbon\Carbon::parse($mainDetail->created_at)->format('d/m/Y') }}
+           
           </p>
 
        
