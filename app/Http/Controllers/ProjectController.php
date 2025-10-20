@@ -346,7 +346,7 @@ class ProjectController extends Controller
                                 ->where('project_id', $project->id)
                                 ->get();
 
-            $projects_with_details[] = [
+            $projects_with_details[] = [ 
                 'project' => $project,
                 'details' => $project_details,
             ];
@@ -365,9 +365,7 @@ class ProjectController extends Controller
             'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
             'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
         ];
-        // dd($projects_with_details);
-
-        // ✅ Return to view with all data
+       
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',

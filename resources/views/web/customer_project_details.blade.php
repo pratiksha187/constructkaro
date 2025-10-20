@@ -247,7 +247,7 @@
             {{ $project->project_description ?? 'No project description provided.' }}
         </p>
         <div class="progress mb-3">
-            <div class="progress-bar" style="width: 35%;">35%</div>
+            <div class="progress-bar" style="width: 0%;">0%</div>
         </div>
         <div class="d-flex justify-content-between small text-muted">
             <span><strong>Created On:</strong> {{ \Carbon\Carbon::parse($project->created_at)->format('d M Y') }}</span>
@@ -267,7 +267,7 @@
         </div>
         <div class="divider"></div>
 
-        <div class="milestone completed">
+        <!-- <div class="milestone completed">
             <h6 class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>Project Initiation</h6>
             <small class="text-muted">Completed on 10 Sept 2025</small>
         </div>
@@ -280,7 +280,7 @@
         <div class="milestone">
             <h6 class="mb-1"><i class="bi bi-clock-history text-secondary me-2"></i>Structure Completion</h6>
             <small class="text-muted">Upcoming Milestone</small>
-        </div>
+        </div> -->
     </div>
 
     <!-- ✅ Payment Schedule -->
@@ -290,7 +290,7 @@
         </div>
         <div class="divider"></div>
 
-        <div class="payment-item">
+        <!-- <div class="payment-item">
             <span><i class="bi bi-cash-coin me-2 text-success"></i>Project Initiation</span>
             <span class="text-success fw-semibold">₹50,000 Paid</span>
         </div>
@@ -303,12 +303,12 @@
         <div class="payment-item">
             <span><i class="bi bi-currency-rupee me-2 text-muted"></i>Structure Completion</span>
             <span class="text-muted">₹2,00,000 Pending</span>
-        </div>
+        </div> -->
 
         <hr>
         <div class="d-flex justify-content-between fw-semibold">
             <span>Total Project Value:</span>
-            <span>₹25,00,000</span>
+            <span>₹00</span>
         </div>
     </div>
 
@@ -319,8 +319,8 @@
         </div>
         <div class="divider"></div>
 
-        <div class="vendor-docs">
-            <!-- 🧱 Vendor Box -->
+        <!-- <div class="vendor-docs">
+         
             <div class="vendor-box d-flex align-items-center">
                 <div class="vendor-avatar"><i class="bi bi-person-fill"></i></div>
                 <div class="vendor-details">
@@ -330,7 +330,7 @@
                 </div>
             </div>
 
-            <!-- 📄 Documents Box -->
+            
             <div class="docs-box">
                 <h6 class="fw-semibold text-navy mb-3">
                     <i class="bi bi-folder2-open text-orange me-2"></i>Documents
@@ -342,7 +342,7 @@
                 </ul>
                 <button class="action-btn"><i class="bi bi-download me-1"></i>Download All</button>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 @endsection
