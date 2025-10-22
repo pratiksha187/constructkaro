@@ -122,6 +122,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
 Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
 
+// Route::get('add-millstone', [EngginerController::class, 'addmillstone'])->name('addmillstone');
+// Route::post('/engineer/milestones/save', [EngginerController::class, 'storemillstone'])->name('engineer.milestones.store');
+// Route::get('/engineer/milestones/{projectId}', [EngginerController::class, 'getMilestones']);
+Route::get('add-millstone', [EngginerController::class, 'addmillstone'])->name('addmillstone');
+Route::post('/engineer/milestones/save', [EngginerController::class, 'storemillstone'])->name('engineer.milestones.store');
+Route::get('/engineer/milestones/{projectId}', [EngginerController::class, 'getMilestones']);
+
+Route::get('/engineer/milestones-list', [EngginerController::class, 'listMilestones'])->name('engineer.milestones.list');
 
 // Route::get('/calling_dashboard', [CallingController::class, 'calling_dashboard'])->name('calling.dashboard');
 

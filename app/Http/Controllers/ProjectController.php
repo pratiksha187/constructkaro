@@ -20,15 +20,7 @@ class ProjectController extends Controller
         $states = DB::table('states')->where('is_active',1)->get(); 
         return view('web.customer_basic_info',compact('construction_types','states','role_types','expected_timeline','budgets','workTypes'));
     }
-    public function project(){
-        $workTypes = DB::table('work_types')->get();
-        $construction_types = DB::table('categories')->orderBy('id')->get();
-        $expected_timeline =DB::table('expected_timeline')->orderBy('id')->get();
-        $budgets = DB::table('budget_range')->orderBy('id')->get();
-        $role_types = DB::table('role')->get();
-        $states = DB::table('states')->where('is_active',1)->get(); 
-        return view('web.project',compact('construction_types','states','role_types','expected_timeline','budgets','workTypes'));
-    }
+   
 
     public function getSubCategories(Request $request)
     {
@@ -111,12 +103,24 @@ class ProjectController extends Controller
         ]);
     }
 
+     public function project(){
+        $currentProjectId = session('current_project_id');
+        // dd( $currentProjectId );
+        $workTypes = DB::table('work_types')->get();
+        $construction_types = DB::table('categories')->orderBy('id')->get();
+        $expected_timeline =DB::table('expected_timeline')->orderBy('id')->get();
+        $budgets = DB::table('budget_range')->orderBy('id')->get();
+        $role_types = DB::table('role')->get();
+        $states = DB::table('states')->where('is_active',1)->get(); 
+        return view('web.project',compact('construction_types','states','role_types','expected_timeline','budgets','workTypes'));
+    }
 
     public function storeproject(Request $request)
     {
+        $currentProjectId = session('current_project_id');
         // ✅ Get logged-in user
-        $user = session('user');
-// dd($user);
+        // $user = session('user');
+// dd($currentProjectId);
         // if (!$user) {
         //     return response()->json([
         //         'success' => false,
@@ -125,7 +129,7 @@ class ProjectController extends Controller
         // }
 
         // ✅ Now you have user ID
-        $userId = $user->id;
+        // $userId = $user->id;
 
         // ✅ Validation
         $validated = $request->validate([
@@ -184,7 +188,7 @@ class ProjectController extends Controller
 
         // ✅ Create project
         $project = Project::create([
-            'user_id'           => $userId, // ✅ FIXED
+            'user_id'           => $currentProjectId, // ✅ FIXED
             'site_ready'        => $request->has('site_ready'),
             'land_location'     => $request->land_location,
             'survey_number'     => $request->survey_number,
@@ -316,19 +320,27 @@ class ProjectController extends Controller
 
     public function customer_dashboard()
     {
-        $user = session('user'); // ✅ user info from session
+        // $user = session('user'); // ✅ user info from session
+        // $user = session('current_project_id');
+          $currentProjectId = session('current_project_id');
 
+          $projects = DB::table('projects')
+                        ->where('id', $currentProjectId)
+                        ->first();
+
+         $user= $projects->user_id;              
+        // dd($user);
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please login first.');
         }
 
-        $projectKey = $user->id;
+        // $projectKey = $user->id;
 
         // ✅ Fetch customer details
         $cust_details = DB::table('customer_basic_info')
-                            ->where('id', $projectKey)
+                            ->where('id', $user)
                             ->first();
-
+// dd($cust_details);
         if (!$cust_details) {
             return redirect()->back()->with('error', 'Customer details not found.');
         }
@@ -370,7 +382,7 @@ class ProjectController extends Controller
             'projects',
             'projects_with_details',
             'cust_details',
-            'projectKey',
+            // 'projectKey',
             'states',
             'role_types',
             'company_socials'

@@ -16,6 +16,91 @@ class EngginerController extends Controller
     public function engineer_dashboard(){
         return view('engg.engineer_dashboard');
     }
+    
+
+    public function addmillstone()
+    {
+        $projects = DB::table('projects_details')->get();
+
+        //  dd($projects);
+        return view('engg.add_millstone',compact('projects'));
+
+    }
+
+    public function storemillstone(Request $request)
+    {
+        // Validate the incoming data
+        $request->validate([
+            'project_id' => 'required',
+            'type_of_work.*' => 'required',
+            'work_to_be_done.*' => 'required',
+            'milestone_title.*' => 'required',
+            'milestone_description.*' => 'nullable',
+            'timeframe_days.*' => 'required|numeric|min:1',
+            'payment_percentage.*' => 'required|numeric|min:0|max:100',
+            'verification_point.*' => 'nullable',
+        ]);
+
+        // Check that the total payment percentage equals 100%
+        // $total = array_sum($request->payment_percentage);
+        // if ($total != 100) {
+        //     return back()->with('error', 'Total milestone percentage must equal 100%.');
+        // }
+
+        // Insert each milestone into the database
+        foreach ($request->milestone_title as $index => $title) {
+            DB::table('milestones')->insert([
+                'project_id' => $request->project_id,
+                'type_of_work' => $request->type_of_work[$index],
+                'work_to_be_done' => $request->work_to_be_done[$index],
+                'milestone_title' => $title,
+                'milestone_description' => $request->milestone_description[$index],
+                'timeframe_days' => $request->timeframe_days[$index],
+                'payment_percentage' => $request->payment_percentage[$index],
+                'verification_point' => $request->verification_point[$index],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Redirect back with success message
+        return redirect()->route('addmillstone')->with('success', 'Milestones saved successfully!');
+    }
+
+
+    public function getMilestones($projectId)
+    {
+       
+        $projct_id = DB::table('projects_details')->where('project_id',$projectId)->first();
+        //  dd($projct_id);
+        $milestones = DB::table('milestones')
+            ->where('project_id', $projct_id->id)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($milestones);
+    }
+
+    public function listMilestones()
+    {
+        // Get all milestones with project + project_details info
+        $milestones = DB::table('milestones')
+            ->join('projects_details', 'milestones.project_id', '=', 'projects_details.id')
+            ->join('projects', 'projects_details.project_id', '=', 'projects.id')
+            ->select(
+                'milestones.*',
+                'projects.*',
+                'projects_details.*',
+            
+            )
+            ->orderBy('milestones.project_id', 'desc')
+            ->get();
+
+        // ✅ Group by project_id
+        $grouped = $milestones->groupBy('project_id');
+
+        return view('engg.milestones_list', compact('grouped'));
+    }
 
     public function allprojectdata()
     {
