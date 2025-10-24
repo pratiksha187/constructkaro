@@ -17,7 +17,6 @@
       <tr>
         <th>#</th>
         <th>Project Name</th>
-        
         <th>Type</th>
         <th>Milestones (Title - Payment %)</th>
         <th>Action</th>
@@ -26,13 +25,10 @@
     <tbody>
       @php $count = 1; @endphp
       @forelse ($grouped as $projectId => $milestones)
-        @php 
-          $first = $milestones->first(); 
-        @endphp
+        @php $first = $milestones->first(); @endphp
         <tr>
           <td>{{ $count++ }}</td>
           <td>{{ $first->project_name }}</td>
-          
           <td>{{ ucfirst($first->type_of_work ?? '-') }}</td>
           <td>
             <ul class="mb-0">
@@ -48,8 +44,6 @@
           <td>
             <button class="btn btn-sm btn-primary viewBtn"
               data-project="{{ $first->project_name }}"
-            
-              data-type="{{ $first->type_of_work }}"
               data-id="{{ $first->project_id }}">
               View All
             </button>
@@ -57,7 +51,7 @@
         </tr>
       @empty
         <tr>
-          <td colspan="6" class="text-center text-muted">No milestones found</td>
+          <td colspan="5" class="text-center text-muted">No milestones found</td>
         </tr>
       @endforelse
     </tbody>
@@ -79,37 +73,48 @@
   </div>
 </div>
 
+{{-- jQuery --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 $(document).ready(function() {
-  $(".viewBtn").click(function() {
-    let projectId = $(this).data("id");
-    let projectName = $(this).data("project");
 
-    $("#modalBody").html("<p>Loading milestones for <strong>" + projectName + "</strong>...</p>");
+  // 🟩 View button click: fetch milestones via AJAX
+  $(".viewBtn").click(function() {
+    const projectId = $(this).data("id");
+    const projectName = $(this).data("project");
+
+    $("#modalBody").html(`<p>Loading milestones for <strong>${projectName}</strong>...</p>`);
+    $("#viewModal").modal("show");
 
     $.get("/engineer/milestones/" + projectId, function(data) {
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
         $("#modalBody").html("<p class='text-danger'>No milestones found for this project.</p>");
         return;
       }
 
       let html = `
-        <h5>Project: ${projectName}</h5>
-        <table class="table table-bordered">
-          <thead><tr>
-            <th>Type of Work</th>
-            <th>Work To Be Done</th>
-            <th>Milestone</th>
-            <th>Description</th>
-            <th>Days</th>
-            <th>Payment %</th>
-            <th>Verification</th>
-          </tr></thead><tbody>`;
+        <h5 class="mb-3">Project: ${projectName}</h5>
+        <table class="table table-bordered align-middle text-center">
+          <thead class="table-dark">
+            <tr>
+              <th>Type of Work</th>
+              <th>Work To Be Done</th>
+              <th>Milestone</th>
+              <th>Description</th>
+              <th>Days</th>
+              <th>Payment %</th>
+              <th>Verification</th>
+              <th>Completed</th>
+            </tr>
+          </thead>
+          <tbody>`;
 
       data.forEach(m => {
+        const checked = m.is_completed == 1 ? "checked" : "";
+        const bgColor = m.is_completed == 1 ? "style='background-color:#d4edda;'" : "";
         html += `
-          <tr>
+          <tr data-id="${m.id}" ${bgColor}>
             <td>${m.type_of_work}</td>
             <td>${m.work_to_be_done}</td>
             <td>${m.milestone_title}</td>
@@ -117,14 +122,63 @@ $(document).ready(function() {
             <td>${m.timeframe_days}</td>
             <td>${m.payment_percentage}%</td>
             <td>${m.verification_point ?? '-'}</td>
+            <td>
+              <div class="form-check d-flex justify-content-center align-items-center">
+                <input type="checkbox" class="form-check-input complete-checkbox me-2" ${checked}>
+                <div class="spinner-border spinner-border-sm text-success d-none" role="status"></div>
+              </div>
+            </td>
           </tr>`;
       });
 
-      html += `</tbody></table>`;
+      html += "</tbody></table>";
       $("#modalBody").html(html);
     });
+  });
 
-    $("#viewModal").modal("show");
+  // ✅ Handle checkbox change (update milestone completion)
+  $(document).on("change", ".complete-checkbox", function() {
+    const checkbox = $(this);
+    const row = checkbox.closest("tr");
+    const spinner = row.find(".spinner-border");
+    const milestoneId = row.data("id");
+    const isCompleted = checkbox.is(":checked") ? 1 : 0;
+
+    if (!milestoneId) {
+      alert("❌ Milestone ID missing.");
+      return;
+    }
+
+    spinner.removeClass("d-none");
+
+    $.ajax({
+      url: "{{ route('engineer.milestones.updateStatus') }}",
+      type: "POST",
+      data: {
+        _token: "{{ csrf_token() }}",
+        id: milestoneId,
+        is_completed: isCompleted
+      },
+      success: function(res) {
+        spinner.addClass("d-none");
+        if (res.success) {
+          if (isCompleted) {
+            row.css("background-color", "#d4edda");
+          } else {
+            row.css("background-color", "");
+          }
+        } else {
+          alert("⚠️ Failed to update milestone.");
+          checkbox.prop("checked", !isCompleted);
+        }
+      },
+      error: function(xhr) {
+        spinner.addClass("d-none");
+        console.error(xhr.responseText);
+        alert("⚠️ AJAX error while updating milestone.");
+        checkbox.prop("checked", !isCompleted);
+      }
+    });
   });
 });
 </script>

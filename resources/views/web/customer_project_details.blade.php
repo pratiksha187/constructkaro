@@ -20,7 +20,7 @@
         font-family: "Inter", sans-serif;
     }
 
-    /* ---------------- Header ---------------- */
+    /* ---------- Header ---------- */
     .page-header {
         background: linear-gradient(135deg, var(--dark), var(--primary));
         border-radius: var(--radius);
@@ -51,7 +51,7 @@
     .text-orange { color: var(--primary); }
     .text-navy { color: var(--dark); }
 
-    /* ---------------- Card ---------------- */
+    /* ---------- Section Cards ---------- */
     .section-card {
         background: #fff;
         border-radius: var(--radius);
@@ -84,7 +84,7 @@
         margin: 1rem 0;
     }
 
-    /* ---------------- Progress ---------------- */
+    /* ---------- Progress ---------- */
     .progress {
         height: 12px;
         border-radius: 8px;
@@ -103,27 +103,30 @@
         to { width: 35%; }
     }
 
-    /* ---------------- Milestones ---------------- */
-    .milestone {
-        padding: 1rem 1.25rem;
-        border-left: 5px solid var(--primary);
-        background: #fff8f4;
-        border-radius: var(--radius);
-        margin-bottom: 1rem;
-        transition: 0.3s;
+    /* ---------- Milestones ---------- */
+    .milestone-card {
+        border-left: 4px solid var(--primary);
+        transition: all 0.3s ease;
+        padding: 1.25rem;
+        border-radius: 14px;
     }
 
-    .milestone.completed {
-        border-left-color: #16a34a;
-        background: #f0fdf4;
+    .milestone-card.completed {
+        background-color: #f4fcf4;
+        border-left-color: #28a745;
     }
 
-    .milestone:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    .milestone-card.pending {
+        background-color: #fff7f5;
+        border-left-color: #f25c05;
     }
 
-    /* ---------------- Payment ---------------- */
+    .milestone-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* ---------- Payment Section ---------- */
     .payment-item {
         display: flex;
         justify-content: space-between;
@@ -133,7 +136,7 @@
 
     .payment-item:last-child { border-bottom: none; }
 
-    /* ---------------- Vendor + Docs ---------------- */
+    /* ---------- Vendor & Documents ---------- */
     .vendor-docs {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -201,7 +204,7 @@
         transform: translateX(5px);
     }
 
-    /* Optional buttons */
+    /* Buttons */
     .action-btn {
         border: none;
         background: var(--primary);
@@ -219,6 +222,7 @@
 
 <div class="container py-5">
 
+    <!-- 🔹 Page Header -->
     <div class="page-header d-flex justify-content-between align-items-center">
         <div>
             <h2>{{ $project->project_name ?? 'Untitled Project' }}</h2>
@@ -234,21 +238,38 @@
         </a>
     </div>
     
+    <!-- 🔹 Project Overview -->
     <div class="section-card">
         <div class="section-header">
             <i class="bi bi-bar-chart-line-fill text-orange"></i> Project Overview
         </div>
         <div class="divider"></div>
+
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="fw-medium text-secondary">Stage: Foundation Work</span>
             <span class="badge bg-warning text-dark px-3 py-2">In Progress</span>
         </div>
+
         <p class="text-muted mb-3">
             {{ $project->project_description ?? 'No project description provided.' }}
         </p>
-        <div class="progress mb-3">
+
+        <!-- <div class="progress mb-3">
             <div class="progress-bar" style="width: 0%;">0%</div>
+        </div> -->
+        <div class="progress mb-3" style="height: 16px;">
+            <div 
+                class="progress-bar progress-bar-striped progress-bar-animated text-center" 
+                role="progressbar"
+                style="width: {{ $totalPercentage }}%;"
+                aria-valuenow="{{ $totalPercentage }}" 
+                aria-valuemin="0" 
+                aria-valuemax="100">
+                {{ $totalPercentage }}%
+            </div>
         </div>
+
+
         <div class="d-flex justify-content-between small text-muted">
             <span><strong>Created On:</strong> {{ \Carbon\Carbon::parse($project->created_at)->format('d M Y') }}</span>
             <span><strong>Status:</strong> 
@@ -260,30 +281,49 @@
             </span>
         </div>
     </div>
-    <!-- ✅ Milestones -->
-    <div class="section-card">
-        <div class="section-header">
-            <i class="bi bi-flag-fill text-orange"></i> Project Milestones
-        </div>
-        <div class="divider"></div>
 
-        <!-- <div class="milestone completed">
-            <h6 class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>Project Initiation</h6>
-            <small class="text-muted">Completed on 10 Sept 2025</small>
+    <!-- 🔹 Project Milestones -->
+    <div class="section-card shadow-sm p-4 rounded-4 bg-white">
+        <div class="section-header d-flex align-items-center mb-3">
+            <i class="bi bi-flag-fill me-2 text-orange fs-5"></i>
+            <h5 class="m-0 fw-semibold text-dark">Project Milestones</h5>
         </div>
 
-        <div class="milestone">
-            <h6 class="mb-1"><i class="bi bi-hourglass-split text-warning me-2"></i>Foundation Work</h6>
-            <small class="text-muted">Expected by 15 Oct 2025</small>
-        </div>
+        @foreach($milestones as $milestone)
+            <div class="milestone-card {{ $milestone->is_completed ? 'completed' : 'pending' }} p-3 rounded-3 mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                        @if($milestone->is_completed)
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        @else
+                            <i class="bi bi-hourglass-split text-warning me-2"></i>
+                        @endif
+                        {{ $milestone->milestone_title }}
+                    </h6>
+                    <small class="text-muted d-block mb-2">
+                        @if($milestone->is_completed)
+                            Completed on {{ \Carbon\Carbon::parse($milestone->updated_at)->format('d M Y') }}
+                        @else
+                            Expected by {{ \Carbon\Carbon::parse($milestone->created_at)->addDays($milestone->timeframe_days)->format('d M Y') }}
+                        @endif
 
-        <div class="milestone">
-            <h6 class="mb-1"><i class="bi bi-clock-history text-secondary me-2"></i>Structure Completion</h6>
-            <small class="text-muted">Upcoming Milestone</small>
-        </div> -->
+                        <span class="badge bg-primary">{{ $milestone->payment_percentage }}% Payment</span>
+                    </small>
+                
+                </div>
+
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark border me-2">{{ ucfirst($milestone->type_of_work) }}</span>
+                    <span class="badge bg-light text-dark border me-2">{{ ucfirst($milestone->work_to_be_done) }}</span>
+                    
+                </div>
+
+                <p class="text-muted small mb-0">{{ $milestone->milestone_description }}</p>
+            </div>
+        @endforeach
     </div>
 
-    <!-- ✅ Payment Schedule -->
+    <!-- 🔹 Payment Schedule -->
     <div class="section-card">
         <div class="section-header">
             <i class="bi bi-cash-stack text-orange"></i> Payment Schedule
@@ -308,11 +348,11 @@
         <hr>
         <div class="d-flex justify-content-between fw-semibold">
             <span>Total Project Value:</span>
-            <span>₹00</span>
+            <span>₹0</span>
         </div>
     </div>
 
-    <!-- ✅ Vendor + Documents -->
+    <!-- 🔹 Vendor + Documents -->
     <div class="section-card">
         <div class="section-header">
             <i class="bi bi-people-fill text-orange"></i> Assigned Vendor & Documents
@@ -320,7 +360,6 @@
         <div class="divider"></div>
 
         <!-- <div class="vendor-docs">
-         
             <div class="vendor-box d-flex align-items-center">
                 <div class="vendor-avatar"><i class="bi bi-person-fill"></i></div>
                 <div class="vendor-details">
@@ -330,7 +369,6 @@
                 </div>
             </div>
 
-            
             <div class="docs-box">
                 <h6 class="fw-semibold text-navy mb-3">
                     <i class="bi bi-folder2-open text-orange me-2"></i>Documents
@@ -344,5 +382,6 @@
             </div>
         </div> -->
     </div>
+
 </div>
 @endsection

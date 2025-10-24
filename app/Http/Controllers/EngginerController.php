@@ -67,6 +67,22 @@ class EngginerController extends Controller
         return redirect()->route('addmillstone')->with('success', 'Milestones saved successfully!');
     }
 
+    public function updateStatus(Request $request)
+    {
+        try {
+            $updated = DB::table('milestones')
+                ->where('id', $request->id)
+                ->update(['is_completed' => $request->is_completed]);
+
+            if ($updated) {
+                return response()->json(['success' => true]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Milestone not found']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 
     public function getMilestones($projectId)
     {
@@ -85,6 +101,7 @@ class EngginerController extends Controller
     {
         // Get all milestones with project + project_details info
         $milestones = DB::table('milestones')
+
             ->join('projects_details', 'milestones.project_id', '=', 'projects_details.id')
             ->join('projects', 'projects_details.project_id', '=', 'projects.id')
             ->select(
@@ -102,17 +119,35 @@ class EngginerController extends Controller
         return view('engg.milestones_list', compact('grouped'));
     }
 
-    public function allprojectdata()
-    {
-        $projects = DB::table('projects_details')
-            ->join('projects', 'projects_details.project_id', '=', 'projects.id')
-            ->select('projects.*', 'projects_details.*')
-            ->orderBy('projects.id', 'desc')
-            ->paginate(10); 
-  
-        return view('engg.allprojectdata', compact('projects'));
-    }
+//     public function allprojectdata()
+//     {
+//         $projects = DB::table('projects_details')
+//             ->join('customer_basic_info','customer_basic_info.id','=','projects.user_id')
+//             ->join('projects', 'projects_details.project_id', '=', 'projects.id')
+//             ->select('projects.*', 'projects_details.*','customer_basic_info.*')
+//             ->orderBy('projects.id', 'desc')
+//             ->paginate(10); 
+//   dd($projects);
+//         return view('engg.allprojectdata', compact('projects'));
+//     }
 
+public function allprojectdata()
+{
+    $projects = DB::table('projects_details')
+        ->join('projects', 'projects_details.project_id', '=', 'projects.id')
+        ->join('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
+        ->select(
+            'projects.*',
+            'projects_details.*',
+            'customer_basic_info.*'
+        )
+        ->orderBy('projects.id', 'desc')
+        ->paginate(10);
+
+    // dd($projects);
+
+    return view('engg.allprojectdata', compact('projects'));
+}
 
 
     public function NewProjectBoq(){
@@ -129,36 +164,68 @@ class EngginerController extends Controller
 
     }
 
-   public function updateRemarks(Request $request)
-    {
-        $request->validate([
-            'id' => 'required',
-            'engg_decription' => 'nullable|string|max:1000'
+
+public function updateProjectRemarksAndCall(Request $request)
+{
+    // dd($request);
+    $request->validate([
+        'id' => 'required|integer',
+        'engg_decription' => 'nullable|string|max:1000',
+        'call_status' => 'nullable|integer',
+        'call_remarks' => 'nullable|string|max:1000',
+    ]);
+
+    $get_project_data = DB::table('projects')->where('user_id', $request->id)->first();
+    // dd($get_project_data->id);
+    // Update directly using Query Builder
+    $updated = DB::table('projects_details')
+        ->where('project_id', $get_project_data->id)
+        ->update([
+            'engg_decription' => $request->engg_decription,
+            'call_status' => $request->call_status,
+            'call_remarks' => $request->call_remarks,
+            'updated_at' => now(),
         ]);
 
-        $project = ProjectDetails::findOrFail($request->id);
-        $project->engg_decription = $request->engg_decription;
-
-        $project->save(); 
-
-        return response()->json(['message' => 'Remarks updated']);
+    if ($updated) {
+        return response()->json(['message' => 'Engineer details updated successfully']);
+    } else {
+        return response()->json(['message' => 'No record found or no changes made'], 404);
     }
+}
 
 
-    public function updateCallResponse(Request $request){
-        $request->validate([
-            'id' => 'required',
-            'call_status' => 'required',
-            'call_remarks' => 'nullable|string',
-        ]);
 
-        $CallResponse = ProjectDetails::findOrFail($request->id);
-        $CallResponse->call_status = $request->call_status;
-        $CallResponse->call_remarks = $request->call_remarks;
-        $CallResponse->save(); 
-        return response()->json(['message' => 'CallResponse updated']);
+//    public function updateRemarks(Request $request)
+//     {
+//         $request->validate([
+//             'id' => 'required',
+//             'engg_decription' => 'nullable|string|max:1000'
+//         ]);
 
-    }
+//         $project = ProjectDetails::findOrFail($request->id);
+//         $project->engg_decription = $request->engg_decription;
+
+//         $project->save(); 
+
+//         return response()->json(['message' => 'Remarks updated']);
+//     }
+
+
+    // public function updateCallResponse(Request $request){
+    //     $request->validate([
+    //         'id' => 'required',
+    //         'call_status' => 'required',
+    //         'call_remarks' => 'nullable|string',
+    //     ]);
+
+    //     $CallResponse = ProjectDetails::findOrFail($request->id);
+    //     $CallResponse->call_status = $request->call_status;
+    //     $CallResponse->call_remarks = $request->call_remarks;
+    //     $CallResponse->save(); 
+    //     return response()->json(['message' => 'CallResponse updated']);
+
+    // }
     public function uploadBOQ(Request $request)
     {
         $request->validate([

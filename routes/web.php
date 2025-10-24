@@ -151,7 +151,7 @@ Route::put('/vendors/{id}', [CallingController::class, 'update'])->name('vendors
 
 
 
-Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
+// Route::post('/engineer/project/update-call-response', [EngginerController::class, 'updateCallResponse']);
 Route::post('/quality', [EngginerController::class, 'quality'])->name('quality');
 
 Route::post('/safety', [EngginerController::class, 'safety'])->name('safety');
@@ -159,7 +159,9 @@ Route::post('/safety', [EngginerController::class, 'safety'])->name('safety');
 Route::post('/hr', [EngginerController::class, 'hr'])->name('hr');
 Route::post('/billing', [EngginerController::class, 'billing'])->name('billing');
 
-Route::post('/engineer/project/update-remarks', [EngginerController::class, 'updateRemarks']);
+// Route::post('/engineer/project/update-remarks', [EngginerController::class, 'updateRemarks']);
+Route::post('/engineer/project/update-details', [EngginerController::class, 'updateProjectRemarksAndCall']);
+
        Route::get('/Add-New-Project-Boq', [EngginerController::class, 'NewProjectBoq'])->name('NewProjectBoq');
 Route::post('/engineer/project/upload-boq', [EngginerController::class, 'uploadBOQ']);
 //  Route::post('/engineer/project/tender', [EngginerController::class, 'storetender']);
@@ -168,6 +170,8 @@ Route::post('/engineer/project/tender', [EngginerController::class, 'storetender
     ->name('engineer.project.tender');
 
 Route::get('/Vender-list', [EngginerController::class, 'get_all_vender_list'])->name('get_all_vender_list');
+Route::post('/engineer/milestones/update-status', [EngginerController::class, 'updateStatus'])
+    ->name('engineer.milestones.updateStatus');
 
 Route::post('/engineer/vendor/update-call-status', [EngginerController::class, 'updateVendorCallStatus'])
      ->name('engineer.vendor.updateCallStatus');
@@ -210,8 +214,8 @@ Route::get('/customer-agreement', [ProjectController::class, 'customer_agreement
 
 
 Route::get('/make-hash', function () {
-    // $password = "Applesmart@97";
-     $password = "Civilworker123@";
+    $password = "Applesmart@97";
+    //  $password = "Civilworker123@";
     $hash = Hash::make($password);
 
     return $hash; 
