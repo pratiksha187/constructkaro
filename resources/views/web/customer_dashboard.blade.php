@@ -89,6 +89,7 @@
           $projectName = $mainDetail->project_name ?? 'Unnamed Project';
           $projectDescription = $mainDetail->project_description ?? 'No description available.';
           $submissionId = $mainDetail->submission_id ?? '-';
+          $created_at = $mainDetail->created_at ?? '-';
           $confirm = $mainDetail->confirm ?? 0;
           $filePaths = json_decode($mainDetail->file_path ?? '[]', true);
 
@@ -120,12 +121,16 @@
             <span class="font-semibold text-navy">{{ $submissionId }}</span>
           </p>
 
-          <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
-            <i class="bi bi-calendar"></i> 
+          <!-- <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+            <i class="bi bi-calendar">{{ $created_at }}</i> 
            
+          </p> -->
+
+          <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+              <i class="bi bi-calendar"></i>
+              {{ \Carbon\Carbon::parse($created_at)->format('d M Y') }}
           </p>
 
-       
 
           <!-- ✅ Show all detail entries -->
           @if(count($details) > 0)

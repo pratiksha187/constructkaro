@@ -10,8 +10,10 @@
       <script src="https://cdn.tailwindcss.com"></script>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
       <!-- Lucide Icons -->
-      <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-     
+      <!-- <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script> -->
+      <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
       <style>
          /* Custom CSS Variables */
          :root {
@@ -758,7 +760,7 @@
       @include('partials.footer')
    </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 <!-- Custom JavaScript -->
 <script>
 

@@ -1,6 +1,7 @@
 @extends('layouts.engineer.app')
 @section('title', 'Projects List')
 @section('content')
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -44,17 +45,47 @@
     background: linear-gradient(90deg, rgba(255,102,0,.08), rgba(41,73,233,.08));
     padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
   }
-  .ck-mtitle {
-    font-weight: 700; color: var(--ck-navy);
-    display: flex; align-items: center; gap: .5rem;
-  }
   .ck-mbody {
     padding: 22px; max-height: calc(90vh - 130px);
     overflow: auto;
   }
 </style>
 
-<div class="ck-wrap" x-data="{ activeProject:null }">
+<div class="ck-wrap" 
+     x-data="{
+        activeProject: null,
+        submitProjectUpdate() {
+          const projectId = this.$refs.projectId.value;
+          const engg_description = this.$refs.remarks.value;
+          const callStatus = this.$refs.callStatus.value;
+          const callRemarks = this.$refs.callRemarks.value;
+
+          if (!engg_description.trim() && !callStatus) {
+            alert('⚠️ Please enter remarks or select a call response.');
+            return;
+          }
+
+          $.ajax({
+            url: '/engineer/project/update-details',
+            type: 'POST',
+            data: {
+              _token: '{{ csrf_token() }}',
+              id: projectId,
+              engg_decription: engg_description,
+              call_status: callStatus,
+              call_remarks: callRemarks
+            },
+            success: () => {
+              alert('✅ Details updated successfully!');
+              this.activeProject = null; // close modal
+            },
+            error: () => {
+              alert('❌ Error occurred while updating details.');
+            }
+          });
+        }
+     }">
+
   <div class="ck-card">
     <div class="ck-card-header">
       <h2 class="ck-title">Projects List</h2>
@@ -65,48 +96,59 @@
     @endif
 
     <div class="table-responsive p-3">
-      <table class="table table-hover align-middle ck-table">
-        <thead class="table-light">
+      <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
           <tr>
-            <th>ID</th>
+            <th>Project ID</th>
+            <th>Customer Name</th>
             <th>Project Name</th>
-            <th>Address</th>
-            <th>Description</th>
+            <th>Budget</th>
+            <th>Engineer Remarks</th>
+            <th>Call Status</th>
+            <th>Created At</th>
             <th class="text-center">Action</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($projects as $index => $project)
+          @foreach ($projects as $p)
             <tr>
-              <td>{{ $projects->firstItem() + $index }}</td>
-              <td>{{ $project->project_name }}</td>
-              <td>{{ $project->project_location }}</td>
-              <td>{{ $project->project_description }}</td>
+              <td>{{ $p->submission_id }}</td>
+              <td>{{ $p->full_name }}</td>
+              <td>{{ $p->project_name }}</td>
+              <td>{{ $p->budget_range ?? $p->detail_budget_range }}</td>
+              <td>{{ $p->engg_decription ?? '-' }}</td>
+              <td>
+                @if($p->call_status == 1) ✅ Received
+                @elseif($p->call_status == 2) 📞 Not Reachable
+                @elseif($p->call_status == 3) ❌ Call Rejected
+                @elseif($p->call_status == 4) ⚡ Switched Off
+                @elseif($p->call_status == 5) 🚫 Wrong Number
+                @else -
+                @endif
+              </td>
+              <td>{{ $p->project_created_at ? \Carbon\Carbon::parse($p->project_created_at)->format('d M Y, h:i A') : '-' }}</td>
               <td class="text-center">
-                <button @click="activeProject = {{ json_encode($project) }}" class="icon-btn" title="View Details">
+                <button @click="activeProject = {{ json_encode($p) }}" class="icon-btn" title="View Details">
                   <span class="material-icons" style="font-size:18px;">visibility</span>
                 </button>
               </td>
             </tr>
-          @empty
-            <tr>
-              <td colspan="5" class="text-center text-muted py-4">No Project found.</td>
-            </tr>
-          @endforelse
+          @endforeach
         </tbody>
       </table>
-    </div>
 
-    <div class="px-3 pb-3">{{ $projects->links() }}</div>
+      <div class="mt-3">
+        {{ $projects->links() }}
+      </div>
+    </div>
   </div>
 
   {{-- 🔹 Modal --}}
   <div x-show="activeProject" x-cloak class="ck-backdrop" x-transition>
-    <div class="ck-modal shadow-lg border-0 rounded-4 overflow-hidden animate-fade-in">
+    <div class="ck-modal shadow-lg border-0 rounded-4 overflow-hidden">
 
-      <!-- header -->
-      <div class="ck-mhdr p-3 px-4 d-flex justify-content-between align-items-center"
-           style="background: linear-gradient(90deg, rgba(255,102,0,.12), rgba(41,73,233,.12)); border-bottom:1px solid #e9eef7;">
+      <!-- Header -->
+      <div class="ck-mhdr">
         <div class="d-flex align-items-center gap-2">
           <span class="material-icons text-warning fs-4">assignment</span>
           <h5 class="mb-0 fw-bold text-dark" x-text="activeProject.project_name"></h5>
@@ -116,16 +158,27 @@
         </button>
       </div>
 
-      <!-- body -->
+      <!-- Body -->
       <div class="ck-mbody p-4" style="background:#fafbfd;">
-        <!-- Project Info -->
         <div class="mb-4">
           <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#FF6600;">Project Information</h6>
           <div class="row g-3">
-            <div class="col-md-6"><p class="fw-semibold small mb-1">📍 Location</p><p x-text="activeProject.land_location"></p></div>
-            <div class="col-md-6"><p class="fw-semibold small mb-1">📝 Description</p><p x-text="activeProject.project_description"></p></div>
-            <div class="col-md-6"><p class="fw-semibold small mb-1">💰 Budget</p><span class="badge text-bg-light border" x-text="activeProject.budget_range"></span></div>
-            <div class="col-md-6"><p class="fw-semibold small mb-1">⏱ Timeline</p><span class="badge text-bg-light border" x-text="activeProject.project_duration"></span></div>
+            <div class="col-md-6">
+              <p class="fw-semibold small mb-1">📍 Location</p>
+              <p x-text="activeProject.project_location ?? activeProject.land_location"></p>
+            </div>
+            <div class="col-md-6">
+              <p class="fw-semibold small mb-1">📝 Description</p>
+              <p x-text="activeProject.project_description"></p>
+            </div>
+            <div class="col-md-6">
+              <p class="fw-semibold small mb-1">💰 Budget</p>
+              <span class="badge text-bg-light border" x-text="activeProject.budget_range ?? activeProject.detail_budget_range"></span>
+            </div>
+            <div class="col-md-6">
+              <p class="fw-semibold small mb-1">⏱ Timeline</p>
+              <span class="badge text-bg-light border" x-text="activeProject.project_duration ?? activeProject.expected_timeline"></span>
+            </div>
           </div>
         </div>
 
@@ -139,9 +192,16 @@
           </div>
         </div>
 
-        <!-- 🧰 Unified Engineer Action -->
+        <!-- Engineer Action -->
         <div class="border-top pt-4 mt-4">
           <h6 class="fw-bold mb-3 text-dark">🧰 Engineer Action</h6>
+
+          <!-- Hidden project_id -->
+          <input type="hidden" x-ref="projectId" :value="activeProject.project_id">
+
+          <p class="text-muted small mb-3">
+            <strong>Project ID:</strong> <span x-text="activeProject.project_id"></span>
+          </p>
 
           <div class="mb-3">
             <label class="form-label small fw-semibold">Engineer Remarks</label>
@@ -167,9 +227,7 @@
                       placeholder="Enter call remarks..."></textarea>
           </div>
 
-          <button
-            @click="submitProjectUpdate(activeProject.id, $refs.remarks.value, $refs.callStatus.value, $refs.callRemarks.value)"
-            class="btn btn-primary px-4">
+          <button @click="submitProjectUpdate()" class="btn btn-primary px-4">
             Submit
           </button>
         </div>
@@ -180,32 +238,7 @@
 
 {{-- Scripts --}}
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  function submitProjectUpdate(projectId, engg_decription, callStatus, callRemarks) {
-    if (!engg_decription.trim() && !callStatus) {
-      alert("Please enter remarks or select a call response.");
-      return;
-    }
 
-    $.ajax({
-      url: '/engineer/project/update-details',
-      type: 'POST',
-      data: {
-        _token: '{{ csrf_token() }}',
-        id: projectId,
-        engg_decription: engg_decription,
-        call_status: callStatus,
-        call_remarks: callRemarks
-      },
-      success: function() {
-        alert('Details updated successfully!');
-        location.reload();
-      },
-      error: function() {
-        alert('Error occurred while updating details.');
-      }
-    });
-  }
-</script>
 @endsection
