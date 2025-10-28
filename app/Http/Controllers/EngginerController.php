@@ -119,121 +119,7 @@ class EngginerController extends Controller
         return view('engg.milestones_list', compact('grouped'));
     }
 
-//     public function allprojectdata()
-//     {
-//         $projects = DB::table('projects_details')
-//             ->join('customer_basic_info','customer_basic_info.id','=','projects.user_id')
-//             ->join('projects', 'projects_details.project_id', '=', 'projects.id')
-//             ->select('projects.*', 'projects_details.*','customer_basic_info.*')
-//             ->orderBy('projects.id', 'desc')
-//             ->paginate(10); 
-//   dd($projects);
-//         return view('engg.allprojectdata', compact('projects'));
-//     }
 
-// public function allprojectdata()
-// {
-//     $projects = DB::table('projects_details')
-//         ->join('projects', 'projects_details.project_id', '=', 'projects.id')
-//         ->join('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-//         ->select(
-//             'projects.*',
-//             'projects_details.*',
-//             'customer_basic_info.*'
-//         )
-//         ->orderBy('projects.id', 'desc')
-//         ->paginate(10);
-
-//     // dd($projects);
-
-//     return view('engg.allprojectdata', compact('projects'));
-// }
-// public function allprojectdata()
-// {
-//     $projects = DB::table('projects')
-//         ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
-//         ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-//         ->select([
-//             // 🟠 PROJECTS TABLE
-//             'projects.id as project_id',
-//             'projects.user_id',
-//             'projects.profile_photo',
-//             'projects.construction_type_id',
-//             'projects.project_type_id',
-//             'projects.site_ready',
-//             'projects.land_location',
-//             'projects.survey_number',
-//             'projects.land_type',
-//             'projects.sub_categories',
-//             'projects.land_area',
-//             'projects.land_unit',
-//             'projects.arch_drawings',
-//             'projects.arch_files',
-//             'projects.struct_drawings',
-//             'projects.struct_files',
-//             'projects.has_boq',
-//             'projects.boq_file',
-//             'projects.expected_start',
-//             'projects.project_duration',
-//             'projects.budget_range',
-//             'projects.login_id',
-//             'projects.site_status',
-//             'projects.floors',
-//             'projects.water',
-//             'projects.electricity',
-//             'projects.drainage',
-//             'projects.payment_preference',
-//             'projects.quality_preference',
-//             'projects.vendor_preference',
-//             'projects.best_time',
-//             'projects.work_type',
-//             'projects.work_subtype',
-//             'projects.vendor_type',
-//             'projects.sub_vendor_types',
-//             'projects.arch_files',
-//             'projects.struct_files',
-//             'projects.created_at as project_created_at',
-//             'projects.updated_at as project_updated_at',
-
-//             // 🔵 PROJECTS_DETAILS TABLE
-//             'projects_details.id as detail_id',
-//             'projects_details.project_name',
-//             'projects_details.project_location',
-//             'projects_details.project_description',
-//             'projects_details.budget_range as detail_budget_range',
-//             'projects_details.expected_timeline',
-//             'projects_details.file_path',
-//             'projects_details.confirm',
-//             'projects_details.project_id as detail_project_id',
-//             'projects_details.submission_id',
-//             'projects_details.project_like_by',
-//             'projects_details.engg_decription',
-//             'projects_details.call_status',
-//             'projects_details.call_remarks',
-//             'projects_details.boq_status',
-//             'projects_details.tender_status',
-//             'projects_details.created_at as detail_created_at',
-//             'projects_details.updated_at as detail_updated_at',
-
-//             // 🟢 CUSTOMER_BASIC_INFO TABLE
-//             'customer_basic_info.id as customer_id',
-//             'customer_basic_info.full_name',
-//             'customer_basic_info.phone_number',
-//             'customer_basic_info.email',
-//             'customer_basic_info.password',
-//             'customer_basic_info.gender',
-//             'customer_basic_info.role_id',
-//             'customer_basic_info.state',
-//             'customer_basic_info.region',
-//             'customer_basic_info.city',
-//             'customer_basic_info.created_at as customer_created_at',
-//             'customer_basic_info.updated_at as customer_updated_at',
-//         ])
-//         ->orderBy('projects.id', 'desc')
-//         ->paginate(10); // you can change to ->get() if you want all records
-
-//     return view('engg.allprojectdata', compact('projects'));
-// }
 public function allprojectdata()
 {
     $projects = DB::table('projects')
@@ -338,34 +224,6 @@ public function allprojectdata()
     }
 
 
-// public function updateProjectRemarksAndCall(Request $request)
-// {
-//     // dd($request);
-//     $request->validate([
-//         'id' => 'required|integer',
-//         'engg_decription' => 'nullable|string|max:1000',
-//         'call_status' => 'nullable|integer',
-//         'call_remarks' => 'nullable|string|max:1000',
-//     ]);
-
-//     $get_project_data = DB::table('projects')->where('user_id', $request->id)->first();
-//     dd($get_project_data->id);
-//     // Update directly using Query Builder
-//     $updated = DB::table('projects_details')
-//         ->where('project_id', $get_project_data->id)
-//         ->update([
-//             'engg_decription' => $request->engg_decription,
-//             'call_status' => $request->call_status,
-//             'call_remarks' => $request->call_remarks,
-//             'updated_at' => now(),
-//         ]);
-
-//     if ($updated) {
-//         return response()->json(['message' => 'Engineer details updated successfully']);
-//     } else {
-//         return response()->json(['message' => 'No record found or no changes made'], 404);
-//     }
-// }
 
 public function updateProjectRemarksAndCall(Request $request)
 {
@@ -400,37 +258,6 @@ public function updateProjectRemarksAndCall(Request $request)
     }
 }
 
-
-//    public function updateRemarks(Request $request)
-//     {
-//         $request->validate([
-//             'id' => 'required',
-//             'engg_decription' => 'nullable|string|max:1000'
-//         ]);
-
-//         $project = ProjectDetails::findOrFail($request->id);
-//         $project->engg_decription = $request->engg_decription;
-
-//         $project->save(); 
-
-//         return response()->json(['message' => 'Remarks updated']);
-//     }
-
-
-    // public function updateCallResponse(Request $request){
-    //     $request->validate([
-    //         'id' => 'required',
-    //         'call_status' => 'required',
-    //         'call_remarks' => 'nullable|string',
-    //     ]);
-
-    //     $CallResponse = ProjectDetails::findOrFail($request->id);
-    //     $CallResponse->call_status = $request->call_status;
-    //     $CallResponse->call_remarks = $request->call_remarks;
-    //     $CallResponse->save(); 
-    //     return response()->json(['message' => 'CallResponse updated']);
-
-    // }
     public function uploadBOQ(Request $request)
     {
         $request->validate([
@@ -558,8 +385,6 @@ public function updateProjectRemarksAndCall(Request $request)
         return view('engg.get_all_vender_list', compact('allvendor'));
     }
 
-  
-
     public function updateVendorCallStatus(Request $request)
     {
         $request->validate([
@@ -594,6 +419,81 @@ public function updateProjectRemarksAndCall(Request $request)
         return response()->json(['success' => true]);
     }
 
+    public function billverification(){
+           $bills = DB::table('projects')
+                    ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
+                    ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
+                    ->leftJoin('monthly_bills', 'monthly_bills.project_id', '=', 'projects_details.project_id')
+
+        // 🔹 Show only projects that have a submission_id in projects_details
+                    ->whereNotNull('projects_details.submission_id')
+                    ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
+                    ->select([
+                        // 🟠 PROJECTS TABLE
+                        'projects.id as project_id',
+                        'projects.user_id',
+                    
+
+                        // 🔵 PROJECTS_DETAILS TABLE
+                        'projects_details.id as detail_id',
+                        'projects_details.project_name',
+                        'projects_details.project_location',
+                        'projects_details.project_description',
+                        'projects_details.budget_range as detail_budget_range',
+                        'projects_details.expected_timeline',
+                    
+                        // 🟢 CUSTOMER_BASIC_INFO TABLE
+                        'customer_basic_info.id as customer_id',
+                        'customer_basic_info.full_name',
+                        'customer_basic_info.phone_number',
+                        'customer_basic_info.email',
+                        'customer_basic_info.password',
+                        'customer_basic_info.gender',
+                    
+                        'monthly_bills.*'
+                    ])
+                    ->orderBy('projects.id', 'desc')
+                    ->paginate(10);
+                    // dd($projects);
+
+    return view('engg.billverificationlist', compact('bills'));
+
+    }
+
+    public function showBill($id)
+    {
+        $bill = DB::table('monthly_bills as b')
+            ->join('projects_details as d', 'd.project_id', '=', 'b.project_id')
+            // ->join('customer_basic_info as c', 'c.id', '=', 'd.project_id')
+            ->select('b.*', 'd.project_name')
+            ->where('b.id', $id)
+            ->first();
+    // dd($bill);
+        return view('engg.bill_modal', compact('bill'));
+    }
+
+    public function updateBillStatus(Request $request, $id)
+    {
+        // ✅ Validate input
+        $request->validate([
+            'status' => 'required|in:Approved,Revised,Rejected',
+            'engineer_remarks' => 'nullable|string|max:1000',
+        ]);
+
+        // ✅ Update bill record
+        DB::table('monthly_bills')
+            ->where('id', $id)
+            ->update([
+                'status' => $request->status,
+                'engineer_remarks' => $request->engineer_remarks,
+                'updated_at' => now(),
+            ]);
+
+        // ✅ Redirect back with success message
+        return redirect()
+            ->route('billverification')
+            ->with('success', 'Bill status updated successfully!');
+    }
 
 
 }

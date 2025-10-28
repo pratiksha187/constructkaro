@@ -120,6 +120,20 @@
     font-size: 1rem;
   }
 
+  .project-count-box {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.project-count-box:hover {
+  background: #fff3e6;
+  border-color: var(--primary);
+}
+
+
   /* ================= MOBILE ================= */
   @media (max-width: 991.98px) {
     .add-project-btn {
@@ -152,6 +166,14 @@
 
     <!-- 🔸 Right: Profile + Button -->
     <div class="navbar-right d-none d-lg-flex">
+
+      <!-- ✅ Project Count -->
+      <div class="project-count-box flex items-center gap-2 me-3">
+        <i class="bi bi-folder2-open text-orange text-lg"></i>
+        <span class="text-sm font-medium text-navy">
+          Projects: <span class="text-orange font-semibold" x-text="projectCount"></span>
+        </span>
+      </div>
 
       <!-- ✅ Add Project Button -->
       <button class="add-project-btn" @click="handleAddProject">

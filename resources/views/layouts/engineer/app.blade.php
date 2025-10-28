@@ -220,6 +220,11 @@
           <a class="side-link {{ request()->routeIs('NewProjectBoq') ? 'active' : '' }}" href="{{ route('NewProjectBoq') }}">
             <i class="bi bi-list-check"></i> BOQ List
           </a>
+         <a class="side-link {{ request()->routeIs('billverification') ? 'active' : '' }}" 
+            href="{{ route('billverification') }}">
+            <i class="bi bi-list-check"></i> Bill Verification
+          </a>  
+
         </div>
       </div>
 

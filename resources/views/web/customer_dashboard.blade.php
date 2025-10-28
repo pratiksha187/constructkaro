@@ -61,6 +61,8 @@
       {id:'packages', icon:'bi-box-seam', label:'Packages'},
       {id:'profile', icon:'bi-person-circle', label:'Profile'},
       {id:'documents', icon:'bi-file-earmark-text', label:'Documents'},
+      {id:'bill_status', icon:'bi-file-earmark-text', label:'Bill Status'},
+
     ]" :key="item.id">
       <button 
         @click="tab = item.id"
@@ -120,11 +122,6 @@
             Submission ID: 
             <span class="font-semibold text-navy">{{ $submissionId }}</span>
           </p>
-
-          <!-- <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
-            <i class="bi bi-calendar">{{ $created_at }}</i> 
-           
-          </p> -->
 
           <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
               <i class="bi bi-calendar"></i>
@@ -427,6 +424,162 @@
       </div>
     </div>
   </div>
+
+  <div class="mt-10" x-show="tab === 'bill_status'" x-transition>
+    <div class="bg-white rounded-2xl shadow-md border-l-4 border-orange p-8 max-w-8xl mx-auto">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold text-navy">Customer View - Bill Status</h2>
+          <p class="text-gray-500 text-sm">Track your monthly bill submissions and approval status</p>
+        </div>
+      </div>
+
+      <!-- ✅ Top Summary Counts -->
+      @php
+        $approvedCount = $bills->where('status', 'Approved')->count();
+        $revisedCount  = $bills->where('status', 'Revised')->count();
+        $rejectedCount = $bills->where('status', 'Rejected')->count();
+        $pendingCount  = $bills->where('status', 'Pending')->count();
+      @endphp
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-green-50 border-l-4 border-green-600 p-4 rounded-xl flex justify-between items-center shadow-sm">
+          <div>
+            <h4 class="font-semibold text-green-700">Approved</h4>
+            <p class="text-2xl font-bold text-green-800">{{ $approvedCount }}</p>
+          </div>
+          <i class="bi bi-check-circle-fill text-green-600 text-3xl"></i>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-xl flex justify-between items-center shadow-sm">
+          <div>
+            <h4 class="font-semibold text-yellow-700">Revised</h4>
+            <p class="text-2xl font-bold text-yellow-800">{{ $revisedCount }}</p>
+          </div>
+          <i class="bi bi-exclamation-triangle-fill text-yellow-500 text-3xl"></i>
+        </div>
+
+        <div class="bg-red-50 border-l-4 border-red-600 p-4 rounded-xl flex justify-between items-center shadow-sm">
+          <div>
+            <h4 class="font-semibold text-red-700">Rejected</h4>
+            <p class="text-2xl font-bold text-red-800">{{ $rejectedCount }}</p>
+          </div>
+          <i class="bi bi-x-circle-fill text-red-600 text-3xl"></i>
+        </div>
+
+        <div class="bg-gray-50 border-l-4 border-gray-500 p-4 rounded-xl flex justify-between items-center shadow-sm">
+          <div>
+            <h4 class="font-semibold text-gray-700">Pending</h4>
+            <p class="text-2xl font-bold text-gray-800">{{ $pendingCount }}</p>
+          </div>
+          <i class="bi bi-clock-history text-gray-600 text-3xl"></i>
+        </div>
+      </div>
+
+      <!-- ✅ Bill Data Table -->
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100 text-gray-700 font-semibold">
+            <tr>
+              <th class="py-3 px-6">Month</th>
+              <th class="py-3 px-6">Project ID</th>
+              <th class="py-3 px-6">Amount Claimed (₹)</th>
+              <th class="py-3 px-6">Work Description</th>
+              <th class="py-3 px-6">Status</th>
+              <th class="py-3 px-6">Engineer Remarks</th>
+              <th class="py-3 px-6 text-center">Attachments</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            @forelse($bills as $bill)
+              <tr class="hover:bg-gray-50">
+                <td class="py-3 px-6 font-medium text-gray-700">
+                  {{ \Carbon\Carbon::parse($bill->bill_month)->format('F Y') }}
+                </td>
+
+                <td class="py-3 px-6 text-navy font-semibold">
+                  {{ $bill->project_id }}
+                </td>
+
+                <td class="py-3 px-6 text-gray-700">
+                  ₹{{ number_format($bill->amount, 2) }}
+                </td>
+
+                <td class="py-3 px-6 text-gray-600">
+                  {{ $bill->work_description }}
+                </td>
+
+                <td class="py-3 px-6">
+                  @php
+                    $statusColors = [
+                      'Approved' => 'bg-green-100 text-green-700',
+                      'Revised'  => 'bg-yellow-100 text-yellow-700',
+                      'Rejected' => 'bg-red-100 text-red-700',
+                      'Pending'  => 'bg-gray-100 text-gray-700',
+                    ];
+                    $badge = $statusColors[$bill->status] ?? 'bg-gray-100 text-gray-700';
+                  @endphp
+                  <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $badge }}">
+                    {{ $bill->status }}
+                  </span>
+                </td>
+
+                <td class="py-3 px-6 text-gray-600">
+                  {{ $bill->engineer_remarks ?? '-' }}
+                </td>
+
+                <td class="py-3 px-6 text-center">
+                  <div class="flex flex-col items-center gap-2">
+                    @if(!empty($bill->invoice_path))
+                      <a href="{{ asset($bill->invoice_path) }}" target="_blank"
+                        class="bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium px-4 py-1.5 rounded-lg text-sm flex items-center justify-center gap-2 transition">
+                        <i class="bi bi-paperclip"></i> Invoice
+                      </a>
+                    @endif
+
+                    @if(!empty($bill->quantity_sheet))
+                      <a href="{{ asset($bill->quantity_sheet) }}" target="_blank"
+                        class="bg-green-50 text-green-700 hover:bg-green-100 font-medium px-4 py-1.5 rounded-lg text-sm flex items-center justify-center gap-2 transition">
+                        <i class="bi bi-file-earmark-excel"></i> Qty Sheet
+                      </a>
+                    @endif
+
+                    @if(!empty($bill->site_photos))
+                      @php
+                        $photos = json_decode($bill->site_photos, true);
+                      @endphp
+                      @if(is_array($photos))
+                        <div class="flex flex-wrap justify-center gap-1 mt-1">
+                          @foreach($photos as $photo)
+                            <a href="{{ asset($photo) }}" target="_blank" class="block">
+                              <img src="{{ asset($photo) }}" alt="Site Photo"
+                                class="w-10 h-10 rounded-lg object-cover border hover:scale-110 transition-transform">
+                            </a>
+                          @endforeach
+                        </div>
+                      @endif
+                    @endif
+                  </div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="7" class="text-center py-6 text-gray-500">
+                  No bills found.
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+</div>
 
 </div>
 

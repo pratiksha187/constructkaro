@@ -435,262 +435,109 @@ public function storeproject(Request $request)
         ]);
     }
 
-//     public function customer_dashboard()
-//     {
-//         $user = session('user'); // ✅ user info from session
-//         // $user = session('current_project_id');
-//           $currentProjectId = session('current_project_id');
-//     // dd( $user);
-//           $projects = DB::table('projects')
-//                         ->where('id', $currentProjectId)
-//                         ->first();
+    public function customer_dashboard()
+    {
+        $user = session('user'); // ✅ user info from session
+        $currentProjectId = session('current_project_id'); // ✅ project session (if in form flow)
 
-//          $user= $projects->user_id;              
-//         // dd($user);
-//         if (!$user) {
-//             return redirect()->route('login')->with('error', 'Please login first.');
-//         }
+        // 🧩 Initialize variables
+        $cust_details = null;
+        $projects = collect();
 
-//         // $projectKey = $user->id;
+        // Case 1: Logged-in user
+        if ($user) {
+            $userId = $user->id ?? $user['id'] ?? null;
 
-//         // ✅ Fetch customer details
-//         $cust_details = DB::table('customer_basic_info')
-//                             ->where('id', $user)
-//                             ->first();
-// // dd($cust_details);
-//         if (!$cust_details) {
-//             return redirect()->back()->with('error', 'Customer details not found.');
-//         }
+            if (!$userId) {
+                return redirect()->route('login')->with('error', 'Invalid user session. Please login again.');
+            }
 
-//         // ✅ Fetch all projects for this customer
-//         $projects = DB::table('projects')
-//                         ->where('user_id', $cust_details->id)
-//                         ->get();
+            $cust_details = DB::table('customer_basic_info')
+                ->where('id', $userId)
+                ->first();
 
-//         // ✅ Fetch project details for each project
-//         $projects_with_details = [];
+            if (!$cust_details) {
+                return redirect()->back()->with('error', 'Customer details not found.');
+            }
 
-//         foreach ($projects as $project) {
-//             $project_details = DB::table('projects_details')
-//                                 ->where('project_id', $project->id)
-//                                 ->get();
-
-//             $projects_with_details[] = [ 
-//                 'project' => $project,
-//                 'details' => $project_details,
-//             ];
-//         }
-
-//         // ✅ Other master data
-//         $states = DB::table('states')
-//                     ->where('is_active', 1)
-//                     ->get();
-
-//         $role_types = DB::table('role')->get();
-
-//         // ✅ Company social links
-//         $company_socials = [
-//             'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-//             'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-//             'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-//         ];
-       
-//         return view('web.customer_dashboard', compact(
-//             'projects',
-//             'projects_with_details',
-//             'cust_details',
-//             // 'projectKey',
-//             'states',
-//             'role_types',
-//             'company_socials'
-//         ));
-//     }
-// public function customer_dashboard()
-// {
-//     $user = session('user'); // ✅ user info from session (if logged in)
-//     $currentProjectId = session('current_project_id'); // ✅ project session (if in form flow)
-
-//     // Case 1: Logged-in user
-//     if ($user) {
-//         $userId = $user->id ?? $user['id'] ?? null;
-
-//         if (!$userId) {
-//             return redirect()->route('login')->with('error', 'Invalid user session. Please login again.');
-//         }
-
-//         $cust_details = DB::table('customer_basic_info')
-//                             ->where('id', $userId)
-//                             ->first();
-
-//         if (!$cust_details) {
-//             return redirect()->back()->with('error', 'Customer details not found.');
-//         }
-
-//         // ✅ Fetch all projects for this logged-in user
-//         $projects = DB::table('projects')
-//                         ->where('user_id', $cust_details->id)
-//                         ->get();
-//     }
-
-//     // Case 2: Step-by-step form flow (no login, but project session)
-//     elseif ($currentProjectId) {
-//         $project = DB::table('projects')
-//                         ->where('id', $currentProjectId)
-//                         ->first();
-
-//         if (!$project) {
-//             return redirect()->back()->with('error', 'Project not found.');
-//         }
-
-//         $cust_details = DB::table('customer_basic_info')
-//                             ->where('id', $project->user_id)
-//                             ->first();
-
-//         if (!$cust_details) {
-//             return redirect()->back()->with('error', 'Customer details not found.');
-//         }
-
-//         // Only the current project for this flow
-//         $projects = collect([$project]);
-//     }
-
-//     // Case 3: Neither session found
-//     else {
-//         return redirect()->route('login')->with('error', 'Please login or start your project form first.');
-//     }
-
-//     // ✅ Fetch project details for each project
-//     $projects_with_details = [];
-
-//     foreach ($projects as $project) {
-//         $project_details = DB::table('projects_details')
-//                             ->where('project_id', $project->id)
-//                             ->get();
-
-//         $projects_with_details[] = [
-//             'project' => $project,
-//             'details' => $project_details,
-//         ];
-//     }
-// dd($projects_with_details);
-//     // ✅ Master data
-//     $states = DB::table('states')
-//                 ->where('is_active', 1)
-//                 ->get();
-
-//     $role_types = DB::table('role')->get();
-
-//     // ✅ Company socials
-//     $company_socials = [
-//         'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-//         'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-//         'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-//     ];
-
-//     return view('web.customer_dashboard', compact(
-//         'projects',
-//         'projects_with_details',
-//         'cust_details',
-//         'states',
-//         'role_types',
-//         'company_socials'
-//     ));
-// }
-public function customer_dashboard()
-{
-    $user = session('user'); // ✅ user info from session (if logged in)
-    $currentProjectId = session('current_project_id'); // ✅ project session (if in form flow)
-
-    // Case 1: Logged-in user
-    if ($user) {
-        $userId = $user->id ?? $user['id'] ?? null;
-
-        if (!$userId) {
-            return redirect()->route('login')->with('error', 'Invalid user session. Please login again.');
+            // ✅ Fetch all projects for this logged-in customer
+            $projects = DB::table('projects')
+                ->where('user_id', $cust_details->id)
+                ->get();
         }
 
-        $cust_details = DB::table('customer_basic_info')
-                            ->where('id', $userId)
-                            ->first();
+        // Case 2: Step-by-step form flow (no login, but project session)
+        elseif ($currentProjectId) {
+            $project = DB::table('projects')
+                ->where('id', $currentProjectId)
+                ->first();
 
-        if (!$cust_details) {
-            return redirect()->back()->with('error', 'Customer details not found.');
+            if (!$project) {
+                return redirect()->back()->with('error', 'Project not found.');
+            }
+
+            $cust_details = DB::table('customer_basic_info')
+                ->where('id', $project->user_id)
+                ->first();
+
+            if (!$cust_details) {
+                return redirect()->back()->with('error', 'Customer details not found.');
+            }
+
+            // Only the current project for this flow
+            $projects = collect([$project]);
         }
 
-        // ✅ Fetch all projects for this logged-in user
-        $projects = DB::table('projects')
-                        ->where('user_id', $cust_details->id)
-                        ->get();
-    }
-
-    // Case 2: Step-by-step form flow (no login, but project session)
-    elseif ($currentProjectId) {
-        $project = DB::table('projects')
-                        ->where('id', $currentProjectId)
-                        ->first();
-
-        if (!$project) {
-            return redirect()->back()->with('error', 'Project not found.');
+        // Case 3: Neither session found
+        else {
+            return redirect()->route('login')->with('error', 'Please login or start your project form first.');
         }
 
-        $cust_details = DB::table('customer_basic_info')
-                            ->where('id', $project->user_id)
-                            ->first();
-
-        if (!$cust_details) {
-            return redirect()->back()->with('error', 'Customer details not found.');
-        }
-
-        // Only the current project for this flow
-        $projects = collect([$project]);
-    }
-
-    // Case 3: Neither session found
-    else {
-        return redirect()->route('login')->with('error', 'Please login or start your project form first.');
-    }
-
-    // ✅ Fetch project details for each project
-    $projects_with_details = [];
-
-    foreach ($projects as $project) {
-        $project_details = DB::table('projects_details')
-                            ->where('project_id', $project->id)
-                            ->get();
-
-        // ✅ Only include projects that actually have details
-        if ($project_details->isNotEmpty()) {
-            $projects_with_details[] = [
-                'project' => $project,
-                'details' => $project_details,
-            ];
-        }
-    }
-//  dd($projects_with_details);
-    // ✅ Master data
-    $states = DB::table('states')
-                ->where('is_active', 1)
+        // ✅ Fetch project details for each project
+        $projects_with_details = [];
+        foreach ($projects as $project) {
+            $project_details = DB::table('projects_details')
+                ->where('project_id', $project->id)
                 ->get();
 
-    $role_types = DB::table('role')->get();
+            if ($project_details->isNotEmpty()) {
+                $projects_with_details[] = [
+                    'project' => $project,
+                    'details' => $project_details,
+                ];
+            }
+        }
+        $project_count = count($projects_with_details);
+        // ✅ Fetch master data
+        $states = DB::table('states')->where('is_active', 1)->get();
+        $role_types = DB::table('role')->get();
 
-    // ✅ Company socials
-    $company_socials = [
-        'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
-        'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
-        'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
-    ];
+        // ✅ Company social links
+        $company_socials = [
+            'facebook'  => 'https://www.facebook.com/share/16n2rF5yTV/?mibextid=wwXIfr',
+            'linkedin'  => 'https://linkedin.com/company/ConstructKaro',
+            'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
+        ];
 
-    return view('web.customer_dashboard', compact(
-        'projects',
-        'projects_with_details',
-        'cust_details',
-        'states',
-        'role_types',
-        'company_socials'
-    ));
-}
+        
+        $bills = DB::table('monthly_bills')
+                // ->leftJoin('projects', 'projects.id', '=', 'monthly_bills.project_id')
+                ->select('monthly_bills.*')
+                ->where('monthly_bills.user_id', $cust_details->id)
+                ->orderBy('bill_month', 'asc')
+                ->get();
 
+        return view('web.customer_dashboard', compact(
+            'projects',
+            'projects_with_details',
+            'cust_details',
+            'project_count',
+            'states',
+            'role_types',
+            'company_socials',
+            'bills' 
+        ));
+    }
 
     public function Partner_Bids()
     {
@@ -878,4 +725,8 @@ public function customer_dashboard()
         // dd($user); 
         return view('web.customer_agreement',compact('user'));
     }
+
+
+
+
 }

@@ -170,6 +170,17 @@ Route::post('/engineer/project/tender', [EngginerController::class, 'storetender
     ->name('engineer.project.tender');
 
 Route::get('/Vender-list', [EngginerController::class, 'get_all_vender_list'])->name('get_all_vender_list');
+
+Route::get('/billverification', [EngginerController::class, 'billVerification'])
+    ->name('billverification');
+
+Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->name('engineer.bill.show');
+
+Route::post('/billverification/update/{id}', [EngginerController::class, 'updateBillStatus'])
+    ->name('billverification.update');
+
+// Route::get('/billverification', [EngginerController::class, 'billverification'])->name('billverification');
+
 Route::post('/engineer/milestones/update-status', [EngginerController::class, 'updateStatus'])
     ->name('engineer.milestones.updateStatus');
 
@@ -211,6 +222,11 @@ Route::get('/test-email', function () {
 Route::get('/vendor-agreement', [VendorController::class, 'vendor_terms_condition'])->name('vendor.agreement');
 
 Route::get('/customer-agreement', [ProjectController::class, 'customer_agreement'])->name('customer.agreement');
+
+Route::post('/billStatus', [ProjectController::class, 'billStatus'])->name('customer.billStatus');
+
+// Route::get('/billverification', [EngginerController::class, 'billVerification'])->name('engineer.bill.verification');
+Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->name('engineer.bill.show');
 
 
 Route::get('/make-hash', function () {
