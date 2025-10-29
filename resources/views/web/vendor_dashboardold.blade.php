@@ -202,28 +202,28 @@
     <div class="col-md-3">
       <div class="summary-card text-center bg-light">
         <div class="icon text-primary"><i class="bi bi-file-earmark-text"></i></div>
-        <h4>12</h4>
+        <h4>0</h4>
         <p>Available Tenders</p>
       </div>
     </div>
     <div class="col-md-3">
       <div class="summary-card text-center bg-light">
         <div class="icon text-success"><i class="bi bi-check-circle"></i></div>
-        <h4>5</h4>
+        <h4>0</h4>
         <p>Bids Submitted</p>
       </div>
     </div>
     <div class="col-md-3">
       <div class="summary-card text-center bg-light">
         <div class="icon text-warning"><i class="bi bi-building"></i></div>
-        <h4>3</h4>
+        <h4>0</h4>
         <p>Active Projects</p>
       </div>
     </div>
     <div class="col-md-3">
       <div class="summary-card text-center bg-light">
         <div class="icon text-danger"><i class="bi bi-currency-rupee"></i></div>
-        <h4>₹97.7 L</h4>
+        <h4>₹0</h4>
         <p>Total Earnings</p>
       </div>
     </div>
@@ -322,19 +322,19 @@
       <div class="row g-4 mb-4">
         <div class="col-md-4">
           <div class="payment-card text-center bg-success text-white">
-            <h4>₹85.2 L</h4>
+            <h4>₹0</h4>
             <p>Total Earnings</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="payment-card text-center bg-warning text-dark">
-            <h4>₹12.5 L</h4>
+            <h4>₹0</h4>
             <p>Pending Payments</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="payment-card text-center bg-info text-white">
-            <h4>6%</h4>
+            <h4>0%</h4>
             <p>ConstructKaro Fee</p>
           </div>
         </div>

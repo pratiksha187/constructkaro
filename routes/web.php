@@ -89,9 +89,20 @@ Route::get('/vendor_confiermetion', [VendorController::class, 'vendor_confiermet
 Route::get('/vendor_likes_project', [VendorController::class, 'vendor_likes_project'])->name('vendor_likes_project');
 Route::get('/vender/list-of-projects', [VendorController::class, 'showListPage'])->name('projects.list.page');
 Route::get('/vendor_dashboard', [VendorController::class, 'vendor_dashboard'])->name('vendor_dashboard');
-
 Route::get('/vender/projects-data', [VendorController::class, 'projectsData']);
 Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojectsData']);
+Route::get('/vender/details', [VendorController::class, 'venderdetails'])->name('venderdetails');
+
+Route::get('/vender/leads-bids', [VendorController::class, 'vender_leads_bids'])->name('vender_leads_bids');
+
+Route::get('/vender/myproject', [VendorController::class, 'vender_myproject'])->name('vender_myproject');
+
+Route::get('/vender/uploaded_documents', [VendorController::class, 'vender_uploaded_documents'])->name('vender_uploaded_documents');
+
+
+Route::get('/vender/paynment', [VendorController::class, 'venderpaynment'])->name('venderpaynment');
+
+Route::get('/vender/digital-agreement', [VendorController::class, 'venderdigitalagreement'])->name('venderdigitalagreement');
 
 Route::post('/proceed-vendor', [ProjectController::class, 'proceedVendor'])->name('proceed.vendor');
 

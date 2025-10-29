@@ -47,30 +47,6 @@
     </div>
   </div>
 
-  <!-- Approval Section -->
-  <!-- <form action="{{ route('billverification.update', $bill->id) }}" method="POST">
-    @csrf
-    <div class="row align-items-end">
-      <div class="col-md-6 mb-3">
-        <label class="form-label fw-semibold">Approval Action *</label>
-        <select name="status" class="form-select" required>
-          <option value="">Select action</option>
-          <option value="Approved">Approve</option>
-          <option value="Revised">Send for Revision</option>
-          <option value="Rejected">Reject</option>
-        </select>
-      </div>
-
-      <div class="col-md-6 mb-3">
-        <label class="form-label fw-semibold">Remarks / Revision Notes</label>
-        <textarea name="engineer_remarks" class="form-control" rows="2" placeholder="Enter remarks..."></textarea>
-      </div>
-    </div>
-
-    <div class="text-end">
-      <button type="submit" class="btn btn-success px-4">Submit Review</button>
-    </div>
-  </form> -->
   <form action="{{ route('billverification.update', $bill->id) }}" method="POST">
   @csrf
   <div class="row align-items-end">

@@ -534,4 +534,73 @@ class VendorController extends Controller
         // dd($vednor_comp_details);
         return view('web.vendor_terms_condition',compact('vendor_id','vednor_details','get_agency_services','work_id','workTypes_name','vednor_comp_details'));
     }
+
+//     public function venderdetails(){
+//          $vendor_id = session('vendor_id');
+//          $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+// // dd($vendor);
+//         //  dd($vendor_id);
+//         return view('web.venderdetails',compact('vendor_id','vendor'));
+//     }
+    public function venderdetails()
+    {
+        $vendor_id = session('vendor_id');
+
+        $vendor = DB::table('service_provider')
+            ->leftJoin('agency_services', 'agency_services.user_id', '=', 'service_provider.id')
+            ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
+            ->where('service_provider.id', $vendor_id)
+            ->select(
+                'service_provider.*',
+                'agency_services.*',
+                'business_registrations.*'
+            )
+            ->first();
+// dd($vendor);
+        return view('web.venderdetails', compact('vendor_id', 'vendor'));
+    }
+
+
+    public function vender_leads_bids(){
+         $vendor_id = session('vendor_id');
+         $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+        return view('web.vender_leads_bids',compact('vendor_id','vendor'));
+    }
+
+    public function vender_myproject(){
+         $vendor_id = session('vendor_id');
+         $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+        return view('web.vender_myproject',compact('vendor_id','vendor'));
+    }
+
+    public function venderpaynment(){
+         $vendor_id = session('vendor_id');
+         $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+        return view('web.vendor_payment',compact('vendor_id','vendor'));
+    }
+
+    public function venderdigitalagreement(){
+         $vendor_id = session('vendor_id');
+         $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+        return view('web.digital_agreements',compact('vendor_id','vendor'));
+    }
+
+    public function vender_uploaded_documents(){
+         $vendor_id = session('vendor_id');
+        //  $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+
+        //   $vendor_id = session('vendor_id');
+
+        $vendor = DB::table('service_provider')
+            ->leftJoin('agency_services', 'agency_services.user_id', '=', 'service_provider.id')
+            ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
+            ->where('service_provider.id', $vendor_id)
+            ->select(
+                'service_provider.*',
+                'agency_services.*',
+                'business_registrations.*'
+            )
+            ->first();
+        return view('web.vendor_uploaded_documents',compact('vendor_id','vendor'));
+    }
 }
