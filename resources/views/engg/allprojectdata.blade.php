@@ -115,7 +115,7 @@
               <td>{{ $p->submission_id }}</td>
               <td>{{ $p->full_name }}</td>
               <td>{{ $p->project_name }}</td>
-              <td>{{ $p->budget_range ?? $p->detail_budget_range }}</td>
+              <td>{{ $p->budget_range_name }}</td>
               <td>{{ $p->engg_decription ?? '-' }}</td>
               <td>
                 @if($p->call_status == 1) ✅ Received
@@ -173,11 +173,11 @@
             </div>
             <div class="col-md-6">
               <p class="fw-semibold small mb-1">💰 Budget</p>
-              <span class="badge text-bg-light border" x-text="activeProject.budget_range ?? activeProject.detail_budget_range"></span>
+              <span class="badge text-bg-light border" x-text="activeProject.budget_range_name ?? activeProject.budget_range_name   "></span>
             </div>
             <div class="col-md-6">
               <p class="fw-semibold small mb-1">⏱ Timeline</p>
-              <span class="badge text-bg-light border" x-text="activeProject.project_duration ?? activeProject.expected_timeline"></span>
+              <span class="badge text-bg-light border" x-text="activeProject.timeline ?? activeProject.timeline"></span>
             </div>
           </div>
         </div>
@@ -192,6 +192,68 @@
           </div>
         </div>
 
+        <!-- Files Available -->
+<div class="mb-4">
+  <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#2949E9;">Files Available</h6>
+  <div class="row g-3">
+
+    <!-- Architectural File -->
+    <template x-if="activeProject.arch_files">
+      <div class="col-md-4">
+        <p class="fw-semibold small mb-1">🏗 Architectural Drawings</p>
+        <template x-for="file in JSON.parse(activeProject.arch_files)">
+          <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+            <span class="text-truncate small" x-text="file.split('/').pop()"></span>
+            <div class="btn-group btn-group-sm">
+              <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+              <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Structural File -->
+    <template x-if="activeProject.struct_files">
+      <div class="col-md-4">
+        <p class="fw-semibold small mb-1">🧱 Structural Drawings</p>
+        <template x-for="file in JSON.parse(activeProject.struct_files)">
+          <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+            <span class="text-truncate small" x-text="file.split('/').pop()"></span>
+            <div class="btn-group btn-group-sm">
+              <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+              <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- BOQ File -->
+    <template x-if="activeProject.boq_file">
+      <div class="col-md-4">
+        <p class="fw-semibold small mb-1">📊 BOQ File</p>
+        <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+          <span class="text-truncate small" x-text="activeProject.boq_file.split('/').pop()"></span>
+          <div class="btn-group btn-group-sm">
+            <a :href="'/storage/' + activeProject.boq_file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+            <a :href="'/storage/' + activeProject.boq_file" :download="activeProject.boq_file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- No Files -->
+    <template x-if="!activeProject.arch_files && !activeProject.struct_files && !activeProject.boq_file">
+      <div class="col-12">
+        <p class="text-muted small">No files uploaded for this project.</p>
+      </div>
+    </template>
+
+  </div>
+</div>
+
+
         <!-- Engineer Action -->
         <div class="border-top pt-4 mt-4">
           <h6 class="fw-bold mb-3 text-dark">🧰 Engineer Action</h6>
@@ -199,9 +261,9 @@
           <!-- Hidden project_id -->
           <input type="hidden" x-ref="projectId" :value="activeProject.project_id">
 
-          <p class="text-muted small mb-3">
+          <!-- <p class="text-muted small mb-3">
             <strong>Project ID:</strong> <span x-text="activeProject.project_id"></span>
-          </p>
+          </p> -->
 
           <div class="mb-3">
             <label class="form-label small fw-semibold">Engineer Remarks</label>

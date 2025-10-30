@@ -535,13 +535,7 @@ class VendorController extends Controller
         return view('web.vendor_terms_condition',compact('vendor_id','vednor_details','get_agency_services','work_id','workTypes_name','vednor_comp_details'));
     }
 
-//     public function venderdetails(){
-//          $vendor_id = session('vendor_id');
-//          $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
-// // dd($vendor);
-//         //  dd($vendor_id);
-//         return view('web.venderdetails',compact('vendor_id','vendor'));
-//     }
+
     public function venderdetails()
     {
         $vendor_id = session('vendor_id');

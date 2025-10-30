@@ -228,7 +228,7 @@
         <tr class="transition-colors">
           <td>${idx + 1}</td>
           <td class="font-semibold text-[var(--ck-navy)]">${proj.project_name}</td>
-          <td>${proj.project_location}</td>
+          <td>${proj.land_location}</td>
           <td class="text-slate-600">${proj.project_description}</td>
           <td>
             <button onclick='openModal(${JSON.stringify(proj)})'
@@ -243,24 +243,104 @@
     }
   }
 
-  function openModal(project) {
-    activeProject = project;
-    document.getElementById('modalTitle').textContent = project.project_name || 'Project';
-    document.getElementById('modalSubmissionId').textContent = project.submission_id || '-';
-    document.getElementById('modalDescription').textContent = project.project_description || '-';
+  // function openModal(project) {
+  //   activeProject = project;
+  //   document.getElementById('modalTitle').textContent = project.project_name || 'Project';
+  //   document.getElementById('modalSubmissionId').textContent = project.submission_id || '-';
+  //   document.getElementById('modalDescription').textContent = project.project_description || '-';
 
-    const files = JSON.parse(project.file_path || '[]');
-    const filesList = document.getElementById('modalFiles');
-    filesList.innerHTML = files.map(file => `<li><a class="hover:underline" href="/${file}" target="_blank">${file.split('/').pop()}</a></li>`).join('');
+  //   const files = JSON.parse(project.file_path || '[]');
+  //   const filesList = document.getElementById('modalFiles');
+  //   filesList.innerHTML = files.map(file => `<li><a class="hover:underline" href="/${file}" target="_blank">${file.split('/').pop()}</a></li>`).join('');
 
-    const boqFileList = document.getElementById('modalBoqFile');
-    boqFileList.innerHTML = project.boqFile
-      ? `<li><a class="hover:underline" href="/storage/boq_files/${project.boqFile.split('/').pop()}" target="_blank">Download BOQ File</a></li>`
-      : '';
+  //   const boqFileList = document.getElementById('modalBoqFile');
+  //   boqFileList.innerHTML = project.boqFile
+  //     ? `<li><a class="hover:underline" href="/storage/boq_files/${project.boqFile.split('/').pop()}" target="_blank">Download BOQ File</a></li>`
+  //     : '';
 
-    const m = document.getElementById('projectModal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+  //   const m = document.getElementById('projectModal');
+  //   m.classList.remove('hidden'); m.classList.add('flex');
+  // }
+
+function openModal(project) {
+  activeProject = project;
+
+  // Basic info
+  document.getElementById('modalTitle').textContent = project.project_name || 'Project';
+  document.getElementById('modalSubmissionId').textContent = project.submission_id || '-';
+  document.getElementById('modalDescription').textContent = project.project_description || '-';
+
+  // Prepare file sections
+  const filesList = document.getElementById('modalFiles');
+  const boqFileList = document.getElementById('modalBoqFile');
+
+  filesList.innerHTML = '';
+  boqFileList.innerHTML = '';
+
+  // Parse JSON safely
+  const parseJSON = (str) => {
+    try { return JSON.parse(str || '[]'); } catch { return []; }
+  };
+
+  // 🔹 Architectural Files
+  const archFiles = parseJSON(project.arch_files);
+  if (archFiles.length) {
+    filesList.innerHTML += `
+      <li class="font-semibold text-gray-800 mb-1">🏗 Architectural Drawings</li>
+      ${archFiles.map(file => renderFileItem(file)).join('')}
+    `;
   }
+
+  // 🔹 Structural Files
+  const structFiles = parseJSON(project.struct_files);
+  if (structFiles.length) {
+    filesList.innerHTML += `
+      <li class="font-semibold text-gray-800 mt-3 mb-1">🧱 Structural Drawings</li>
+      ${structFiles.map(file => renderFileItem(file)).join('')}
+    `;
+  }
+
+  // 🔹 General Project Files
+  const otherFiles = parseJSON(project.file_path);
+  if (otherFiles.length) {
+    filesList.innerHTML += `
+      <li class="font-semibold text-gray-800 mt-3 mb-1">📁 Uploaded Files</li>
+      ${otherFiles.map(file => renderFileItem(file)).join('')}
+    `;
+  }
+
+  // 🔹 BOQ File (single)
+  if (project.boq_file) {
+    boqFileList.innerHTML = renderFileItem(project.boq_file);
+  } else {
+    boqFileList.innerHTML = `<li class="text-slate-400">No BOQ uploaded.</li>`;
+  }
+
+  // Show modal
+  const m = document.getElementById('projectModal');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+
+// Helper function to render a file item with View + Download
+function renderFileItem(file) {
+  const cleanPath = file.replace(/^["']|["']$/g, ''); // remove quotes if any
+  const filename = cleanPath.split('/').pop();
+  const fileUrl = `/storage/${cleanPath}`;
+  return `
+    <li class="flex items-center justify-between gap-2 bg-[#f9fbff] border border-[var(--ck-border)] rounded-lg px-3 py-2 mt-1">
+      <span class="truncate text-[var(--ck-blue)] text-sm">${filename}</span>
+      <div class="flex gap-2">
+        <a href="${fileUrl}" target="_blank" class="text-blue-600 text-sm hover:underline flex items-center gap-1">
+          <span class="material-icons text-[18px]">visibility</span> View
+        </a>
+        <a href="${fileUrl}" download="${filename}" class="text-green-600 text-sm hover:underline flex items-center gap-1">
+          <span class="material-icons text-[18px]">download</span> Download
+        </a>
+      </div>
+    </li>`;
+}
+
 
   function closeModal() {
     const m = document.getElementById('projectModal');

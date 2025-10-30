@@ -120,93 +120,99 @@ class EngginerController extends Controller
     }
 
 
-public function allprojectdata()
-{
-    $projects = DB::table('projects')
-        ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
-        ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-        // 🔹 Show only projects that have a submission_id in projects_details
-        ->whereNotNull('projects_details.submission_id')
-        ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
-        ->select([
-            // 🟠 PROJECTS TABLE
-            'projects.id as project_id',
-            'projects.user_id',
-            'projects.profile_photo',
-            'projects.construction_type_id',
-            'projects.project_type_id',
-            'projects.site_ready',
-            'projects.land_location',
-            'projects.survey_number',
-            'projects.land_type',
-            'projects.sub_categories',
-            'projects.land_area',
-            'projects.land_unit',
-            'projects.arch_drawings',
-            'projects.arch_files',
-            'projects.struct_drawings',
-            'projects.struct_files',
-            'projects.has_boq',
-            'projects.boq_file',
-            'projects.expected_start',
-            'projects.project_duration',
-            'projects.budget_range',
-            'projects.login_id',
-            'projects.site_status',
-            'projects.floors',
-            'projects.water',
-            'projects.electricity',
-            'projects.drainage',
-            'projects.payment_preference',
-            'projects.quality_preference',
-            'projects.vendor_preference',
-            'projects.best_time',
-            'projects.work_type',
-            'projects.work_subtype',
-            'projects.vendor_type',
-            'projects.sub_vendor_types',
-            'projects.created_at as project_created_at',
-            'projects.updated_at as project_updated_at',
+    public function allprojectdata()
+    {
+        $projects = DB::table('projects')
+            ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
+            ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
+            ->leftJoin('budget_range', 'budget_range.id', '=', 'projects.budget_range')
+            ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
 
-            // 🔵 PROJECTS_DETAILS TABLE
-            'projects_details.id as detail_id',
-            'projects_details.project_name',
-            'projects_details.project_location',
-            'projects_details.project_description',
-            'projects_details.budget_range as detail_budget_range',
-            'projects_details.expected_timeline',
-            'projects_details.file_path',
-            'projects_details.confirm',
-            'projects_details.project_id as detail_project_id',
-            'projects_details.submission_id',
-            'projects_details.project_like_by',
-            'projects_details.engg_decription',
-            'projects_details.call_status',
-            'projects_details.call_remarks',
-            'projects_details.boq_status',
-            'projects_details.tender_status',
-            'projects_details.created_at as detail_created_at',
-            'projects_details.updated_at as detail_updated_at',
+            
+            // 🔹 Show only projects that have a submission_id in projects_details
+            ->whereNotNull('projects_details.submission_id')
+            ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
+            ->select([
+                // 🟠 PROJECTS TABLE
+                'projects.id as project_id',
+                'projects.user_id',
+                'projects.profile_photo',
+                'projects.construction_type_id',
+                'projects.project_type_id',
+                'projects.site_ready',
+                'projects.land_location',
+                'projects.survey_number',
+                'projects.land_type',
+                'projects.sub_categories',
+                'projects.land_area',
+                'projects.land_unit',
+                'projects.arch_drawings',
+                'projects.arch_files',
+                'projects.struct_drawings',
+                'projects.struct_files',
+                'projects.has_boq',
+                'projects.boq_file',
+                'projects.expected_start',
+                'projects.project_duration',
+                // 'projects.budget_range',
+                'budget_range.budget_range as budget_range_name',
+                'projects.login_id',
+                'projects.site_status',
+                'projects.floors',
+                'projects.water',
+                'projects.electricity',
+                'projects.drainage',
+                'projects.payment_preference',
+                'projects.quality_preference',
+                'projects.vendor_preference',
+                'projects.best_time',
+                'projects.work_type',
+                'projects.work_subtype',
+                'projects.vendor_type',
+                'projects.sub_vendor_types',
+                'projects.created_at as project_created_at',
+                'projects.updated_at as project_updated_at',
 
-            // 🟢 CUSTOMER_BASIC_INFO TABLE
-            'customer_basic_info.id as customer_id',
-            'customer_basic_info.full_name',
-            'customer_basic_info.phone_number',
-            'customer_basic_info.email',
-            'customer_basic_info.password',
-            'customer_basic_info.gender',
-            'customer_basic_info.role_id',
-            'customer_basic_info.state',
-            'customer_basic_info.region',
-            'customer_basic_info.city',
-            'customer_basic_info.created_at as customer_created_at',
-            'customer_basic_info.updated_at as customer_updated_at',
-        ])
-        ->orderBy('projects.id', 'desc')
-        ->paginate(10);
+                // 🔵 PROJECTS_DETAILS TABLE
+                'projects_details.id as detail_id',
+                'projects_details.project_name',
+                'projects_details.project_location',
+                'projects_details.project_description',
+                'projects_details.budget_range as detail_budget_range',
+                // 'projects_details.expected_timeline',
+                'expected_timeline.timeline as timeline',
+                'projects_details.file_path',
+                'projects_details.confirm',
+                'projects_details.project_id as detail_project_id',
+                'projects_details.submission_id',
+                'projects_details.project_like_by',
+                'projects_details.engg_decription',
+                'projects_details.call_status',
+                'projects_details.call_remarks',
+                'projects_details.boq_status',
+                'projects_details.tender_status',
+                'projects_details.created_at as detail_created_at',
+                'projects_details.updated_at as detail_updated_at',
 
-    return view('engg.allprojectdata', compact('projects'));
-}
+                // 🟢 CUSTOMER_BASIC_INFO TABLE
+                'customer_basic_info.id as customer_id',
+                'customer_basic_info.full_name',
+                'customer_basic_info.phone_number',
+                'customer_basic_info.email',
+                'customer_basic_info.password',
+                'customer_basic_info.gender',
+                'customer_basic_info.role_id',
+                'customer_basic_info.state',
+                'customer_basic_info.region',
+                'customer_basic_info.city',
+                'customer_basic_info.created_at as customer_created_at',
+                'customer_basic_info.updated_at as customer_updated_at',
+            ])
+            ->orderBy('projects.id', 'desc')
+            ->paginate(10);
+    // dd($projects);
+        return view('engg.allprojectdata', compact('projects'));
+    }
 
 
     public function NewProjectBoq(){
@@ -218,7 +224,7 @@ public function allprojectdata()
                     )
                     ->get();
 
-
+// dd($projects);
         return view('engg.projectboq', compact('projects'));
 
     }
