@@ -42,11 +42,11 @@ class ProjectController extends Controller
         $category_id = $request->construction_type_id;
 
         $types = DB::table('project_cat_type')
-            ->join('project_types', 'project_cat_type.project_types_id', '=', 'project_types.id')
-            ->where('project_cat_type.categories_id', $category_id)
-            ->select('project_types.id', 'project_types.name')
-            ->distinct()
-            ->get();
+                ->join('project_types', 'project_cat_type.project_types_id', '=', 'project_types.id')
+                ->where('project_cat_type.categories_id', $category_id)
+                ->select('project_types.id', 'project_types.name')
+                ->distinct()
+                ->get();
 
         return response()->json($types);
     }

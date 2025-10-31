@@ -152,7 +152,8 @@
             <th>Mobile</th>
             <th>Email</th>
             <th>Work Type</th>
-            <th>Company Name</th>     
+            <th>Company Name</th>    
+            <th>Remark</th> 
             <th>view</th>
           
           </tr>
@@ -175,6 +176,9 @@
               <td class="text-muted">{{ $vendor->vendor_email }}</td>
               <td class="text-muted">{{ $vendor->vendor_work_type_name }}</td>
               <td class="text-muted">{{ $vendor->vendor_business_name }}</td> 
+              <td class="text-muted">{{ $vendor->call_status }}</td> 
+
+              
               <td>
                 <button class="btn btn-outline-primary btn-sm" 
                         data-bs-toggle="modal" 

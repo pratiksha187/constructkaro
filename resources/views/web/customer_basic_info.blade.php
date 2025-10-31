@@ -43,8 +43,8 @@
                 <!-- 1. Basic Information -->
                 <div class="section-divider">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <!-- <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3"></span> -->
-                  Basic Information
+                        <!-- <span class="bg-custom-blue text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3"></span> -->
+                        Basic Information
                     </h2>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="relative">
@@ -54,7 +54,8 @@
                         <div class="relative">
                             <label>Mobile Number *</label>
                             <input type="text" name="phone_number" id="phone_number" class="form-control" required maxlength="10" pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$" title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
-                            <button type="button" id="sendOtpBtn" class="btn btn-primary mt-2">Send OTP</button>
+                            <!-- <button type="button" id="sendOtpBtn" class="btn btn-primary mt-2">Send OTP</button> -->
+                            <a href="#" id="sendOtpBtn" class="text-primary d-block mt-2" style="text-decoration: underline;">Send OTP</a>
                         </div>
                         <div class="relative">
                             <label>Enter OTP *</label>
@@ -70,9 +71,12 @@
                             <!-- Suggestion dropdown -->
                             <div id="suggestions" class="position-absolute bg-white border rounded w-100 mt-1 shadow-sm hidden" style="z-index: 1000;"></div>
 
-                            <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">
+                            <!-- <button type="button" id="sendEmailOtpBtn" class="btn btn-primary mt-2">
                                 Send Email OTP
-                            </button>
+                            </button> -->
+
+                            <a href="#" id="sendEmailOtpBtn" class="text-primary d-block mt-2" style="text-decoration: underline;">Send Email OTP</a>
+
                         </div>
                        
 
@@ -355,10 +359,7 @@
        
          const role = form.querySelector('#role_id');
          if(!role.value){ setError(role, 'Select your role.'); ok = false; }
-       
-     
-       
-       
+    
          if(!ok){
            const first = form.querySelector('.has-error');
            first?.scrollIntoView({behavior:'smooth', block:'center'});

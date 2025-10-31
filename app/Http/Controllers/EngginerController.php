@@ -231,38 +231,38 @@ class EngginerController extends Controller
 
 
 
-public function updateProjectRemarksAndCall(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer', // project_id
-        'engg_decription' => 'nullable|string|max:1000',
-        'call_status' => 'nullable|integer',
-        'call_remarks' => 'nullable|string|max:1000',
-    ]);
-
-    // ✅ Get the project directly by project_id
-    $project = DB::table('projects')->where('id', $request->id)->first();
-
-    if (!$project) {
-        return response()->json(['message' => 'Project not found.'], 404);
-    }
-
-    // ✅ Update its details in projects_details
-    $updated = DB::table('projects_details')
-        ->where('project_id', $project->id)
-        ->update([
-            'engg_decription' => $request->engg_decription,
-            'call_status' => $request->call_status,
-            'call_remarks' => $request->call_remarks,
-            'updated_at' => now(),
+    public function updateProjectRemarksAndCall(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer', // project_id
+            'engg_decription' => 'nullable|string|max:1000',
+            'call_status' => 'nullable|integer',
+            'call_remarks' => 'nullable|string|max:1000',
         ]);
 
-    if ($updated) {
-        return response()->json(['message' => 'Engineer details updated successfully.']);
-    } else {
-        return response()->json(['message' => 'No record found or no changes made.'], 404);
+        // ✅ Get the project directly by project_id
+        $project = DB::table('projects')->where('id', $request->id)->first();
+
+        if (!$project) {
+            return response()->json(['message' => 'Project not found.'], 404);
+        }
+
+        // ✅ Update its details in projects_details
+        $updated = DB::table('projects_details')
+            ->where('project_id', $project->id)
+            ->update([
+                'engg_decription' => $request->engg_decription,
+                'call_status' => $request->call_status,
+                'call_remarks' => $request->call_remarks,
+                'updated_at' => now(),
+            ]);
+
+        if ($updated) {
+            return response()->json(['message' => 'Engineer details updated successfully.']);
+        } else {
+            return response()->json(['message' => 'No record found or no changes made.'], 404);
+        }
     }
-}
 
     public function uploadBOQ(Request $request)
     {
@@ -323,6 +323,9 @@ public function updateProjectRemarksAndCall(Request $request)
             ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
             ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'asv.work_type_id')
+            ->leftJoin('vendor_calls as vc', 'vc.vendor_id', '=', 'sp.id')
+
+            
             ->select(
                 'sp.id as vendor_id',
                 'sp.name as vendor_name',
@@ -372,6 +375,9 @@ public function updateProjectRemarksAndCall(Request $request)
                 'br.service_coverage_area as br_service_coverage_area',
                 'br.min_project_value as br_min_project_value',
 
+                'vc.call_status as call_status',
+                'vc.call_remarks as call_remarks',
+
                 // ✅ Add computed profile completeness check
                 DB::raw("
                     CASE
@@ -387,7 +393,7 @@ public function updateProjectRemarksAndCall(Request $request)
             )
             ->orderByDesc('sp.id')
             ->paginate(10);
-
+// dd($allvendor);
         return view('engg.get_all_vender_list', compact('allvendor'));
     }
 

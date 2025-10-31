@@ -6,7 +6,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
+<style>
+    .h-16 {
+    height: 13rem;
+}
+</style>
 <div class="min-h-screen flex bg-gradient-to-br from-[#f6f8fa] to-[#eef2f7]">
 
     <!-- Left Section -->
