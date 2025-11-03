@@ -617,7 +617,7 @@ class VendorController extends Controller
         )
         ->orderByDesc('projects_details.id')
         ->get();
- foreach ($project_details as $project) {
+        foreach ($project_details as $project) {
         $existing_bid = DB::table('boq_entries')
             ->where('project_id', $project->project_id)
             ->where('vendor_id', $vendor_id)

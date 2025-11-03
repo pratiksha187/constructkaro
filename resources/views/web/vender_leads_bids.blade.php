@@ -99,7 +99,7 @@
                           <div class="border rounded p-3 mb-3 bg-light">
                             <p><strong>Contract Type:</strong> {{ $project->contract_type }}</p>
                             <p><strong>Value:</strong> ₹{{ $project->tender_value }}</p>
-                            <p><strong>Location:</strong> {{ $project->location }}</p>
+                            <p><strong>Location:</strong> {{ $project->land_location }}</p>
                             <p><strong>Published:</strong> {{ $project->published_date ? \Carbon\Carbon::parse($project->published_date)->format('d M Y') : 'N/A' }}</p>
                             <p><strong>Bid End Date:</strong> {{ $project->bid_submission_end ? \Carbon\Carbon::parse($project->bid_submission_end)->format('d M Y') : 'N/A' }}</p>
                           </div>
