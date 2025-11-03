@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class BOQEntry extends Model
 {
     protected $table='boq_entries';
-    protected $fillable = ['project_id', 'item'];
+    protected $fillable = ['project_id', 'vendor_id','boq_file','bid_amount'];
 }

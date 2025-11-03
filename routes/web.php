@@ -94,6 +94,7 @@ Route::get('/vender/like-projects-data', [VendorController::class, 'likeprojects
 Route::get('/vender/details', [VendorController::class, 'venderdetails'])->name('venderdetails');
 
 Route::get('/vender/leads-bids', [VendorController::class, 'vender_leads_bids'])->name('vender_leads_bids');
+Route::post('/vendor/upload-boq', [VendorController::class, 'uploadBoq'])->name('vendor.upload.boq');
 
 Route::get('/vender/myproject', [VendorController::class, 'vender_myproject'])->name('vender_myproject');
 
