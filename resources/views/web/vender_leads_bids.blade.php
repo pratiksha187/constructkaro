@@ -34,7 +34,7 @@
           <th>PROJECT ID</th>
           <th>CUSTOMER TYPE</th>
           <th>LOCATION</th>
-          <th>BUDGET RANGE</th>
+          <!-- <th>BUDGET RANGE</th> -->
           <th>STATUS</th>
           <th>ACTION</th>
         </tr>
@@ -45,13 +45,13 @@
             <td><strong>#{{ $project->submission_id ?? 'N/A' }}</strong></td>
             <td>{{ ucfirst($project->land_type ?? 'N/A') }}</td>
             <td>{{ $project->land_location ?? 'N/A' }}</td>
-            <td>
+            <!-- <td>
               @if($project->project_budget_range)
                 ₹{{ $project->project_budget_range }}
               @else
                 <span class="text-muted">Not Specified</span>
               @endif
-            </td>
+            </td> -->
             <td>
               @if($project->tender_status == 1)
                 <span class="badge-status badge-open">Open</span>
