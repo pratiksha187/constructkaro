@@ -54,14 +54,56 @@ class AuthController extends Controller
         /* ============================================================
         VENDOR LOGIN
         ============================================================ */
+        // if ($role === 'vendor') {
+        //     $vendor = DB::table('service_provider')->where('email', $request->email)->first();
+
+        //     if ($vendor && Hash::check($request->password, $vendor->password)) {
+        //         if ($vendor->login_as == 4) {
+        //             session(['vendor_id' => $vendor->id]);
+
+        //             // Step 1: Check agency_services
+        //             $agencyExists = DB::table('agency_services')
+        //                 ->where('user_id', $vendor->id)
+        //                 ->exists();
+        //             if (!$agencyExists) {
+        //                 return redirect()->route('types_of_agency')
+        //                     ->with('info', 'Please complete your agency information.');
+        //             }
+
+        //             // Step 2: Check business_registrations
+        //             $businessExists = DB::table('business_registrations')
+        //                 ->where('user_id', $vendor->id)
+        //                 ->exists();
+        //             if (!$businessExists) {
+        //                 return redirect()->route('about_business')
+        //                     ->with('info', 'Please complete your business registration.');
+        //             }
+
+        //             // Step 3: All good → Go to vendor confirmation
+        //             return redirect('/vendor_confiermetion');
+        //         }
+
+        //         return back()->with('error', 'Unauthorized role for vendor login.');
+        //     }
+
+        //     return back()->with('error', 'Invalid vendor credentials.');
+        // }
         if ($role === 'vendor') {
-            $vendor = DB::table('service_provider')->where('email', $request->email)->first();
+            $vendor = DB::table('service_provider')
+                ->where('email', $request->email)
+                ->first();
 
             if ($vendor && Hash::check($request->password, $vendor->password)) {
                 if ($vendor->login_as == 4) {
                     session(['vendor_id' => $vendor->id]);
 
-                    // Step 1: Check agency_services
+                    // 🔹 Step 0: If vendor has_followed = 1 → Go directly to dashboard
+                    if ($vendor->has_followed == 1) {
+                        return redirect()->route('vendor_dashboard')
+                            ->with('success', 'Welcome back to your dashboard!');
+                    }
+
+                    // 🔹 Step 1: Check agency_services
                     $agencyExists = DB::table('agency_services')
                         ->where('user_id', $vendor->id)
                         ->exists();
@@ -70,7 +112,7 @@ class AuthController extends Controller
                             ->with('info', 'Please complete your agency information.');
                     }
 
-                    // Step 2: Check business_registrations
+                    // 🔹 Step 2: Check business_registrations
                     $businessExists = DB::table('business_registrations')
                         ->where('user_id', $vendor->id)
                         ->exists();
@@ -79,7 +121,7 @@ class AuthController extends Controller
                             ->with('info', 'Please complete your business registration.');
                     }
 
-                    // Step 3: All good → Go to vendor confirmation
+                    // 🔹 Step 3: All good → Go to vendor confirmation
                     return redirect('/vendor_confiermetion');
                 }
 

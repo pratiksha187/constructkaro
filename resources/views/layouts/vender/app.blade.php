@@ -217,12 +217,7 @@
       </a>
 
       {{-- Dashboard --}}
-      <!-- <div class="nav-section">
-        <div class="title">Dashboard</div>
-        <a class="side-link {{ request()->routeIs('engineer.dashboard') ? 'active' : '' }}" href="">
-          <i class="bi bi-speedometer2"></i> Dashboard
-        </a>
-      </div> -->
+     
       <div class="nav-section">
         <div class="title mb-1 text-uppercase small text-light opacity-50">Dashboard</div>
         <a class="side-link d-flex align-items-center {{ request()->routeIs('vendor_dashboard') ? 'active' : '' }}" href="{{route('vendor_dashboard')}}">
@@ -314,24 +309,6 @@
         </div>
       </div>
 
-      {{-- Documents --}}
-      <!-- <div class="nav-section">
-        <div class="side-link w-100 text-start d-flex align-items-center justify-content-between"
-            data-bs-toggle="collapse"
-            data-bs-target="#documentMenu"
-            aria-expanded="false"
-            role="button">
-          <span><i class="bi bi-folder2"></i> Documents</span>
-          <i class="bi bi-chevron-down small"></i>
-        </div>
-
-        <div class="collapse" id="documentMenu">
-          <a class="side-link" href="{{route('vender_uploaded_documents')}}">
-            <i class="bi bi-upload"></i> Upload Documents
-          </a>
-        
-        </div>
-      </div> -->
 
       {{-- Logout --}}
       <div class="nav-section">

@@ -172,7 +172,7 @@
           <div class="d-flex gap-3">
             <div class="kpi-icon"><i class="bi bi-calendar-week"></i></div>
             <div>
-              <div class="value">{{ $stats['deadlines_this_week'] ?? 2 }}</div>
+              <div class="value">{{ $stats['deadlines_this_week'] }}</div>
               <div class="label mt-1">Deadlines this week</div>
             </div>
           </div>

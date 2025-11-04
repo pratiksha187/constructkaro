@@ -135,7 +135,7 @@ class EngginerController extends Controller
         'active_tenders'      => DB::table('projects_details')->where('tender_status', 'bidding')->count(),
         'tenders_delta'       => '+1',
         'pending_boqs'        => DB::table('projects_details')->where('boq_status', '0')->count(),
-        'deadlines_this_week' => 2, // can calculate dynamically later
+        'deadlines_this_week' => 0, // can calculate dynamically later
     ];
 
     // ✅ Task List (optional, dynamic later)
