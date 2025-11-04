@@ -111,12 +111,12 @@
       <h3 class="mb-1">Engineer Dashboard</h3>
       <div class="text-muted-2 small">Welcome back • {{ now()->format('D, d M Y') }}</div>
     </div>
-    <div class="d-flex gap-2">
+    <!-- <div class="d-flex gap-2">
      
       <a href="{{route('NewProjectBoq')}}" class="btn btn-outline-primary hover-lift">
         <i class="bi bi-table me-1"></i> BOQ
       </a>
-    </div>
+    </div> -->
   </div>
 
   {{-- KPIs --}}
