@@ -131,7 +131,7 @@
               <div class="label mt-1">Total Projects</div>
             </div>
           </div>
-          <span class="chip"><i class="bi bi-clipboard-check me-1"></i>{{ $stats['assigned_delta'] ?? '+2' }}</span>
+          <span class="chip"><i class="bi bi-clipboard-check me-1"></i>{{ $stats['assigned_delta'] }}</span>
         </div>
       </div>
     </div>
@@ -185,7 +185,7 @@
   {{-- Main grid --}}
   <div class="row g-4 mt-1">
     {{-- Recent projects --}}
-    <div class="col-12 col-xl-8">
+    <div class="col-12 col-xl-12">
       <div class="card hover-lift">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Recent Projects</h5>
@@ -258,7 +258,7 @@
     </div>
 
     {{-- Right column --}}
-    <div class="col-12 col-xl-4">
+    <!-- <div class="col-12 col-xl-4">
       <div class="card mb-4 hover-lift">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h6 class="mb-0">My Tasks</h6>
@@ -289,7 +289,7 @@
       </div>
 
 
-    </div>
+    </div> -->
   </div>
 
 </div>
