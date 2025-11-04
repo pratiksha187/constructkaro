@@ -195,7 +195,7 @@
       {{-- Dashboard --}}
       <div class="nav-section">
         <div class="title">Dashboard</div>
-        <a class="side-link {{ request()->routeIs('engineer.dashboard') ? 'active' : '' }}" href="#">
+        <a class="side-link {{ request()->routeIs('engineer_dashboard') ? 'active' : '' }}" href="{{route('engineer_dashboard')}}">
           <i class="bi bi-speedometer2"></i> Dashboard
         </a>
       </div>

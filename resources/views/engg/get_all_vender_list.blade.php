@@ -226,16 +226,6 @@
                       </div>
                     </div>
                     {{-- Working Information --}}
-                    <!-- <h6 class="fw-bold border-bottom pb-2 mt-3">Working Information</h6>
-                    <div class="row mt-2">
-                      <div class="col-md-6">
-                        <p class="fw-semibold text-muted mb-1">Work Type</p>
-                        <p class="fw-bold">{{ $vendor->vendor_work_type_name ?? 'No added data' }}</p>
-                      </div>
-                  
-                    </div> -->
-                    
-                    {{-- Working Information --}}
                     <h6 class="fw-bold border-bottom pb-2 mt-3">Working Information</h6>
 
                     <div class="row mt-2">

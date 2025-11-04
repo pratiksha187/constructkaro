@@ -26,7 +26,7 @@
     border-bottom: 1px solid var(--ck-border);
     display: flex; justify-content: space-between;
   }
-  .ck-title { font-weight: 700; color: var(--ck-navy); }
+  .ck-title { font-weight: 700; color: #1d549b; }
   .icon-btn {
     display: inline-flex; align-items: center; justify-content: center;
     width: 36px; height: 36px; border-radius: 10px;
@@ -145,7 +145,7 @@
 
   {{-- 🔹 Modal --}}
   <div x-show="activeProject" x-cloak class="ck-backdrop" x-transition>
-    <div class="ck-modal shadow-lg border-0 rounded-4 overflow-hidden">
+    <div class="ck-modal shadow-lg border-0 rounded-4 overflow-hidden ">
 
       <!-- Header -->
       <div class="ck-mhdr">
@@ -193,65 +193,65 @@
         </div>
 
         <!-- Files Available -->
-<div class="mb-4">
-  <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#2949E9;">Files Available</h6>
-  <div class="row g-3">
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#2949E9;">Files Available</h6>
+          <div class="row g-3">
 
-    <!-- Architectural File -->
-    <template x-if="activeProject.arch_files">
-      <div class="col-md-4">
-        <p class="fw-semibold small mb-1">🏗 Architectural Drawings</p>
-        <template x-for="file in JSON.parse(activeProject.arch_files)">
-          <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
-            <span class="text-truncate small" x-text="file.split('/').pop()"></span>
-            <div class="btn-group btn-group-sm">
-              <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
-              <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
-            </div>
-          </div>
-        </template>
-      </div>
-    </template>
+            <!-- Architectural File -->
+            <template x-if="activeProject.arch_files">
+              <div class="col-md-4">
+                <p class="fw-semibold small mb-1">🏗 Architectural Drawings</p>
+                <template x-for="file in JSON.parse(activeProject.arch_files)">
+                  <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+                    <span class="text-truncate small" x-text="file.split('/').pop()"></span>
+                    <div class="btn-group btn-group-sm">
+                      <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                      <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
 
-    <!-- Structural File -->
-    <template x-if="activeProject.struct_files">
-      <div class="col-md-4">
-        <p class="fw-semibold small mb-1">🧱 Structural Drawings</p>
-        <template x-for="file in JSON.parse(activeProject.struct_files)">
-          <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
-            <span class="text-truncate small" x-text="file.split('/').pop()"></span>
-            <div class="btn-group btn-group-sm">
-              <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
-              <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
-            </div>
-          </div>
-        </template>
-      </div>
-    </template>
+            <!-- Structural File -->
+            <template x-if="activeProject.struct_files">
+              <div class="col-md-4">
+                <p class="fw-semibold small mb-1">🧱 Structural Drawings</p>
+                <template x-for="file in JSON.parse(activeProject.struct_files)">
+                  <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+                    <span class="text-truncate small" x-text="file.split('/').pop()"></span>
+                    <div class="btn-group btn-group-sm">
+                      <a :href="'/storage/' + file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                      <a :href="'/storage/' + file" :download="file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
 
-    <!-- BOQ File -->
-    <template x-if="activeProject.boq_file">
-      <div class="col-md-4">
-        <p class="fw-semibold small mb-1">📊 BOQ File</p>
-        <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
-          <span class="text-truncate small" x-text="activeProject.boq_file.split('/').pop()"></span>
-          <div class="btn-group btn-group-sm">
-            <a :href="'/storage/' + activeProject.boq_file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
-            <a :href="'/storage/' + activeProject.boq_file" :download="activeProject.boq_file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+            <!-- BOQ File -->
+            <template x-if="activeProject.boq_file">
+              <div class="col-md-4">
+                <p class="fw-semibold small mb-1">📊 BOQ File</p>
+                <div class="d-flex align-items-center justify-content-between border rounded p-2 bg-light">
+                  <span class="text-truncate small" x-text="activeProject.boq_file.split('/').pop()"></span>
+                  <div class="btn-group btn-group-sm">
+                    <a :href="'/storage/' + activeProject.boq_file" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                    <a :href="'/storage/' + activeProject.boq_file" :download="activeProject.boq_file.split('/').pop()" class="btn btn-outline-success btn-sm">Download</a>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- No Files -->
+            <template x-if="!activeProject.arch_files && !activeProject.struct_files && !activeProject.boq_file">
+              <div class="col-12">
+                <p class="text-muted small">No files uploaded for this project.</p>
+              </div>
+            </template>
+
           </div>
         </div>
-      </div>
-    </template>
-
-    <!-- No Files -->
-    <template x-if="!activeProject.arch_files && !activeProject.struct_files && !activeProject.boq_file">
-      <div class="col-12">
-        <p class="text-muted small">No files uploaded for this project.</p>
-      </div>
-    </template>
-
-  </div>
-</div>
 
 
         <!-- Engineer Action -->
@@ -261,9 +261,7 @@
           <!-- Hidden project_id -->
           <input type="hidden" x-ref="projectId" :value="activeProject.project_id">
 
-          <!-- <p class="text-muted small mb-3">
-            <strong>Project ID:</strong> <span x-text="activeProject.project_id"></span>
-          </p> -->
+          
 
           <div class="mb-3">
             <label class="form-label small fw-semibold">Engineer Remarks</label>
