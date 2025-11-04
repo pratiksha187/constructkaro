@@ -354,7 +354,7 @@
 
         <div class="dropdown">
           <button class="btn btn-light d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-            <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar">
+            <!-- <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar"> -->
             <div class="d-none d-md-block text-start">
               <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;">{{ $vendor->name ?? 'Engineer' }}</p>
               <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $vendor->mobile ?? '' }}</p>

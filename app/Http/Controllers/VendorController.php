@@ -284,7 +284,7 @@ class VendorController extends Controller
         $vendor_details = DB::table('service_provider')
             ->where('id', $vendor_id)
             ->first();
-
+        
         return view('web.vendor_confiermetion', [
             'vendor' => $vendor_details
         ]);
@@ -555,144 +555,69 @@ class VendorController extends Controller
         return view('web.venderdetails', compact('vendor_id', 'vendor'));
     }
 
+    public function vender_leads_bids()
+    {
+        $vendor_id = session('vendor_id');
 
-    // public function vender_leads_bids(){
-    //     $vendor_id = session('vendor_id');
-    //     $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
-    //     $project_details = DB::table('projects')
-    //                         ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
-    //                         ->join('tenders', 'tenders.project_id', '=', 'projects.id')
+        // Fetch vendor details
+        $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
 
-    //                         ->where('projects_details.tender_status','=',1)
-    //                         ->where('projects_details.boq_status','=',1)
-    //                         ->select('projects.*', 'projects_details.*','tenders.*')
-    //                         ->get();
+        // Join projects, details, tenders, and budget_range tables
+        $project_details = DB::table('projects')
+            ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
+            ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
+            ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id') // 👈 JOIN budget_range table
+            ->where('projects_details.tender_status', 1)
+            ->where('projects_details.boq_status', 1)
+            ->select(
+                'projects.id as project_id',
+                'projects.land_location',
+                'projects.land_type',
+                'projects.budget_range as project_budget_range',
+                'projects.work_type',
+                'projects.work_subtype',
+                'projects.vendor_type',
+                'projects.sub_vendor_types',
+                'projects.payment_preference',
+                'projects.quality_preference',
+                'projects.vendor_preference',
+                'projects.boq_file',
 
-    //      dd($project_details);
-    //     return view('web.vender_leads_bids',compact('vendor_id','vendor','project_details'));
-    // }
-//     public function vender_leads_bids()
-// {
-//     $vendor_id = session('vendor_id');
+                'projects_details.id as details_id',
+                'projects_details.project_name',
+                'projects_details.project_description',
+                'projects_details.expected_timeline',
+                'projects_details.submission_id',
+                'projects_details.budget_range as detail_budget_range_id', // keep ID also
+                'budget_range.budget_range as detail_budget_range', // 👈 readable text version
+                'projects_details.boq_status',
+                'projects_details.tender_status',
 
-//     // Fetch vendor details
-//     $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
+                'tenders.id as tender_id',
+                'tenders.tender_value as tender_value',
+                'tenders.product_category',
+                'tenders.sub_category',
+                'tenders.pincode',
+                'tenders.contract_type',
+                'tenders.location as tender_location',
+                'tenders.bid_submission_end',
+                'tenders.published_date'
+            )
+            ->orderByDesc('projects_details.id')
+            ->get();
 
-//     // Join projects with projects_details and tenders
-//     $project_details = DB::table('projects')
-//         ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
-//         ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id') // LEFT JOIN ensures projects without tenders still appear
-//         ->where('projects_details.tender_status', 1)
-//         ->where('projects_details.boq_status', 1)
-//         ->select(
-//             'projects.id as project_id',
-//             'projects.land_location',
-//             'projects.land_type',
-//             'projects.budget_range as project_budget_range',
-//             'projects.work_type',
-//             'projects.work_subtype',
-//             'projects.vendor_type',
-//             'projects.sub_vendor_types',
-//             'projects.payment_preference',
-//             'projects.quality_preference',
-//             'projects.vendor_preference',
-//             'projects.boq_file',
-//             'projects_details.id as details_id',
-//             'projects_details.project_name',
-//             'projects_details.project_description',
-//             'projects_details.expected_timeline',
-//             'projects_details.submission_id',
-//             'projects_details.budget_range as detail_budget_range',
-//             'projects_details.boq_status',
-//             'projects_details.tender_status',
-//             'tenders.id as tender_id',
-//             'tenders.tender_value as tender_value',
-//             'tenders.product_category',
-//             'tenders.sub_category',
-//             'tenders.pincode',
-//             'tenders.contract_type',
-//             'tenders.location as tender_location',
-//             'tenders.bid_submission_end',
-//             'tenders.published_date'
-//         )
-//         ->orderByDesc('projects_details.id')
-//         ->get();
-//     foreach ($project_details as $project) {
-//         $existing_bid = DB::table('boq_entries')
-//             ->where('project_id', $project->project_id)
-//             ->where('vendor_id', $vendor_id)
-//             ->first();
+        // Add vendor bid status
+        foreach ($project_details as $project) {
+            $existing_bid = DB::table('boq_entries')
+                ->where('project_id', $project->project_id)
+                ->where('vendor_id', $vendor_id)
+                ->first();
 
-//         $project->already_bid = $existing_bid ? true : false;
-//     }
-//     // Check result in console
-//     // dd($project_details);
+            $project->already_bid = $existing_bid ? true : false;
+        }
 
-//     return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
-// }
- public function vender_leads_bids()
-{
-    $vendor_id = session('vendor_id');
-
-    // Fetch vendor details
-    $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
-
-    // Join projects, details, tenders, and budget_range tables
-    $project_details = DB::table('projects')
-        ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
-        ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
-        ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id') // 👈 JOIN budget_range table
-        ->where('projects_details.tender_status', 1)
-        ->where('projects_details.boq_status', 1)
-        ->select(
-            'projects.id as project_id',
-            'projects.land_location',
-            'projects.land_type',
-            'projects.budget_range as project_budget_range',
-            'projects.work_type',
-            'projects.work_subtype',
-            'projects.vendor_type',
-            'projects.sub_vendor_types',
-            'projects.payment_preference',
-            'projects.quality_preference',
-            'projects.vendor_preference',
-            'projects.boq_file',
-
-            'projects_details.id as details_id',
-            'projects_details.project_name',
-            'projects_details.project_description',
-            'projects_details.expected_timeline',
-            'projects_details.submission_id',
-            'projects_details.budget_range as detail_budget_range_id', // keep ID also
-            'budget_range.budget_range as detail_budget_range', // 👈 readable text version
-            'projects_details.boq_status',
-            'projects_details.tender_status',
-
-            'tenders.id as tender_id',
-            'tenders.tender_value as tender_value',
-            'tenders.product_category',
-            'tenders.sub_category',
-            'tenders.pincode',
-            'tenders.contract_type',
-            'tenders.location as tender_location',
-            'tenders.bid_submission_end',
-            'tenders.published_date'
-        )
-        ->orderByDesc('projects_details.id')
-        ->get();
-
-    // Add vendor bid status
-    foreach ($project_details as $project) {
-        $existing_bid = DB::table('boq_entries')
-            ->where('project_id', $project->project_id)
-            ->where('vendor_id', $vendor_id)
-            ->first();
-
-        $project->already_bid = $existing_bid ? true : false;
+        return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
     }
-
-    return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
-}
 
 
     public function vender_myproject(){
@@ -735,26 +660,26 @@ class VendorController extends Controller
 
 
     public function uploadBoq(Request $request)
-{
-    $request->validate([
-        'project_id' => 'required|integer',
-        'boq_file' => 'required|file|mimes:pdf,xlsx,xls,doc,docx|max:5120',
-    ]);
+    {
+        $request->validate([
+            'project_id' => 'required|integer',
+            'boq_file' => 'required|file|mimes:pdf,xlsx,xls,doc,docx|max:5120',
+        ]);
 
-    $vendor_id = session('vendor_id');
+        $vendor_id = session('vendor_id');
 
-    // Store file
-    $filePath = $request->file('boq_file')->store('boq_files', 'public');
+        // Store file
+        $filePath = $request->file('boq_file')->store('boq_files', 'public');
 
-    // Insert into boq_entries table
-    BoqEntry::create([
-        'project_id' => $request->project_id,
-        'vendor_id' => $vendor_id,
+        // Insert into boq_entries table
+        BoqEntry::create([
+            'project_id' => $request->project_id,
+            'vendor_id' => $vendor_id,
 
-        'bid_amount' =>$request->bid_amount,
-        'boq_file' => $filePath,
-    ]);
+            'bid_amount' =>$request->bid_amount,
+            'boq_file' => $filePath,
+        ]);
 
-    return back()->with('success', 'BOQ file uploaded successfully!');
-}
+        return back()->with('success', 'BOQ file uploaded successfully!');
+    }
 }

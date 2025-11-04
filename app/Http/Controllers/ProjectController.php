@@ -408,7 +408,7 @@ class ProjectController extends Controller
             'instagram' => 'https://www.instagram.com/constructkaro?igsh=MTZmb3Jxajd3N3lhNg==',
         ];
 
-        
+        // dd($projects_with_details);
         $bills = DB::table('monthly_bills')
                 // ->leftJoin('projects', 'projects.id', '=', 'monthly_bills.project_id')
                 ->select('monthly_bills.*')

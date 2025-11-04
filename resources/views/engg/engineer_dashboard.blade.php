@@ -112,10 +112,8 @@
       <div class="text-muted-2 small">Welcome back • {{ now()->format('D, d M Y') }}</div>
     </div>
     <div class="d-flex gap-2">
-      <a href="" class="btn btn-primary hover-lift">
-        <i class="bi bi-plus-lg me-1"></i> New Project
-      </a>
-      <a href="" class="btn btn-outline-primary hover-lift">
+     
+      <a href="{{route('NewProjectBoq')}}" class="btn btn-outline-primary hover-lift">
         <i class="bi bi-table me-1"></i> BOQ
       </a>
     </div>
@@ -129,8 +127,8 @@
           <div class="d-flex gap-3">
             <div class="kpi-icon"><i class="bi bi-diagram-3"></i></div>
             <div>
-              <div class="value">{{ $stats['assigned_projects'] ?? 6 }}</div>
-              <div class="label mt-1">Assigned Projects</div>
+              <div class="value">{{ $stats['assigned_projects'] }}</div>
+              <div class="label mt-1">Total Projects</div>
             </div>
           </div>
           <span class="chip"><i class="bi bi-clipboard-check me-1"></i>{{ $stats['assigned_delta'] ?? '+2' }}</span>
@@ -159,7 +157,7 @@
           <div class="d-flex gap-3">
             <div class="kpi-icon"><i class="bi bi-list-check"></i></div>
             <div>
-              <div class="value">{{ $stats['pending_boqs'] ?? 4 }}</div>
+              <div class="value">{{ $stats['pending_boqs']}}</div>
               <div class="label mt-1">BOQs Pending</div>
             </div>
           </div>
@@ -192,15 +190,11 @@
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Recent Projects</h5>
           <div class="d-flex gap-2">
-            <a class="btn btn-outline-primary btn-sm hover-lift" href="">
-              <i class="bi bi-grid-3x3-gap me-1"></i>All Projects
-            </a>
-            <a class="btn btn-primary btn-sm hover-lift" href="">
-              <i class="bi bi-upload me-1"></i>Upload Tender
-            </a>
+           
           </div>
         </div>
 
+      
         <div class="card-body p-0">
           <div class="table-responsive">
             <table class="table table-modern align-middle mb-0">
@@ -210,50 +204,55 @@
                   <th>Client</th>
                   <th>Budget</th>
                   <th>Timeline</th>
-                  <th>Status</th>
-                  <th class="text-end">Actions</th>
+               
                 </tr>
               </thead>
               <tbody>
-                @forelse(($projects ?? []) as $p)
-                  @php $status = strtolower($p->status ?? 'queued'); @endphp
+                @forelse($projects as $p)
                   <tr>
-                    <td class="fw-semibold">{{ $p->name }}</td>
-                    <td class="text-muted small">{{ $p->client ?? '—' }}</td>
-                    <td>₹ {{ number_format($p->budget ?? 0) }}</td>
-                    <td>{{ $p->timeline ?? '—' }}</td>
+                    <!-- 🔹 Project Name & Location -->
+                    <td class="fw-semibold">
+                      {{ $p->project_name ?? 'N/A' }}
+                      <div class="text-muted small">{{ $p->project_location  }}</div>
+                    </td>
+
+                    <!-- 🔹 Client Details -->
                     <td>
-                      @if($status === 'in progress' || $status === 'in-progress')
-                        <span class="status-dot dot-success"></span>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle">In Progress</span>
-                      @elseif($status === 'bidding')
-                        <span class="status-dot dot-warning"></span>
-                        <span class="badge badge-soft rounded-pill">Bidding</span>
-                      @else
-                        <span class="status-dot dot-muted"></span>
-                        <span class="badge badge-dim rounded-pill">Queued</span>
-                      @endif
+                      <div class="fw-semibold">{{ $p->full_name}}</div>
+                      <div class="text-muted small">{{ $p->phone_number }}</div>
                     </td>
-                    <td class="text-end">
-                      <a href="" class="btn btn-sm btn-outline-primary btn-icon" title="View" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                      <a href="" class="btn btn-sm btn-primary btn-icon" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i></a>
+
+                    <!-- 🔹 Budget -->
+                    <td>
+                     {{ $p->budget_range_name }}
                     </td>
+
+                    <!-- 🔹 Timeline -->
+                    <td>
+                      {{ $p->timeline }}
+                    </td>
+
+                   
+
                   </tr>
                 @empty
                   <tr>
                     <td colspan="6" class="text-center text-muted py-5">
                       <div class="mb-2"><i class="bi bi-inboxes"></i></div>
                       No recent projects.
-                      <div class="mt-3">
-                        <a href="" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Create Project</a>
-                      </div>
                     </td>
                   </tr>
                 @endforelse
               </tbody>
             </table>
           </div>
+
+          <!-- Pagination -->
+          <div class="mt-3 px-3">
+            {{ $projects->links() }}
+          </div>
         </div>
+
 
       </div>
     </div>
@@ -268,16 +267,16 @@
         <div class="card-body">
           @php
             $tasks = $tasks ?? [
-              ['title'=>'Prepare BOQ – Retail Fit-Out','pct'=>70,'due'=>'Thu'],
-              ['title'=>'Upload EMD receipt – Smart Security','pct'=>35,'due'=>'Today'],
-              ['title'=>'Finalize vendor cost – Tower A','pct'=>55,'due'=>'Mon'],
+              ['title'=>'Prepare BOQ – Retail Fit-Out','pct'=>0],
+              ['title'=>'Upload EMD receipt – Smart Security','pct'=>0],
+              ['title'=>'Finalize vendor cost – Tower A','pct'=>0],
             ];
           @endphp
           @foreach($tasks as $t)
             <div class="mb-3">
               <div class="d-flex justify-content-between">
                 <div class="fw-semibold">{{ $t['title'] }}</div>
-                <span class="text-muted small">Due: {{ $t['due'] }}</span>
+                
               </div>
               <div class="progress mt-2">
                 <div class="progress-bar" role="progressbar" style="width: {{ $t['pct'] }}%" aria-valuenow="{{ $t['pct'] }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -285,37 +284,10 @@
             </div>
           @endforeach
           <div class="soft-divider my-3"></div>
-          <a href="" class="small">View all tasks</a>
+          
         </div>
       </div>
 
-      <div class="card hover-lift">
-        <div class="card-header">
-          <h6 class="mb-0">Quick Actions</h6>
-        </div>
-        <div class="card-body">
-          <div class="row g-2">
-            <div class="col-12">
-              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                <span class="btn-icon"><i class="bi bi-file-earmark-arrow-up"></i></span>
-                <span>Upload Tender Docs</span>
-              </a>
-            </div>
-            <div class="col-12">
-              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                <span class="btn-icon"><i class="bi bi-plus-square-dotted"></i></span>
-                <span>Create BOQ</span>
-              </a>
-            </div>
-            <div class="col-12">
-              <a href="" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                <span class="btn-icon"><i class="bi bi-folder2-open"></i></span>
-                <span>My Documents</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>

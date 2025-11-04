@@ -288,7 +288,7 @@
 
         <div class="dropdown">
           <button class="btn btn-light d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar">
+            <!-- <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar"> -->
             <span class="small text-muted">Engineer</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow">
