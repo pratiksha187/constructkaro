@@ -956,7 +956,7 @@
        },
        {
            title: 'Residential Township',
-           location: 'Bangalore, Karnataka',
+           location: 'Khopoli,Raigad',
            budget: '₹15 Cr',
            timeline: '24 months',
            image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=250&fit=crop',
@@ -1124,7 +1124,7 @@
    function populateProjects() {
    const projects = [
    {
-   title: ' ISRO and Patil Infra',
+   title: 'RCC Cable trench Excavation work at Rasayani',
    location: 'RASAYANI,MAHARASHTRA',
    budget: '₹1.8 Cr',
    image: '/logo/isro/1.jpeg',
@@ -1133,8 +1133,8 @@
    completion: 100,
    },
    {
-   title: 'Shreeyash Construction Work of Godrej Properties',
-   location: '',
+   title: 'RCC Drainage work and SWD at Khalapur',
+   location: 'Khalapur',
    budget: '₹1.8 Cr',
    timeline: '8 months',
    image: '/logo/godrej/1.jpg',
@@ -1143,8 +1143,8 @@
    completion: 20
    },
    {
-   title: 'Realtors work of Apurva builders Building',
-   location: 'Bangalore, Karnataka',
+   title: 'Apurva builders Building',
+   location: 'Khopoli,Raigad',
    budget: '₹15 Cr',
    timeline: '24 months',
    image: '/logo/building/1.jpg',
