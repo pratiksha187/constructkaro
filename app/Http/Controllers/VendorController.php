@@ -628,6 +628,7 @@ class VendorController extends Controller
     public function vender_myproject(){
          $vendor_id = session('vendor_id');
          $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
+         
         return view('web.vender_myproject',compact('vendor_id','vendor'));
     }
 
@@ -645,9 +646,7 @@ class VendorController extends Controller
 
     public function vender_uploaded_documents(){
          $vendor_id = session('vendor_id');
-        //  $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
-
-        //   $vendor_id = session('vendor_id');
+      
 
         $vendor = DB::table('service_provider')
             ->leftJoin('agency_services', 'agency_services.user_id', '=', 'service_provider.id')

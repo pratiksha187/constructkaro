@@ -51,43 +51,7 @@ class AuthController extends Controller
             return back()->with('error', 'Invalid staff credentials.');
         }
 
-        /* ============================================================
-        VENDOR LOGIN
-        ============================================================ */
-        // if ($role === 'vendor') {
-        //     $vendor = DB::table('service_provider')->where('email', $request->email)->first();
-
-        //     if ($vendor && Hash::check($request->password, $vendor->password)) {
-        //         if ($vendor->login_as == 4) {
-        //             session(['vendor_id' => $vendor->id]);
-
-        //             // Step 1: Check agency_services
-        //             $agencyExists = DB::table('agency_services')
-        //                 ->where('user_id', $vendor->id)
-        //                 ->exists();
-        //             if (!$agencyExists) {
-        //                 return redirect()->route('types_of_agency')
-        //                     ->with('info', 'Please complete your agency information.');
-        //             }
-
-        //             // Step 2: Check business_registrations
-        //             $businessExists = DB::table('business_registrations')
-        //                 ->where('user_id', $vendor->id)
-        //                 ->exists();
-        //             if (!$businessExists) {
-        //                 return redirect()->route('about_business')
-        //                     ->with('info', 'Please complete your business registration.');
-        //             }
-
-        //             // Step 3: All good → Go to vendor confirmation
-        //             return redirect('/vendor_confiermetion');
-        //         }
-
-        //         return back()->with('error', 'Unauthorized role for vendor login.');
-        //     }
-
-        //     return back()->with('error', 'Invalid vendor credentials.');
-        // }
+      
         if ($role === 'vendor') {
             $vendor = DB::table('service_provider')
                 ->where('email', $request->email)

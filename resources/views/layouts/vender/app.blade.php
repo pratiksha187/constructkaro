@@ -311,11 +311,11 @@
 
 
       {{-- Logout --}}
-      <div class="nav-section">
+      <!-- <div class="nav-section">
         <a class="side-link text-danger" href="{{ route('logout') }}">
           <i class="bi bi-box-arrow-right"></i> Logout
         </a>
-      </div>
+      </div> -->
     </aside>
 
     {{-- ===================== Main Content ===================== --}}
@@ -329,9 +329,9 @@
           <input placeholder="Search projects, vendors…" />
         </div>
 
-        <div class="dropdown">
+        <!-- <div class="dropdown">
           <button class="btn btn-light d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-            <!-- <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar"> -->
+            
             <div class="d-none d-md-block text-start">
               <p class="mb-0 fw-semibold text-dark" style="font-size: 0.875rem;">{{ $vendor->name ?? 'Engineer' }}</p>
               <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $vendor->mobile ?? '' }}</p>
@@ -346,7 +346,44 @@
               </form>
             </li>
           </ul>
-        </div>
+        </div> -->
+        <div class="dropdown">
+  <button class="btn btn-light d-flex align-items-center gap-3 border-0 shadow-sm px-3 py-2 rounded-3" 
+          data-bs-toggle="dropdown" aria-expanded="false">
+
+    <!-- Circle Avatar -->
+    <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center" 
+         style="width: 36px; height: 36px; font-size: 0.9rem;">
+      {{ strtoupper(substr($vendor->name ?? 'E', 0, 1)) }}
+    </div>
+
+    <!-- Name & Mobile -->
+    <div class="text-start lh-1">
+      <p class="mb-0 fw-semibold text-dark" style="font-size: 0.9rem;">
+        {{ $vendor->name ?? 'Engineer' }}
+      </p>
+      <p class="mb-0 text-muted" style="font-size: 0.8rem;">
+        {{ $vendor->mobile ?? '' }}
+      </p>
+    </div>
+  </button>
+
+  <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 rounded-3">
+    <li class="dropdown-item-text text-muted small px-3">
+      Signed in as <strong>{{ $vendor->name ?? 'Engineer' }}</strong>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="px-3">
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-outline-danger w-100 rounded-pill">
+          <i class="bi bi-box-arrow-right me-2"></i> Log out
+        </button>
+      </form>
+    </li>
+  </ul>
+</div>
+
       </div>
 
       {{-- Page Content --}}

@@ -326,8 +326,8 @@ class ProjectController extends Controller
 
     public function customer_dashboard()
     {
-        $user = session('user'); // ✅ user info from session
-        $currentProjectId = session('current_project_id'); // ✅ project session (if in form flow)
+        $user = session('user'); 
+        $currentProjectId = session('current_project_id'); 
 
         // 🧩 Initialize variables
         $cust_details = null;
