@@ -162,7 +162,7 @@
   <!-- Documents Section -->
   <div class="card">
     <h5 class="section-title">Uploaded Documents</h5>
-    <div class="row g-3 file-link">
+    <!-- <div class="row g-3 file-link">
       @foreach([
         'cancelled_cheque_file' => 'Cancelled Cheque',
         'pan_card_file' => 'PAN Card',
@@ -183,7 +183,35 @@
         </div>
         @endif
       @endforeach
+    </div> -->
+    @php use Illuminate\Support\Facades\Storage; @endphp
+<div class="row g-3 file-link">
+  @foreach([
+    'cancelled_cheque_file' => 'Cancelled Cheque',
+    'pan_card_file' => 'PAN Card',
+    'aadhaar_card_file' => 'Aadhaar Card',
+    'certificate_of_incorporation_file' => 'Certificate of Incorporation',
+    'pf_documents_file' => 'PF Document',
+    'esic_documents_file' => 'ESIC Document',
+    'portfolio_file' => 'Portfolio',
+    'license_certificate_file' => 'License Certificate',
+    'work_completion_certificates_file1' => 'Work Completion Certificate 1',
+    'work_completion_certificates_file2' => 'Work Completion Certificate 2',
+    'work_completion_certificates_file3' => 'Work Completion Certificate 3'
+  ] as $field => $label)
+    @if(!empty($vendor->$field))
+    <div class="col-md-6">
+      <label class="form-label">{{ $label }}</label>
+      <p>
+        <a href="{{ Storage::url($vendor->$field) }}" target="_blank">
+          <i class="bi bi-file-earmark-pdf"></i> View Document
+        </a>
+      </p>
     </div>
+    @endif
+  @endforeach
+</div>
+
   </div>
 
   <!-- Verification Status -->

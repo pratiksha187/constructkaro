@@ -115,7 +115,7 @@
      
       <a href="{{route('NewProjectBoq')}}" class="btn btn-outline-primary hover-lift">
         <i class="bi bi-table me-1"></i> BOQ
-      </a>
+      </a>  
     </div> -->
   </div>
 

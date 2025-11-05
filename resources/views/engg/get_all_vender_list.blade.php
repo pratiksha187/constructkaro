@@ -270,7 +270,7 @@
                       </div>
                       <div class="col-md-6">
                         <p class="fw-semibold text-muted mb-1">Type of Entity</p>
-                        <p>{{ $vendor->br_entity_type ?? 'No added data' }}</p>
+                        <p>{{ $vendor->et_entity_type ?? 'No added data' }}</p>
                       </div>
                       <div class="col-md-12">
                         <p class="fw-semibold text-muted mb-1">Registered Address</p>
@@ -300,7 +300,7 @@
                       </div>
                       <div class="col-md-4">
                         <p class="fw-semibold text-muted mb-1">Account Type</p>
-                        <p>{{ $vendor->br_account_type ?? 'No added data' }}</p>
+                        <p>{{ $vendor->at_bank_account_type ?? 'No added data' }}</p>
                       </div>
                     </div>
 
@@ -309,11 +309,11 @@
                     <div class="row mt-2">
                       <div class="col-md-4">
                         <p class="fw-semibold text-muted mb-1">Experience Years</p>
-                        <p>{{ $vendor->br_experience_years ?? 'No added data' }}</p>
+                        <p>{{ $vendor->ey_experiance ?? 'No added data' }}</p>
                       </div>
                       <div class="col-md-4">
                         <p class="fw-semibold text-muted mb-1">Team Size</p>
-                        <p>{{ $vendor->br_team_size ?? 'No added data' }}</p>
+                        <p>{{ $vendor->ts_team_size ?? 'No added data' }}</p>
                       </div>
                       <div class="col-md-4">
                         <p class="fw-semibold text-muted mb-1">Minimum Project Value</p>

@@ -68,19 +68,17 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Years of Experience *</label>
-                    <select class="form-select" id="experience_years" name="experience_years">
-                        <option value="">Select years of experience</option>
-                        <option value="1">0-2 Years</option>
-                        <option value="2">3-5 Years</option>
-                        <option value="3">6-10 Years</option>
-                        <option value="4">11-15 Years</option>
-                        <option value="5">16-20 Years</option>
-                        <option value="6">20+ Years</option>
+                   
+                    <select id="experience_years" name="experience_years" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach ($experience_years as $years)
+                        <option value="{{ $years->id }}">{{ $years->experiance }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Team Size *</label>
-                    <select class="form-select" id="team_size" name="team_size">
+                    <!-- <select class="form-select" id="team_size" name="team_size">
                         <option>Select team size</option>
                         <option value="1">Just Me</option>
                         <option value="2">2-5 people</option>
@@ -88,6 +86,12 @@
                         <option value="4">11-20 people</option>
                         <option value="5">21-50 people</option>
                         <option value="6">50+ people</option>
+                    </select> -->
+                    <select id="team_size" name="team_size" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach ($team_size as $size)
+                        <option value="{{ $size->id }}">{{ $size->team_size }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -262,7 +266,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Type of Account </label>
-                    <select class="form-select" id="account_type" name="account_type">
+                    <!-- <select class="form-select" id="account_type" name="account_type">
                         <option value="">Select account type</option>
                         <option value="1">Savings</option>
                         <option value="2">Current</option>
@@ -274,6 +278,12 @@
                         <option value="8">Overdraft</option>
                         <option value="9">Cash Credit</option>
 
+                    </select> -->
+                    <select class="form-select" id="account_type" name="account_type">
+                        <option value="">Select account type</option>
+                        @foreach($account_type as $type)
+                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -687,64 +697,7 @@
       });
 </script>
 <script>
-    // $(document).ready(function() {
-    //     $('#businessForm').on('submit', function(e) {
-    //         e.preventDefault(); // Prevent default form submission
     
-    //         // Validate declaration checkbox (optional)
-    //         if (!$('#agreed_declaration').is(':checked')) {
-    //             alert('Please agree to the declaration.');
-    //             return;
-    //         }
-    
-    //         var form = this;
-    //         var formData = new FormData(form); // Collect all form data including files
-    //         $('.past_work_photos').each(function(index, input) {
-    //               if (input.files.length > 0) {
-    //                   for (let i = 0; i < input.files.length; i++) {
-    //                       formData.append('past_work_photos[]', input.files[i]);
-    //                   }
-    //               }
-    //           });
-    
-    //         $.ajax({ 
-    //             url: '{{ route("business.store") }}', // Replace with your actual route
-    //             type: 'POST',
-    //             data: formData,
-    //             processData: false, // Important for file uploads
-    //             contentType: false, // Important for file uploads
-    //             beforeSend: function() {
-    //                 // Optional: show a loader
-    //                 $('button[type="submit"]').prop('disabled', true).text('Submitting...');
-    //             },
-    //             success: function(response) {
-    //                 // Handle success response
-    //                 alert(response.message || 'Form submitted successfully!');
-    //                 // form.reset(); // Reset form
-    //                   $('#step5Modal').modal('show');
-    //                 //  window.location.href = '{{ route("vendor_confiermetion") }}';
-    //                 $('#certificate_label').text('Certificate of Incorpration/ LLPIN/ SHOP ACT (FOR Proprietor) *'); // Reset label
-    //             },
-    //             error: function(xhr) {
-    //                 // Handle error response
-    //                 if(xhr.responseJSON && xhr.responseJSON.errors){
-    //                     var errors = xhr.responseJSON.errors;
-    //                     var errorMessage = '';
-    //                     $.each(errors, function(key, value) {
-    //                         errorMessage += value + "\n";
-    //                     });
-    //                     alert(errorMessage);
-    //                 } else {
-    //                     alert('Something went wrong. Please try again.');
-    //                 }
-    //             },
-    //             complete: function() {
-    //                 $('button[type="submit"]').prop('disabled', false).text('Submit for Verification');
-    //             }
-    //         });
-    //     });
-    // });
-
 $(document).ready(function() {
 
     $('#businessForm').on('submit', function(e) {

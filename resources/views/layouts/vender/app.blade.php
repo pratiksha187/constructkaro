@@ -212,7 +212,7 @@
   <div class="layout">
     {{-- ===================== Sidebar ===================== --}}
     <aside class="sidebar d-none d-lg-block">
-      <a class="brand" href="{{ url('/') }}">
+      <a class="brand" href="{{ route('vendor_dashboard') }}">
         <img class="brand-logo" src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo">
       </a>
 

@@ -129,19 +129,19 @@
       <tbody>
         @forelse($bills as $bill)
           <tr>
-            <!-- Project -->
+          
             <td>
               <strong>{{ $bill->project_name ?? 'N/A' }}</strong><br>
               <small class="text-muted">{{ $bill->project_description ?? '-' }}</small>
             </td>
 
-            <!-- Customer -->
+           
             <td>
               <strong class="text-navy">{{ $bill->full_name ?? '-' }}</strong><br>
               <small class="text-muted">{{ $bill->phone_number ?? '' }}</small>
             </td>
 
-            <!-- Bill Month -->
+           
             <td>
               @if($bill->bill_month)
                 {{ \Carbon\Carbon::parse($bill->bill_month)->format('F Y') }}
@@ -150,7 +150,7 @@
               @endif
             </td>
 
-            <!-- Amount -->
+           
             <td>
               @if($bill->amount)
                 ₹{{ number_format($bill->amount, 2) }}
@@ -159,7 +159,7 @@
               @endif
             </td>
 
-            <!-- Status -->
+           
             <td>
               @php
                 $badgeClass = match($bill->status) {
@@ -172,8 +172,6 @@
               <span class="{{ $badgeClass }}">{{ $bill->status ?? 'Pending' }}</span>
             </td>
 
-            <!-- Action -->
-           <!-- View Button -->
             <td class="text-center">
               @if($bill->id)
                 <button 
@@ -198,7 +196,6 @@
     </table>
   </div>
 
-  <!-- Pagination -->
   <div class="mt-6">
     {{ $bills->links('pagination::bootstrap-5') }}
   </div>

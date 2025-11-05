@@ -188,7 +188,7 @@
   <div class="layout">
     {{-- ===================== Sidebar ===================== --}}
     <aside class="sidebar d-none d-lg-block">
-      <a class="brand" href="{{ url('/') }}" aria-label="ConstructKaro Home">
+      <a class="brand" href="{{ route('engineer_dashboard') }}" aria-label="ConstructKaro Home">
         <img class="brand-logo" src="{{ asset('logo/bg.png') }}" alt="ConstructKaro Logo">
       </a>
 
@@ -286,9 +286,9 @@
           <input placeholder="Search projects, vendors…">
         </div>
 
-        <div class="dropdown">
+        <!-- <div class="dropdown">
           <button class="btn btn-light d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-            <!-- <img src="https://i.pravatar.cc/40?img=64" class="rounded-circle border" width="36" height="36" alt="avatar"> -->
+            
             <span class="small text-muted">Engineer</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -300,7 +300,33 @@
               </form>
             </li>
           </ul>
-        </div>
+        </div> -->
+        <div class="dropdown">
+              <button class="btn btn-light d-flex align-items-center gap-2 px-3 py-2 border rounded shadow-sm"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; font-weight: 600; font-size: 14px;">
+                  E
+                </div>
+                <span class="fw-semibold text-dark small">Engineer</span>
+                <i class="bi bi-chevron-down text-muted small"></i>
+          </button>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2"
+                style="min-width: 200px;">
+              <li class="dropdown-item-text text-muted small px-3 py-2 border-bottom">
+                Signed in as <strong class="text-dark">Engineer</strong>
+              </li>
+              <li class="px-3 py-2">
+                <form method="POST" action="{{ route('logout') }}">@csrf
+                  <button type="submit" class="btn btn-danger btn-sm w-100">
+                    <i class="bi bi-box-arrow-right me-1"></i> Log out
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+
       </div>
 
       {{-- Page Content --}}

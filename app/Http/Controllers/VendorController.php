@@ -121,7 +121,12 @@ class VendorController extends Controller
      public function about_business(){
         $states = DB::table('states')->where('is_active',1)->get(); 
         $entity_type = DB::table('entity_type')->get(); 
-        return view('web.about_vendor_business',compact('entity_type','states'));
+
+        $account_type = DB::table('account_type')->get(); 
+        $experience_years =DB::table('experience_years')->get(); 
+        $team_size =DB::table('team_size')->get(); 
+
+        return view('web.about_vendor_business',compact('entity_type','states','account_type','experience_years','team_size'));
     }
 
      public function getServices($agency_id)
@@ -542,15 +547,15 @@ class VendorController extends Controller
         $vendor_id = session('vendor_id');
 
         $vendor = DB::table('service_provider')
-            ->leftJoin('agency_services', 'agency_services.user_id', '=', 'service_provider.id')
-            ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
-            ->where('service_provider.id', $vendor_id)
-            ->select(
-                'service_provider.*',
-                'agency_services.*',
-                'business_registrations.*'
-            )
-            ->first();
+                    ->leftJoin('agency_services', 'agency_services.user_id', '=', 'service_provider.id')
+                    ->leftJoin('business_registrations', 'business_registrations.user_id', '=', 'service_provider.id')
+                    ->where('service_provider.id', $vendor_id)
+                    ->select(
+                        'service_provider.*',
+                        'agency_services.*',
+                        'business_registrations.*'
+                    )
+                    ->first();
         // dd($vendor);
         return view('web.venderdetails', compact('vendor_id', 'vendor'));
     }
