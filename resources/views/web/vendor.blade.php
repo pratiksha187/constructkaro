@@ -173,7 +173,7 @@
                <input type="text" name="gst_number" class="form-control">
             </div>
             <div class="col-md-6">
-               <label for="state" class="form-label">Select State</label>
+               <label for="state" class="form-label">Select State *</label>
                <select name="state" id="state" class="form-control">
                   <option value="">-- Select State --</option>
                   @foreach ($states as $state)
@@ -182,13 +182,13 @@
                </select>
             </div>
             <div class="col-md-6">
-               <label for="region" class="form-label">Select Region</label>
+               <label for="region" class="form-label">Select Region *</label>
                <select name="region" id="region" class="form-control">
                   <option value="">-- Select Region --</option>
                </select>
             </div>
             <div class="col-md-6">
-               <label for="city" class="form-label">Select City</label>
+               <label for="city" class="form-label">Select City *</label>
                <select name="city" id="city" class="form-control">
                   <option value="">-- Select City --</option>
                </select>
