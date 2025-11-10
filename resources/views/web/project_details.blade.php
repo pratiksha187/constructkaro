@@ -927,6 +927,30 @@
    border: 1px solid #e3342f !important;
    background-color: #fff5f5;
    }
+   .btn-loading {
+   position: relative;
+   pointer-events: none;
+   opacity: 0.75;
+}
+
+.btn-loading::after {
+   content: "";
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 1.3rem;
+   height: 1.3rem;
+   border: 3px solid #fff;
+   border-radius: 50%;
+   border-top-color: transparent;
+   animation: btn-spin 0.6s linear infinite;
+   transform: translate(-50%, -50%);
+}
+
+@keyframes btn-spin {
+   to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 </style>
 <div class="min-vh-100 position-relative">
    <!-- Enhanced Background -->
@@ -1461,82 +1485,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- <script>
-   $(document).ready(function () {
-      // Ensure CSRF token is always attached
-      $.ajaxSetup({
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-      });
-   
-     $('#projectForm').on('submit', function (e) {
-        e.preventDefault();
-   
-        let isValid = true;
-   
-        // ✅ Check normal required fields
-        $('#projectForm [required]').each(function () {
-           if (!$(this).val().trim()) {
-                 $(this).focus();
-                 isValid = false;
-                 return false; // break loop
-           }
-        });
-   
-        if (!isValid) return;
-   
-        // ✅ Check if Agreement checkboxes are ticked
-        if (!$('input[name="terms"]').is(':checked') || !$('input[name="no_bypass"]').is(':checked')) {
-           alert("You must accept the Agreement & Terms before continuing.");
-           return;
-        }
-   
-        // ✅ If all good, set modal data
-        $('#modalProjectName').text($('#project_name').val());
-        $('#modalProjectLocation').text($('#project_location').val());
-        $('#modalBudget').text($('#budget_range').val());
-        $('#modalTimeline').text($('#expectedTimeline').val());
-        $('#modalDescription').text($('#project_description').val());
-   
-        // ✅ Show modal
-        $('#projectConfirmModal').modal('show');
-     });
-   
-    // AJAX Submit after confirmation
-    $('#confirmSubmitBtn').on('click', function () {
-      let formData = new FormData($('#projectForm')[0]);
-   
-      $.ajax({
-        url: '/project_details_save', // your backend route
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-          $('#projectConfirmModal').modal('hide');
-          $('#thankYouModal').modal('show');
-   
-          // Optional: Set dynamic submission ID
-          $('#submissionId').text(response.submission_id || 'BX-2025-011');
-        },
-        error: function (xhr) {
-          alert('Error submitting form. Please check console.');
-          console.error(xhr.responseText);
-        }
-      });
-    });
-   
-    // Redirect to Dashboard
-    $('#goToDashboardBtn').on('click', function () {
-     //  window.location.href = "{{route('Partner_Bids')}}";
-              window.location.href = "{{ route('customer.dashboard') }}";
-   
-    });
-   
-   });
-   
-</script> -->
+
 <script>
 $(document).ready(function () {
     // ✅ Ensure CSRF token is always attached
@@ -1584,31 +1533,36 @@ $(document).ready(function () {
         $('#projectConfirmModal').modal('show');
     });
 
-    // ✅ Confirm & Submit via AJAX
-    $('#confirmSubmitBtn').on('click', function () {
-        let formData = new FormData($('#projectForm')[0]);
 
-        $.ajax({
-            url: '/project_details_save', // backend route
+      // ✅ Confirm & Submit via AJAX
+      $('#confirmSubmitBtn').on('click', function () {
+
+         var button = $(this);
+         button.addClass('btn-loading').text('Submitting...');
+
+         let formData = new FormData($('#projectForm')[0]);
+
+         $.ajax({
+            url: '/project_details_save',
             type: 'POST',
             data: formData,
             contentType: false,
             processData: false,
             success: function (response) {
-                $('#projectConfirmModal').modal('hide');
-                $('#thankYouModal').modal('show');
+                  button.removeClass('btn-loading').text('Submit Request');
 
-                // Display submission ID dynamically
-               //  $('#submissionId').text(response.submission_id || 'BX-2025-011');
-               $('#submissionIdTop').text(response.submission_id);
-               $('#submissionIdBox').text(response.submission_id);
+                  $('#projectConfirmModal').modal('hide');
+                  $('#thankYouModal').modal('show');
+                  $('#submissionIdTop').text(response.submission_id);
+                  $('#submissionIdBox').text(response.submission_id);
             },
             error: function (xhr) {
-                alert('Error submitting form. Please check console.');
-                console.error(xhr.responseText);
+                  button.removeClass('btn-loading').text('Submit Request');
+                  alert('Error submitting form. Please try again.');
+                  console.error(xhr.responseText);
             }
-        });
-    });
+         });
+      });
 
     // ✅ Redirect to dashboard after success
     $('#goToDashboardBtn').on('click', function () {

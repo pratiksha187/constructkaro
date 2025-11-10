@@ -54,6 +54,7 @@
 <div class="ck-wrap" 
      x-data="{
         activeProject: null,
+        search: '',
         submitProjectUpdate() {
           const projectId = this.$refs.projectId.value;
           const engg_description = this.$refs.remarks.value;
@@ -94,6 +95,15 @@
     @if(session('success'))
       <div class="alert alert-success m-3 mb-0">{{ session('success') }}</div>
     @endif
+<div class="p-3 pb-0">
+  <div class="input-group" style="max-width: 350px;">
+    <span class="input-group-text bg-white border-end-0">
+      <span class="material-icons" style="font-size:18px;">search</span>
+    </span>
+    <input type="text" class="form-control border-start-0" placeholder="Search projects..."
+           x-model="search">
+  </div>
+</div>
 
     <div class="table-responsive p-3">
       <table class="table table-striped table-bordered align-middle">
@@ -101,6 +111,7 @@
           <tr>
             <th>Project ID</th>
             <th>Customer Name</th>
+            <th>Phone Number</th>
             <th>Project Name</th>
             <th>Budget</th>
             <th>Engineer Remarks</th>
@@ -109,11 +120,19 @@
             <th class="text-center">Action</th>
           </tr>
         </thead>
+      
         <tbody>
           @foreach ($projects as $p)
-            <tr>
+            <tr x-show="`${{ json_encode($p->submission_id) }} 
+                        {{ json_encode($p->full_name) }} 
+                        {{json_encode($p->phone_number) }}
+                        {{ json_encode($p->project_name) }} 
+                        {{ json_encode($p->budget_range_name) }}`.toLowerCase().includes(search.toLowerCase())">
+              
               <td>{{ $p->submission_id }}</td>
               <td>{{ $p->full_name }}</td>
+              <td>{{ $p->phone_number }}</td>
+              
               <td>{{ $p->project_name }}</td>
               <td>{{ $p->budget_range_name }}</td>
               <td>{{ $p->engg_decription ?? '-' }}</td>
@@ -132,9 +151,11 @@
                   <span class="material-icons" style="font-size:18px;">visibility</span>
                 </button>
               </td>
+
             </tr>
           @endforeach
         </tbody>
+
       </table>
 
       <div class="mt-3">
@@ -151,7 +172,7 @@
       <div class="ck-mhdr">
         <div class="d-flex align-items-center gap-2">
           <span class="material-icons text-warning fs-4">assignment</span>
-          <h5 class="mb-0 fw-bold text-dark" x-text="activeProject.project_name"></h5>
+          <h5 class="mb-0 fw-bold text-dark" x-text="activeProject.project_name"></h5>( <h5 class="mb-0 fw-bold text-dark" x-text="activeProject.submission_id"></h5>)
         </div>
         <button class="btn btn-light btn-sm rounded-circle shadow-sm" @click="activeProject=null" title="Close">
           <span class="material-icons">close</span>
@@ -167,6 +188,17 @@
               <p class="fw-semibold small mb-1">📍 Location</p>
               <p x-text="activeProject.project_location ?? activeProject.land_location"></p>
             </div>
+             <div class="col-md-6">
+              <p class="fw-semibold small mb-1">📍 Survey Number</p>
+              <p x-text="activeProject.survey_number ?? activeProject.survey_number"></p>
+            </div>
+             <div class="col-md-6">
+              <p class="fw-semibold small mb-1">📍 Land Type</p>
+              <p x-text="activeProject.land_type ?? activeProject.land_type"></p>
+            </div>
+
+            
+            
             <div class="col-md-6">
               <p class="fw-semibold small mb-1">📝 Description</p>
               <p x-text="activeProject.project_description"></p>
@@ -179,6 +211,11 @@
               <p class="fw-semibold small mb-1">⏱ Timeline</p>
               <span class="badge text-bg-light border" x-text="activeProject.timeline ?? activeProject.timeline"></span>
             </div>
+              <div class="col-md-6">
+              <p class="fw-semibold small mb-1">👤 Role</p>
+              <span class="badge text-bg-light border" x-text="activeProject.role_name ?? activeProject.role_name"></span>
+            </div>
+            
           </div>
         </div>
 

@@ -254,9 +254,7 @@
             {{ $project->project_description ?? 'No project description provided.' }}
         </p>
 
-        <!-- <div class="progress mb-3">
-            <div class="progress-bar" style="width: 0%;">0%</div>
-        </div> -->
+    
         <div class="progress mb-3" style="height: 16px;">
             <div 
                 class="progress-bar progress-bar-striped progress-bar-animated text-center" 
@@ -330,21 +328,6 @@
         </div>
         <div class="divider"></div>
 
-        <!-- <div class="payment-item">
-            <span><i class="bi bi-cash-coin me-2 text-success"></i>Project Initiation</span>
-            <span class="text-success fw-semibold">₹50,000 Paid</span>
-        </div>
-
-        <div class="payment-item">
-            <span><i class="bi bi-cash-stack me-2 text-warning"></i>Foundation Work</span>
-            <span class="text-warning fw-semibold">₹1,50,000 Pending</span>
-        </div>
-
-        <div class="payment-item">
-            <span><i class="bi bi-currency-rupee me-2 text-muted"></i>Structure Completion</span>
-            <span class="text-muted">₹2,00,000 Pending</span>
-        </div> -->
-
         <hr>
         <div class="d-flex justify-content-between fw-semibold">
             <span>Total Project Value:</span>
@@ -359,28 +342,6 @@
         </div>
         <div class="divider"></div>
 
-        <!-- <div class="vendor-docs">
-            <div class="vendor-box d-flex align-items-center">
-                <div class="vendor-avatar"><i class="bi bi-person-fill"></i></div>
-                <div class="vendor-details">
-                    <h6>Suresh Construction</h6>
-                    <small class="d-block">Civil Contractor</small>
-                    <small><i class="bi bi-telephone text-success me-2"></i>+91 98765 11111</small>
-                </div>
-            </div>
-
-            <div class="docs-box">
-                <h6 class="fw-semibold text-navy mb-3">
-                    <i class="bi bi-folder2-open text-orange me-2"></i>Documents
-                </h6>
-                <ul class="list-unstyled docs-list mb-3">
-                    <li><i class="bi bi-file-earmark-text text-primary me-2"></i>Architectural Drawings.pdf</li>
-                    <li><i class="bi bi-file-earmark-spreadsheet text-success me-2"></i>BOQ_Details.xlsx</li>
-                    <li><i class="bi bi-file-earmark-richtext text-warning me-2"></i>Project_Contract.docx</li>
-                </ul>
-                <button class="action-btn"><i class="bi bi-download me-1"></i>Download All</button>
-            </div>
-        </div> -->
     </div>
 
 </div>

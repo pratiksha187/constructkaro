@@ -168,7 +168,9 @@ class EngginerController extends Controller
             ->leftJoin('budget_range', 'budget_range.id', '=', 'projects.budget_range')
             ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
 
-            
+            // ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
+            ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
+
             // 🔹 Show only projects that have a submission_id in projects_details
             ->whereNotNull('projects_details.submission_id')
             ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
@@ -242,6 +244,7 @@ class EngginerController extends Controller
                 'customer_basic_info.password',
                 'customer_basic_info.gender',
                 'customer_basic_info.role_id',
+                'role.role as role_name',
                 'customer_basic_info.state',
                 'customer_basic_info.region',
                 'customer_basic_info.city',

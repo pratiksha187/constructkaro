@@ -78,15 +78,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Team Size *</label>
-                    <!-- <select class="form-select" id="team_size" name="team_size">
-                        <option>Select team size</option>
-                        <option value="1">Just Me</option>
-                        <option value="2">2-5 people</option>
-                        <option value="3">6-10 people</option>
-                        <option value="4">11-20 people</option>
-                        <option value="5">21-50 people</option>
-                        <option value="6">50+ people</option>
-                    </select> -->
+                   
                     <select id="team_size" name="team_size" class="form-select">
                         <option value="">-- Select --</option>
                         @foreach ($team_size as $size)
@@ -113,12 +105,6 @@
                     </select>
                 </div>
 
-                <!-- <div class="col-md-6">
-               <label for="city" class="form-label">Select City *</label>
-               <select name="city[]" id="city" class="form-control" multiple>
-                  <option value="">-- Select City --</option>
-               </select>
-            </div> -->
                 <div class="col-md-6">
                     <label class="form-label">Accepting projects of minimum value (₹) *</label>
                     <input type="number" id="min_project_value" name="min_project_value" class="form-control" placeholder="₹ Minimum project value">
@@ -222,27 +208,7 @@
                         <input type="file" id="msme_file" name="msme_file" class="form-control" accept="application/pdf">
                     </div>
                 </div>
-                <!-- <div class="col-md-6" id="aadhar_pan_link_section" style="display: none;">
-                    <label class="form-label">PAN-Aadhar Seeded? *</label>
-                    <br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="pan_aadhar_seeded" value="yes" onclick="toggleOptions()">
-                        <label class="form-check-label">Yes</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="pan_aadhar_seeded" value="no" onclick="toggleOptions()">
-                        <label class="form-check-label">No</label>
-                    </div>
-                    <div id="uploadSection" style="display: none; margin-top: 10px;">
-                        <label for="uploadadharpanFile" class="form-label">Upload link Document:</label>
-                        <input type="file" id="uploadadharpanFile" name="uploadadharpanFile" class="form-control" accept="application/pdf">
-                    </div>
-                    <div id="linkSection" style="display: none; margin-top: 10px;">
-                        <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link-aadhaar" target="_blank">
-                  Click here to link PAN with Aadhar
-                  </a>
-                    </div>
-                </div> -->
+              
             </div>
         </div>
         <hr>
@@ -266,19 +232,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Type of Account </label>
-                    <!-- <select class="form-select" id="account_type" name="account_type">
-                        <option value="">Select account type</option>
-                        <option value="1">Savings</option>
-                        <option value="2">Current</option>
-                        <option value="3">Client Referance</option>
-                        <option value="4">Fixed Deposit</option>
-                        <option value="5">Recurring Deposit</option>
-                        <option value="6">NRO (Non-Resident Ordinary)</option>
-                        <option value="7">NRE (Non-Resident External)</option>
-                        <option value="8">Overdraft</option>
-                        <option value="9">Cash Credit</option>
-
-                    </select> -->
+                  
                     <select class="form-select" id="account_type" name="account_type">
                         <option value="">Select account type</option>
                         @foreach($account_type as $type)
@@ -337,29 +291,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="col-md-6">
-                    <label class="form-label required">Turnover Certificate (CA Certified)</label>
-                    <input accept="application/pdf" type="file" id="turnover_certificate_file" name="turnover_certificate_file" class="form-control">
-                </div> -->
-                <!-- <div class="col-md-6"></div> -->
-
-                <!-- <div class="col-md-4">
-                    <label class="form-label required">Work Completion Certificate(Add 3 Documents)<small class="text-muted">(PDF,20 MB)</small></label>
-                    <input accept="application/pdf" type="file" id="work_completion_certificates_file1" name="work_completion_certificates_file1" class="form-control">
-                    <ul id="work_completion_certificates_list1" class="file-list"></ul>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label required"></label>
-                    <input accept="application/pdf" type="file" id="work_completion_certificates_file2" name="work_completion_certificates_file2" class="form-control">
-                    <ul id="work_completion_certificates_list2" class="file-list"></ul>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label required"></label>
-                    <input accept="application/pdf" type="file" id="work_completion_certificates_file3" name="work_completion_certificates_file3" class="form-control">
-                    <ul id="work_completion_certificates_list3" class="file-list"></ul>
-                </div> -->
                 <div class="row">
                     <div class="col-12">
                         <label class="form-label fw-semibold">

@@ -71,6 +71,7 @@ Route::get('/customer_dashboard', [ProjectController::class, 'customer_dashboard
 
 Route::post('/submit-basicinfo', [ProjectController::class, 'storebasicinfo'])->name('customer.basicinfo.store');
 
+Route::post('/project/{id}/upload-document', [ProjectController::class, 'uploadDocument'])->name('project.upload.document');
 
 
 

@@ -142,6 +142,11 @@
     @if(session('success'))
       <div class="alert alert-success m-3 mb-0">{{ session('success') }}</div>
     @endif
+    <div class="d-flex justify-content-end px-3 pb-2">
+      <input type="text" id="vendorSearch" class="form-control" 
+            placeholder="🔍 Search Vendor..." 
+            style="max-width: 300px; border-radius:8px;">
+    </div>
 
     <div class="table-responsive p-3 pt-2">
       <table class="table table-hover align-middle ck-table">
@@ -393,6 +398,16 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#vendorSearch").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $(".ck-table tbody tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+  });
+</script>
 
 <script>
   // unchanged logic – using your original functions
