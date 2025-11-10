@@ -49,6 +49,48 @@
     padding: 22px; max-height: calc(90vh - 130px);
     overflow: auto;
   }
+
+  .ck-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  z-index: 9999;
+}
+
+.ck-modal {
+  background: #fff;
+  width: 90vw;          /* Increase Width */
+  max-width: 1200px;    /* Max Width Limit */
+  max-height: 90vh;     /* Increase Height */
+  overflow-y: auto;     /* Scroll Inside */
+  border-radius: 12px;
+  animation: scaleIn .25s ease;
+}
+
+.ck-mhdr {
+  background: #f8f9fc;
+  border-bottom: 1px solid #ddd;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ck-mbody {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Smooth Opening Animation */
+@keyframes scaleIn {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 </style>
 
 <div class="ck-wrap" 
@@ -181,54 +223,154 @@
 
       <!-- Body -->
       <div class="ck-mbody p-4" style="background:#fafbfd;">
-        <div class="mb-4">
-          <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#FF6600;">Project Information</h6>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <p class="fw-semibold small mb-1">📍 Location</p>
-              <p x-text="activeProject.project_location ?? activeProject.land_location"></p>
-            </div>
-             <div class="col-md-6">
-              <p class="fw-semibold small mb-1">📍 Survey Number</p>
-              <p x-text="activeProject.survey_number ?? activeProject.survey_number"></p>
-            </div>
-             <div class="col-md-6">
-              <p class="fw-semibold small mb-1">📍 Land Type</p>
-              <p x-text="activeProject.land_type ?? activeProject.land_type"></p>
-            </div>
-
-            
-            
-            <div class="col-md-6">
-              <p class="fw-semibold small mb-1">📝 Description</p>
-              <p x-text="activeProject.project_description"></p>
-            </div>
-            <div class="col-md-6">
-              <p class="fw-semibold small mb-1">💰 Budget</p>
-              <span class="badge text-bg-light border" x-text="activeProject.budget_range_name ?? activeProject.budget_range_name   "></span>
-            </div>
-            <div class="col-md-6">
-              <p class="fw-semibold small mb-1">⏱ Timeline</p>
-              <span class="badge text-bg-light border" x-text="activeProject.timeline ?? activeProject.timeline"></span>
-            </div>
-              <div class="col-md-6">
-              <p class="fw-semibold small mb-1">👤 Role</p>
-              <span class="badge text-bg-light border" x-text="activeProject.role_name ?? activeProject.role_name"></span>
-            </div>
-            
-          </div>
-        </div>
-
-        <!-- Contact Info -->
+          <!-- Contact Info -->
         <div class="mb-4">
           <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#0B2240;">Contact Information</h6>
           <div class="row g-3">
             <div class="col-md-4"><p class="fw-semibold small mb-1">👤 Full Name</p><p x-text="activeProject.full_name"></p></div>
             <div class="col-md-4"><p class="fw-semibold small mb-1">📧 Email</p><p x-text="activeProject.email"></p></div>
             <div class="col-md-4"><p class="fw-semibold small mb-1">📱 Phone</p><p x-text="activeProject.phone_number"></p></div>
+            <div class="col-md-4"><p class="fw-semibold small mb-1">👤 Gender</p><p x-text="activeProject.gender"></p></div>
+            <div class="col-md-4"><p class="fw-semibold small mb-1">📍 State</p><p x-text="activeProject.statesname"></p></div>
+            <div class="col-md-4"><p class="fw-semibold small mb-1">📍 Region</p><p x-text="activeProject.regionsname"></p></div>
+            <div class="col-md-4"><p class="fw-semibold small mb-1">📍 City</p><p x-text="activeProject.citiesname"></p></div>
+            
+            
           </div>
         </div>
 
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#FF6600;">Project Information</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📍 Land Location</p>
+              <p x-text="activeProject.project_location ?? activeProject.land_location"></p>
+            </div>
+             <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📍 Survey Number</p>
+              <p x-text="activeProject.survey_number ?? activeProject.survey_number"></p>
+            </div>
+             <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📍 Land Type</p>
+              <p x-text="activeProject.land_type ?? activeProject.land_type"></p>
+            </div>
+  
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📍 Land Area</p>
+              <p x-text="`${activeProject.land_area ?? ''} ${activeProject.land_unit ?? ''}`"></p>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📝 Description</p>
+              <p x-text="activeProject.project_description"></p>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">💰 Budget</p>
+              <span class="badge text-bg-light border" x-text="activeProject.budget_range_name ?? activeProject.budget_range_name   "></span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">⏱ Timeline</p>
+              <span class="badge text-bg-light border" x-text="activeProject.timeline ?? activeProject.timeline"></span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Role</p>
+              <span class="badge text-bg-light border" x-text="activeProject.role_name ?? activeProject.role_name"></span>
+            </div> 
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Site Ready</p>
+              <span class="badge text-bg-light border" x-text="activeProject.site_ready ?? activeProject.site_ready"></span>
+            </div> 
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Arch Drawings Available</p>
+              <span class="badge text-bg-light border"
+                    x-text="activeProject.arch_drawings == 1 ? 'Yes' : 'No'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Struct Drawings Available</p>
+              <span class="badge text-bg-light border" x-text="activeProject.struct_drawings == 1 ? 'Yes' : 'No'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 BOQ Available</p>
+              <span class="badge text-bg-light border" x-text="activeProject.has_boq == 1 ? 'Yes' : 'No'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Expected Start</p>
+              <span class="badge text-bg-light border" x-text="activeProject.expected_start ?? activeProject.expected_start"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 Project Duration</p>
+              <span class="badge text-bg-light border" x-text="activeProject.project_duration ?? activeProject.project_duration"></span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">💧 Water</p>
+              <span :class="activeProject.water === 'on' ? 'badge bg-success' : 'badge bg-secondary'"
+                    x-text="activeProject.water === 'on' ? 'YES' : 'NO'">
+              </span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">⚡ Electricity</p>
+              <span :class="activeProject.electricity === 'on' ? 'badge bg-success' : 'badge bg-secondary'"
+                    x-text="activeProject.electricity === 'on' ? 'YES' : 'NO'">
+              </span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">🚰 Drainage</p>
+              <span :class="activeProject.drainage === 'on' ? 'badge bg-success' : 'badge bg-secondary'"
+                    x-text="activeProject.drainage === 'on' ? 'YES' : 'NO'">
+              </span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👤 work_type</p>
+              <span class="badge text-bg-light border" x-text="activeProject.work_types ?? activeProject.work_types"></span>
+            </div>
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">🎯 Work Subtype</p>
+              <span class="badge text-bg-light border" x-text="activeProject.work_subtype_name ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">🏭 Vendor Type</p>
+              <span class="badge text-bg-light border" x-text="activeProject.suggested_vendor_types ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">👥 Sub Vendor Types</p>
+              <span class="badge text-bg-light border" x-text="activeProject.vendor_subcategories ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">💰 Payment Preference</p>
+              <span class="badge text-bg-light border" x-text="activeProject.payment_preference ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">⭐ Quality Preference</p>
+              <span class="badge text-bg-light border" x-text="activeProject.quality_preference ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">📍 Vendor Preference</p>
+              <span class="badge text-bg-light border" x-text="activeProject.vendor_preference ?? '-'"></span>
+            </div>
+
+            <div class="col-md-4">
+              <p class="fw-semibold small mb-1">⏱ Best Time to Contact</p>
+              <span class="badge text-bg-light border" x-text="activeProject.best_time ?? '-'"></span>
+            </div>
+
+
+
+            
+          </div>
+        </div>
+
+      
         <!-- Files Available -->
         <div class="mb-4">
           <h6 class="fw-bold text-dark mb-3 border-start border-3 ps-2" style="border-color:#2949E9;">Files Available</h6>

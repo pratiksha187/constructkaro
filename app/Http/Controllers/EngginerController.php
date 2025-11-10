@@ -167,8 +167,16 @@ class EngginerController extends Controller
             ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'projects.budget_range')
             ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
+            ->leftJoin('states', 'states.id', '=', 'customer_basic_info.state')
+            ->leftJoin('regions', 'regions.id', '=', 'customer_basic_info.region')
+            ->leftJoin('cities', 'cities.id', '=', 'customer_basic_info.city')
+            ->leftJoin('work_types', 'work_types.id', '=', 'projects.work_type')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
+            ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
+            ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
 
-            // ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
+
+         
             ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
 
             // 🔹 Show only projects that have a submission_id in projects_details
@@ -209,8 +217,12 @@ class EngginerController extends Controller
                 'projects.vendor_preference',
                 'projects.best_time',
                 'projects.work_type',
+                'work_types.work_type as work_types',
                 'projects.work_subtype',
+                'work_subtypes.work_subtype as work_subtype_name',
+                'suggested_vendor_types.vendor_type as suggested_vendor_types',
                 'projects.vendor_type',
+                'vendor_subcategories.vendor_subcategory as vendor_subcategories',
                 'projects.sub_vendor_types',
                 'projects.created_at as project_created_at',
                 'projects.updated_at as project_updated_at',
@@ -250,6 +262,10 @@ class EngginerController extends Controller
                 'customer_basic_info.city',
                 'customer_basic_info.created_at as customer_created_at',
                 'customer_basic_info.updated_at as customer_updated_at',
+
+                'states.name as statesname',
+                'cities.name as citiesname'  ,
+                'regions.name as regionsname'
             ])
             ->orderBy('projects.id', 'desc')
             ->paginate(10);

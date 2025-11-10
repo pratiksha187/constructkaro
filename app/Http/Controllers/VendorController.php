@@ -620,7 +620,7 @@ class VendorController extends Controller
 
             $project->already_bid = $existing_bid ? true : false;
         }
-
+// dd($project_details);
         return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
     }
 
