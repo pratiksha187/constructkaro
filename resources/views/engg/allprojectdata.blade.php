@@ -302,10 +302,10 @@
               <span class="badge text-bg-light border" x-text="activeProject.expected_start ?? activeProject.expected_start"></span>
             </div>
 
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
               <p class="fw-semibold small mb-1">👤 Project Duration</p>
               <span class="badge text-bg-light border" x-text="activeProject.project_duration ?? activeProject.project_duration"></span>
-            </div>
+            </div> -->
             <div class="col-md-4">
               <p class="fw-semibold small mb-1">💧 Water</p>
               <span :class="activeProject.water === 'on' ? 'badge bg-success' : 'badge bg-secondary'"
