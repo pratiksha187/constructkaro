@@ -470,7 +470,11 @@
   <div class="bg-white rounded-xl border-l-4 border-orange shadow-md p-6 max-w-6xl mx-auto">
 
       <!-- Architectural Drawings -->
-      @php $arch = $project->arch_files ? json_decode($project->arch_files, true) : []; @endphp
+      @php
+          $arch = json_decode($project->arch_files, true);
+          $arch = is_array($arch) ? $arch : ($project->arch_files ? [$project->arch_files] : []);
+      @endphp
+
       <div class="border-b pb-4 mb-4">
         <h3 class="font-semibold text-navy mb-2">Architectural Drawings</h3>
 
@@ -492,8 +496,13 @@
       </div>
 
 
+
       <!-- Structural Drawings -->
-      @php $struct = $project->struct_files ? json_decode($project->struct_files, true) : []; @endphp
+      @php
+          $struct = json_decode($project->struct_files, true);
+          $struct = is_array($struct) ? $struct : ($project->struct_files ? [$project->struct_files] : []);
+      @endphp
+
       <div class="border-b pb-4 mb-4">
         <h3 class="font-semibold text-navy mb-2">Structural Drawings</h3>
 
@@ -515,8 +524,13 @@
       </div>
 
 
+
       <!-- BOQ Files -->
-      @php $boq = $project->boq_file ? json_decode($project->boq_file, true) : []; @endphp
+      @php
+          $boq = json_decode($project->boq_file, true);
+          $boq = is_array($boq) ? $boq : ($project->boq_file ? [$project->boq_file] : []);
+      @endphp
+
       <div>
         <h3 class="font-semibold text-navy mb-2">BOQ Files</h3>
 
@@ -524,7 +538,9 @@
             @foreach($boq as $file)
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm text-gray-700">{{ basename($file) }}</span>
-                <a href="{{ asset('storage/' . $file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
+                <a href="{{ asset('storage/' . $file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">
+                  Download
+                </a>
               </div>
             @endforeach
         @else
@@ -539,6 +555,7 @@
 
   </div>
 </div>
+
 
 
   <div class="mt-10" x-show="tab === 'bill_status'" x-transition>
