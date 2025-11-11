@@ -642,6 +642,51 @@ class ProjectController extends Controller
 //     $project->save();
 //     return back()->with('success', 'Document Uploaded Successfully!');
 // }
+// public function uploadDocument(Request $request, $id)
+// {
+//     $project = Project::findOrFail($id);
+
+//     $request->validate([
+//         'type' => 'required|in:arch,struct,boq',
+//         'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480',
+//     ]);
+
+//     $folder = match ($request->type) {
+//         'arch' => 'arch_drawings',
+//         'struct' => 'struct_drawings',
+//         'boq' => 'boq_files',
+//     };
+
+//     // Store file and get the path
+//     $path = $request->file('file')->store("public/$folder");
+
+//     // Clean up the path by removing "public/" and "storage/"
+//     $path = str_replace(['public/', 'storage/'], '', $path);
+
+//     if ($request->type === 'arch') {
+//         // Store the simple path in the 'arch_files' column
+//         $project->arch_files = $path;
+//         $project->arch_drawings = 1; // Indicating the file exists
+//     }
+
+//     if ($request->type === 'struct') {
+//         // Store the simple path in the 'struct_files' column
+//         $project->struct_files = $path;
+//         $project->struct_drawings = 1; // Indicating the file exists
+//     }
+
+//     if ($request->type === 'boq') {
+//         // Store the simple path in the 'boq_file' column
+//         $project->boq_file = $path;
+//         // dd($project->boq_file);
+//         $project->has_boq = 1; // Indicating the BOQ file exists
+//     }
+
+//     // Save the updated project data
+//     $project->save();
+
+//     return back()->with('success', ucfirst($request->type) . ' document uploaded successfully!');
+// }
 public function uploadDocument(Request $request, $id)
 {
     $project = Project::findOrFail($id);
@@ -657,32 +702,29 @@ public function uploadDocument(Request $request, $id)
         'boq' => 'boq_files',
     };
 
-    // Store file and get the path
+    // Store file (this returns something like "public/boq_files/abc123.xlsx")
     $path = $request->file('file')->store("public/$folder");
 
-    // Clean up the path by removing "public/" and "storage/"
-    $path = str_replace(['public/', 'storage/'], '', $path);
+    // Convert it to public URL path => "storage/boq_files/abc123.xlsx"
+    $publicPath = str_replace("public/", "storage/", $path);
 
-    if ($request->type === 'arch') {
-        // Store the simple path in the 'arch_files' column
-        $project->arch_files = $path;
-        $project->arch_drawings = 1; // Indicating the file exists
+    switch ($request->type) {
+        case 'arch':
+            $project->arch_files = $publicPath;
+            $project->arch_drawings = 1;
+            break;
+
+        case 'struct':
+            $project->struct_files = $publicPath;
+            $project->struct_drawings = 1;
+            break;
+
+        case 'boq':
+            $project->boq_file = $publicPath;
+            $project->has_boq = 1;
+            break;
     }
 
-    if ($request->type === 'struct') {
-        // Store the simple path in the 'struct_files' column
-        $project->struct_files = $path;
-        $project->struct_drawings = 1; // Indicating the file exists
-    }
-
-    if ($request->type === 'boq') {
-        // Store the simple path in the 'boq_file' column
-        $project->boq_file = $path;
-        // dd($project->boq_file);
-        $project->has_boq = 1; // Indicating the BOQ file exists
-    }
-
-    // Save the updated project data
     $project->save();
 
     return back()->with('success', ucfirst($request->type) . ' document uploaded successfully!');

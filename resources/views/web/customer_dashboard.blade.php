@@ -463,28 +463,20 @@
   </div>
 </div> -->
 
-<!-- ======================== DOCUMENTS TAB ======================== -->
 <div class="mt-10" x-show="tab === 'documents'" x-transition>
   <h2 class="text-xl font-semibold text-navy mb-4">Uploaded Documents</h2>
 
   <div class="bg-white rounded-xl border-l-4 border-orange shadow-md p-6 max-w-6xl mx-auto">
 
       <!-- Architectural Drawings -->
-      @php
-          $arch = json_decode($project->arch_files, true);
-          $arch = is_array($arch) ? $arch : ($project->arch_files ? [$project->arch_files] : []);
-      @endphp
-
       <div class="border-b pb-4 mb-4">
         <h3 class="font-semibold text-navy mb-2">Architectural Drawings</h3>
 
-        @if(count($arch))
-            @foreach($arch as $file)
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-700">{{ basename($file) }}</span>
-                <a href="{{ asset('storage/' . $file) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
-              </div>
-            @endforeach
+        @if($project->arch_files)
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-700">{{ basename($project->arch_files) }}</span>
+            <a href="{{ asset($project->arch_files) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
+          </div>
         @else
           <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
             @csrf
@@ -496,23 +488,15 @@
       </div>
 
 
-
       <!-- Structural Drawings -->
-      @php
-          $struct = json_decode($project->struct_files, true);
-          $struct = is_array($struct) ? $struct : ($project->struct_files ? [$project->struct_files] : []);
-      @endphp
-
       <div class="border-b pb-4 mb-4">
         <h3 class="font-semibold text-navy mb-2">Structural Drawings</h3>
 
-        @if(count($struct))
-            @foreach($struct as $file)
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-700">{{ basename($file) }}</span>
-                <a href="{{ asset('storage/' . $file) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
-              </div>
-            @endforeach
+        @if($project->struct_files)
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-700">{{ basename($project->struct_files) }}</span>
+            <a href="{{ asset($project->struct_files) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
+          </div>
         @else
           <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
             @csrf
@@ -524,25 +508,15 @@
       </div>
 
 
-
       <!-- BOQ Files -->
-      @php
-          $boq = json_decode($project->boq_file, true);
-          $boq = is_array($boq) ? $boq : ($project->boq_file ? [$project->boq_file] : []);
-      @endphp
-
       <div>
         <h3 class="font-semibold text-navy mb-2">BOQ Files</h3>
 
-        @if(count($boq))
-            @foreach($boq as $file)
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-700">{{ basename($file) }}</span>
-                <a href="{{ asset('storage/' . $file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">
-                  Download
-                </a>
-              </div>
-            @endforeach
+        @if($project->boq_file)
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-700">{{ basename($project->boq_file) }}</span>
+            <a href="{{ asset($project->boq_file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
+          </div>
         @else
           <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
             @csrf
@@ -555,6 +529,7 @@
 
   </div>
 </div>
+
 
 
 
