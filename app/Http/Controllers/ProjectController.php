@@ -642,8 +642,6 @@ class ProjectController extends Controller
 //     $project->save();
 //     return back()->with('success', 'Document Uploaded Successfully!');
 // }
-
-
 public function uploadDocument(Request $request, $id)
 {
     $project = Project::findOrFail($id);
@@ -653,43 +651,44 @@ public function uploadDocument(Request $request, $id)
         'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480',
     ]);
 
-    // Store file according to type
     $folder = match ($request->type) {
         'arch' => 'arch_drawings',
         'struct' => 'struct_drawings',
         'boq' => 'boq_files',
     };
 
-    // Save to specific folder inside storage/app/public
+    // Store file and get the path
     $path = $request->file('file')->store("public/$folder");
-    $path = str_replace('public/', 'storage/', $path); // for easy public access
 
-    // Handle each type separately
+    // Clean up the path by removing "public/" and "storage/"
+    $path = str_replace(['public/', 'storage/'], '', $path);
+
     if ($request->type === 'arch') {
-        $existing = json_decode($project->arch_files, true) ?? [];
-        $existing[] = $path;
-
-        $project->arch_drawings = 1;
-        $project->arch_files = json_encode($existing);
-    }
-    elseif ($request->type === 'struct') {
-        $existing = json_decode($project->struct_files, true) ?? [];
-        $existing[] = $path;
-
-        $project->struct_drawings = 1;
-        $project->struct_files = json_encode($existing);
-    }
-    elseif ($request->type === 'boq') {
-        $existing = json_decode($project->boq_file, true) ?? [];
-        $existing[] = $path;
-
-        $project->has_boq = 1;
-        $project->boq_file = json_encode($existing);
+        // Store the simple path in the 'arch_files' column
+        $project->arch_files = $path;
+        $project->arch_drawings = 1; // Indicating the file exists
     }
 
+    if ($request->type === 'struct') {
+        // Store the simple path in the 'struct_files' column
+        $project->struct_files = $path;
+        $project->struct_drawings = 1; // Indicating the file exists
+    }
+
+    if ($request->type === 'boq') {
+        // Store the simple path in the 'boq_file' column
+        $project->boq_file = $path;
+        // dd($project->boq_file);
+        $project->has_boq = 1; // Indicating the BOQ file exists
+    }
+
+    // Save the updated project data
     $project->save();
 
     return back()->with('success', ucfirst($request->type) . ' document uploaded successfully!');
 }
+
+
+
 
 }
