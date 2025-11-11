@@ -615,34 +615,81 @@ class ProjectController extends Controller
         return view('web.customer_agreement',compact('user'));
     }
 
+// public function uploadDocument(Request $request, $id)
+// {
+//     $project = Project::findOrFail($id);
+
+//     $request->validate([
+//         'type' => 'required',   // arch / struct / boq
+//         'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
+//     ]);
+
+//     $path = $request->file('file')->store($request->type . '_drawings');
+
+//     if($request->type == 'arch') {
+//         $project->arch_drawings = 1;
+//         $project->arch_files = json_encode([$path]);
+//     }
+//     elseif($request->type == 'struct') {
+//         $project->struct_drawings = 1;
+//         $project->struct_files = json_encode([$path]);
+//     }
+//     elseif($request->type == 'boq') {
+//         $project->has_boq = 1;
+//         $project->boq_file = $path;
+//     }
+
+//     $project->save();
+//     return back()->with('success', 'Document Uploaded Successfully!');
+// }
+
+
 public function uploadDocument(Request $request, $id)
 {
     $project = Project::findOrFail($id);
 
     $request->validate([
-        'type' => 'required',   // arch / struct / boq
-        'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
+        'type' => 'required|in:arch,struct,boq',
+        'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480',
     ]);
 
-    $path = $request->file('file')->store($request->type . '_drawings');
+    // Store file according to type
+    $folder = match ($request->type) {
+        'arch' => 'arch_drawings',
+        'struct' => 'struct_drawings',
+        'boq' => 'boq_files',
+    };
 
-    if($request->type == 'arch') {
+    // Save to specific folder inside storage/app/public
+    $path = $request->file('file')->store("public/$folder");
+    $path = str_replace('public/', 'storage/', $path); // for easy public access
+
+    // Handle each type separately
+    if ($request->type === 'arch') {
+        $existing = json_decode($project->arch_files, true) ?? [];
+        $existing[] = $path;
+
         $project->arch_drawings = 1;
-        $project->arch_files = json_encode([$path]);
+        $project->arch_files = json_encode($existing);
     }
-    elseif($request->type == 'struct') {
+    elseif ($request->type === 'struct') {
+        $existing = json_decode($project->struct_files, true) ?? [];
+        $existing[] = $path;
+
         $project->struct_drawings = 1;
-        $project->struct_files = json_encode([$path]);
+        $project->struct_files = json_encode($existing);
     }
-    elseif($request->type == 'boq') {
+    elseif ($request->type === 'boq') {
+        $existing = json_decode($project->boq_file, true) ?? [];
+        $existing[] = $path;
+
         $project->has_boq = 1;
-        $project->boq_file = $path;
+        $project->boq_file = json_encode($existing);
     }
 
     $project->save();
-    return back()->with('success', 'Document Uploaded Successfully!');
+
+    return back()->with('success', ucfirst($request->type) . ' document uploaded successfully!');
 }
-
-
 
 }

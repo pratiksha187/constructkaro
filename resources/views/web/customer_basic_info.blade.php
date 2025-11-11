@@ -54,7 +54,7 @@
                         <div class="relative">
                             <label>Mobile Number *</label>
                             <input type="text" name="phone_number" id="phone_number" class="form-control" required maxlength="10" pattern="^(?!0)(?!.*(\d)\1{9})[6-9]\d{9}$" title="Enter a valid 10-digit mobile number (not starting with 0 and not all same digits)">
-                            <!-- <button type="button" id="sendOtpBtn" class="btn btn-primary mt-2">Send OTP</button> -->
+                            
                             <a href="#" id="sendOtpBtn" class="text-primary d-block mt-2" style="text-decoration: underline;">Send OTP</a>
                         </div>
                         <div class="relative">
@@ -392,7 +392,11 @@
            .then(res => res.json())
            .then(data => {
                if (data.status === 'success') {
-                   alert('OTP sent successfully!');
+                   console.log('OTP sent successfully!');
+                   // ✅ Disable mobile field & Send OTP button
+                    document.getElementById('phone_number').readOnly = true;
+                    document.getElementById('sendOtpBtn').style.pointerEvents = "none";
+                    document.getElementById('sendOtpBtn').style.opacity = "0.5";
                } else {
                    alert('Error: ' + data.message);
                }
@@ -518,6 +522,7 @@
        
            // Send Email OTP
        $('#sendEmailOtpBtn').on('click', function() {
+          e.preventDefault(); 
         let email = $('#email').val();
        
         fetch('/send-email-otp', {
@@ -533,6 +538,17 @@
         .then(data => {
             if (data.status === 'success') {
                 alert('Email OTP sent successfully!');
+                   // ✅ Disable the email field
+            $('#email').prop('readonly', true);
+             // ✅ Disable the Send OTP link
+            $('#sendEmailOtpBtn')
+                .css({
+                    "pointer-events": "none",
+                    "opacity": "0.5",
+                    "text-decoration": "none",
+                    "color": "gray"
+                })
+                .text("OTP Sent");
             } else {
                 alert('Error: ' + data.message);
             }
