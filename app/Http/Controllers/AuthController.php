@@ -258,39 +258,7 @@ public function sendLink(Request $request)
         return view('auth.reset-password', compact('token'));
     }
 
-    // Handle password update
-    // public function resetPassword(Request $request)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email',
-    //         'password' => 'required|min:6|confirmed',
-    //         'token' => 'required'
-    //     ]);
-
-    //     $reset = DB::table('password_resets')
-    //         ->where('email', $request->email)
-    //         ->where('token', $request->token)
-    //         ->first();
-
-    //     if (!$reset) {
-    //         return back()->with('error', 'Invalid or expired reset token.');
-    //     }
-
-    //     // find which table user belongs to
-    //     $tables = ['users', 'service_provider', 'customer_basic_info'];
-    //     foreach ($tables as $table) {
-    //         if (DB::table($table)->where('email', $request->email)->exists()) {
-    //             DB::table($table)
-    //                 ->where('email', $request->email)
-    //                 ->update(['password' => Hash::make($request->password)]);
-    //             break;
-    //         }
-    //     }
-
-    //     DB::table('password_resets')->where('email', $request->email)->delete();
-
-    //     return redirect()->route('login')->with('success', 'Password has been reset successfully.');
-    // }
+    
     public function resetPassword(Request $request)
     {
         $request->validate([

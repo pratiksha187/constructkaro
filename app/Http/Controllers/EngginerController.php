@@ -186,14 +186,10 @@ class EngginerController extends Controller
                 // 🟠 PROJECTS TABLE
                 'projects.id as project_id',
                 'projects.user_id',
-                'projects.profile_photo',
-                'projects.construction_type_id',
-                'projects.project_type_id',
                 'projects.site_ready',
                 'projects.land_location',
                 'projects.survey_number',
                 'projects.land_type',
-                'projects.sub_categories',
                 'projects.land_area',
                 'projects.land_unit',
                 'projects.arch_drawings',
@@ -204,7 +200,6 @@ class EngginerController extends Controller
                 'projects.boq_file',
                 'projects.expected_start',
                 'projects.project_duration',
-                // 'projects.budget_range',
                 'budget_range.budget_range as budget_range_name',
                 'projects.login_id',
                 'projects.site_status',
@@ -227,13 +222,11 @@ class EngginerController extends Controller
                 'projects.created_at as project_created_at',
                 'projects.updated_at as project_updated_at',
 
-                // 🔵 PROJECTS_DETAILS TABLE
                 'projects_details.id as detail_id',
                 'projects_details.project_name',
                 'projects_details.project_location',
                 'projects_details.project_description',
                 'projects_details.budget_range as detail_budget_range',
-                // 'projects_details.expected_timeline',
                 'expected_timeline.timeline as timeline',
                 'projects_details.file_path',
                 'projects_details.confirm',
@@ -248,7 +241,6 @@ class EngginerController extends Controller
                 'projects_details.created_at as detail_created_at',
                 'projects_details.updated_at as detail_updated_at',
 
-                // 🟢 CUSTOMER_BASIC_INFO TABLE
                 'customer_basic_info.id as customer_id',
                 'customer_basic_info.full_name',
                 'customer_basic_info.phone_number',
