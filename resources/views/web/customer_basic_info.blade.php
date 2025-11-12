@@ -522,7 +522,7 @@
        
            // Send Email OTP
        $('#sendEmailOtpBtn').on('click', function() {
-          e.preventDefault(); 
+        //   e.preventDefault(); 
         let email = $('#email').val();
        
         fetch('/send-email-otp', {

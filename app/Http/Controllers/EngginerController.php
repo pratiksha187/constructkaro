@@ -324,30 +324,72 @@ class EngginerController extends Controller
         }
     }
 
+    // public function uploadBOQ(Request $request)
+    // {
+    //     $request->validate([
+    //         'project_id' => 'required|exists:projects_details,id',
+    //         'files' => 'required|array',
+    //         'files.*' => 'file|mimes:xls,xlsx,csv|max:20480',
+    //     ]);
+
+    //     $file = $request->file('files')[0]; 
+    //     $filePath = $file->store('boq_files', 'public'); 
+
+    //     $get_project_info_id = DB::table('projects_details')
+    //         ->where('id', $request->project_id)
+    //         ->first(); 
+    //     // dd( $get_project_info_id );
+    //     DB::table('projects')
+    //         ->where('user_id', $request->project_id)
+    //         ->update(['engg_boq_status' => 1])
+    //         ->update(['engg_boq_file_uploaded' => $filePath]); 
+
+    //     // DB::table('project_information') 
+    //     //     ->where('id', $get_project_info_id->project_id)
+    //     //     ->update(['boqFile' => $filePath]); 
+
+    //     return response()->json(['message' => 'BOQ file uploaded successfully!', 'path' => $filePath]);
+    // }
     public function uploadBOQ(Request $request)
     {
+        // ✅ Step 1: Validate file input
         $request->validate([
             'project_id' => 'required|exists:projects_details,id',
             'files' => 'required|array',
             'files.*' => 'file|mimes:xls,xlsx,csv|max:20480',
         ]);
 
-        $file = $request->file('files')[0]; 
-        $filePath = $file->store('boq_files', 'public'); 
+        // ✅ Step 2: Store the uploaded file in storage/app/public/boq_files
+        $file = $request->file('files')[0];
+        $filePath = $file->store('boq_files', 'public'); // stored in storage/app/public/boq_files
 
-        $get_project_info_id = DB::table('projects_details')
+        // ✅ Step 3: Get the project detail info
+        $projectDetail = DB::table('projects_details')
             ->where('id', $request->project_id)
-            ->first(); 
+            ->first();
 
-        DB::table('projects_details')
-            ->where('id', $request->project_id)
-            ->update(['boq_status' => 1]); 
+        if (!$projectDetail) {
+            return response()->json(['error' => 'Invalid project detail ID.'], 404);
+        }
 
-        DB::table('project_information') 
-            ->where('id', $get_project_info_id->project_id)
-            ->update(['boqFile' => $filePath]); 
+        // ✅ Step 4: Update related 'projects' record
+        DB::table('projects')
+            ->where('id', $projectDetail->project_id) // use project_id from details
+            ->update([
+                'engg_boq_status' => 1,
+                'engg_boq_file_uploaded' => $filePath,
+            ]);
 
-        return response()->json(['message' => 'BOQ file uploaded successfully!', 'path' => $filePath]);
+        // ✅ Step 5 (optional): If you also want to update project_information table
+        // DB::table('project_information')
+        //     ->where('id', $projectDetail->project_id)
+        //     ->update(['boqFile' => $filePath]);
+
+        // ✅ Step 6: Return JSON response
+        return response()->json([
+            'message' => 'BOQ file uploaded successfully!',
+            'path' => asset('storage/' . $filePath), // returns usable public URL
+        ]);
     }
 
     public function storetender(Request $request)

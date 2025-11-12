@@ -74,6 +74,13 @@
                             <i id="toggleIcon" class="bi bi-eye"></i>
                         </span>
                     </div>
+                     <!-- Forgot Password link -->
+                    <div class="flex justify-end mt-2">
+                        <a href="{{ route('forgot.password') }}" class="text-sm text-[#f25c05] hover:text-[#1c2c3e] font-medium">
+                            Forgot Password?
+                        </a>
+                    </div>
+
                 </div>
 
                 <!-- Submit -->

@@ -448,9 +448,9 @@
         @endif
       </div>
 
-      <!-- BOQ File -->
-      <div class="flex justify-between items-center">
-        <h3 class="font-semibold text-navy">BOQ File</h3>
+      <!-- Customer BOQ File -->
+      <div class="flex justify-between items-center border-b pb-3 mb-3">
+        <h3 class="font-semibold text-navy">Customer BOQ File</h3>
 
         @if($project->boq_file)
           <a href="{{ asset('storage/' . $project->boq_file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
@@ -464,8 +464,20 @@
         @endif
       </div>
 
+      <!-- Engineer BOQ File -->
+      <div class="flex justify-between items-center">
+        <h3 class="font-semibold text-navy">Engineer BOQ File</h3>
+
+        @if($project->engg_boq_file_uploaded)
+          <a href="{{ asset('storage/' . $project->engg_boq_file_uploaded) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
+        @else
+          <p class="text-gray-500 text-sm">Engineer BOQ not uploaded yet.</p>
+        @endif
+      </div>
+
   </div>
 </div>
+
 
 
 

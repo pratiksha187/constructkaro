@@ -415,7 +415,7 @@ class ProjectController extends Controller
                 ->where('monthly_bills.user_id', $cust_details->id)
                 ->orderBy('bill_month', 'asc')
                 ->get();
-// dd($projects);
+            // dd($projects);
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',
@@ -615,33 +615,33 @@ class ProjectController extends Controller
         return view('web.customer_agreement',compact('user'));
     }
 
-public function uploadDocument(Request $request, $id)
-{
-    $project = Project::findOrFail($id);
+    public function uploadDocument(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
 
-    $request->validate([
-        'type' => 'required',   // arch / struct / boq
-        'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
-    ]);
+        $request->validate([
+            'type' => 'required',   // arch / struct / boq
+            'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
+        ]);
 
-    $path = $request->file('file')->store($request->type . '_drawings');
+        $path = $request->file('file')->store($request->type . '_drawings');
 
-    if($request->type == 'arch') {
-        $project->arch_drawings = 1;
-        $project->arch_files = json_encode([$path]);
+        if($request->type == 'arch') {
+            $project->arch_drawings = 1;
+            $project->arch_files = json_encode([$path]);
+        }
+        elseif($request->type == 'struct') {
+            $project->struct_drawings = 1;
+            $project->struct_files = json_encode([$path]);
+        }
+        elseif($request->type == 'boq') {
+            $project->has_boq = 1;
+            $project->boq_file = $path;
+        }
+
+        $project->save();
+        return back()->with('success', 'Document Uploaded Successfully!');
     }
-    elseif($request->type == 'struct') {
-        $project->struct_drawings = 1;
-        $project->struct_files = json_encode([$path]);
-    }
-    elseif($request->type == 'boq') {
-        $project->has_boq = 1;
-        $project->boq_file = $path;
-    }
-
-    $project->save();
-    return back()->with('success', 'Document Uploaded Successfully!');
-}
 
 
 

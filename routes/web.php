@@ -15,6 +15,17 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\GeoapifyController;
 
+
+// Route::get('/forgot-password', [AuthController::class, 'forgotpass'])->name('forgot.password');
+// Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot.password.post');
+// Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+// Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset.post');
+
+Route::get('/forgot-password', [AuthController::class, 'forgotpass'])->name('forgot.password');
+Route::post('/forgot-password', [AuthController::class, 'sendLink'])->name('forgot.password.send');
+Route::get('/reset-password/{token}', [AuthController::class, 'resetForm'])->name('reset.password.form');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password.submit');
+
 Route::get('/geoapify', function () {
     return view('web.geoapify');
 });

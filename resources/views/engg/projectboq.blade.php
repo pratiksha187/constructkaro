@@ -85,6 +85,12 @@
 
   .animate-fade-in{ animation:fadeIn .25s ease-out }
   @keyframes fadeIn{ from{opacity:0; transform:scale(.98)} to{opacity:1; transform:scale(1)} }
+
+
+  button[disabled], .cursor-not-allowed {
+  pointer-events: none;
+  opacity: 0.6;
+}
 </style>
 
 <div class="max-w-7xl mx-auto px-6 py-8">
@@ -244,7 +250,6 @@
   }
 
 
-
   function openModal(project) {
     activeProject = project;
 
@@ -256,6 +261,9 @@
     // Prepare file sections
     const filesList = document.getElementById('modalFiles');
     const boqFileList = document.getElementById('modalBoqFile');
+    const boqInputBtn = document.querySelector("button[onclick=\"document.getElementById('boqInput').click()\"]");
+    const boqInput = document.getElementById('boqInput');
+    const boqUploadSection = boqInputBtn.closest('div.flex');
 
     filesList.innerHTML = '';
     boqFileList.innerHTML = '';
@@ -292,11 +300,31 @@
       `;
     }
 
-    // 🔹 BOQ File (single)
+    // 🔹 Client Uploaded BOQ
     if (project.boq_file) {
-      boqFileList.innerHTML = renderFileItem(project.boq_file);
+      boqFileList.innerHTML = `
+        <li class="font-semibold text-gray-800 mb-1">📄 Client BOQ</li>
+        ${renderFileItem(project.boq_file)}
+      `;
+    }
+
+    // 🔹 Engineer Uploaded BOQ (new logic)
+    if (project.engg_boq_file_uploaded) {
+      const enggFilePath = project.engg_boq_file_uploaded.replace(/^["']|["']$/g, '');
+      boqFileList.innerHTML += `
+        <li class="font-semibold text-gray-800 mt-3 mb-1">👷 Engineer Uploaded BOQ</li>
+        ${renderFileItem(enggFilePath)}
+      `;
+
+      // disable upload section
+      boqInput.disabled = true;
+      boqInputBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      boqInputBtn.onclick = null; // disable click
     } else {
-      boqFileList.innerHTML = `<li class="text-slate-400">No BOQ uploaded.</li>`;
+      // enable upload if engineer BOQ not present
+      boqInput.disabled = false;
+      boqInputBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      boqInputBtn.onclick = () => boqInput.click();
     }
 
     // Show modal
@@ -304,6 +332,67 @@
     m.classList.remove('hidden');
     m.classList.add('flex');
   }
+
+
+  // function openModal(project) {
+  //   activeProject = project;
+
+  //   // Basic info
+  //   document.getElementById('modalTitle').textContent = project.project_name || 'Project';
+  //   document.getElementById('modalSubmissionId').textContent = project.submission_id || '-';
+  //   document.getElementById('modalDescription').textContent = project.project_description || '-';
+
+  //   // Prepare file sections
+  //   const filesList = document.getElementById('modalFiles');
+  //   const boqFileList = document.getElementById('modalBoqFile');
+
+  //   filesList.innerHTML = '';
+  //   boqFileList.innerHTML = '';
+
+  //   // Parse JSON safely
+  //   const parseJSON = (str) => {
+  //     try { return JSON.parse(str || '[]'); } catch { return []; }
+  //   };
+
+  //   // 🔹 Architectural Files
+  //   const archFiles = parseJSON(project.arch_files);
+  //   if (archFiles.length) {
+  //     filesList.innerHTML += `
+  //       <li class="font-semibold text-gray-800 mb-1">🏗 Architectural Drawings</li>
+  //       ${archFiles.map(file => renderFileItem(file)).join('')}
+  //     `;
+  //   }
+
+  //   // 🔹 Structural Files
+  //   const structFiles = parseJSON(project.struct_files);
+  //   if (structFiles.length) {
+  //     filesList.innerHTML += `
+  //       <li class="font-semibold text-gray-800 mt-3 mb-1">🧱 Structural Drawings</li>
+  //       ${structFiles.map(file => renderFileItem(file)).join('')}
+  //     `;
+  //   }
+
+  //   // 🔹 General Project Files
+  //   const otherFiles = parseJSON(project.file_path);
+  //   if (otherFiles.length) {
+  //     filesList.innerHTML += `
+  //       <li class="font-semibold text-gray-800 mt-3 mb-1">📁 Uploaded Files</li>
+  //       ${otherFiles.map(file => renderFileItem(file)).join('')}
+  //     `;
+  //   }
+
+  //   // 🔹 BOQ File (single)
+  //   if (project.boq_file) {
+  //     boqFileList.innerHTML = renderFileItem(project.boq_file);
+  //   } else {
+  //     boqFileList.innerHTML = `<li class="text-slate-400">No BOQ uploaded.</li>`;
+  //   }
+
+  //   // Show modal
+  //   const m = document.getElementById('projectModal');
+  //   m.classList.remove('hidden');
+  //   m.classList.add('flex');
+  // }
 
   // Helper function to render a file item with View + Download
   function renderFileItem(file) {
