@@ -186,7 +186,7 @@ class EngginerController extends Controller
                 // 🟠 PROJECTS TABLE
                 'projects.id as project_id',
                 'projects.user_id',
-                'projects.site_ready',
+                'projects.site_status',
                 'projects.land_location',
                 'projects.survey_number',
                 'projects.land_type',
