@@ -644,7 +644,7 @@ class ProjectController extends Controller
         }
         elseif($request->type == 'boq') {
             $project->has_boq = 1;
-              $project->has_boq = json_encode([$path]);
+              $project->boq_file = json_encode([$path]);
             // $project->boq_file = $path;
         }
 
