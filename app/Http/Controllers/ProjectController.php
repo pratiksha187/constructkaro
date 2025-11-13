@@ -423,7 +423,7 @@ class ProjectController extends Controller
                 ->where('monthly_bills.user_id', $cust_details->id)
                 ->orderBy('bill_month', 'asc')
                 ->get();
-            // dd($projects);
+            dd($projects);
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',
