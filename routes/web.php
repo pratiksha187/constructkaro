@@ -16,11 +16,6 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\GeoapifyController;
 
 
-// Route::get('/forgot-password', [AuthController::class, 'forgotpass'])->name('forgot.password');
-// Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot.password.post');
-// Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-// Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset.post');
-
 Route::get('/forgot-password', [AuthController::class, 'forgotpass'])->name('forgot.password');
 Route::post('/forgot-password', [AuthController::class, 'sendLink'])->name('forgot.password.send');
 Route::get('/reset-password/{token}', [AuthController::class, 'resetForm'])->name('reset.password.form');
@@ -183,7 +178,6 @@ Route::get('/get-service-areas', [AdminController::class, 'get_service_areas'])-
 Route::get('about_us', [AdminController::class, 'about_us'])->name('about_us');
 Route::get('Privacy-Policy', [AdminController::class, 'privacy'])->name('privacy.policy');
 
-
 Route::post('/send-otp', [OTPController::class, 'sendOtp']);
 Route::post('/verify-otp', [OTPController::class, 'verifyOtp']);
 
@@ -195,7 +189,6 @@ Route::post('/work/store', [WorkController::class, 'store'])->name('work.store')
 // Route::get('/get-subtypes/{typeId}', [WorkController::class, 'getSubtypes']);
 // Route::get('/get-vendors/{subtypeId}', [WorkController::class, 'getVendors']);
 Route::post('/vendor/follow-update', [VendorController::class, 'followUpdate'])->name('vendor.follow.update');
-
 
 Route::get('/test-email', function () {
     Mail::raw('This is a test email via SendGrid SMTP', function ($message) {
@@ -218,8 +211,9 @@ Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->n
 
 
 Route::get('/make-hash', function () {
-    $password = "Trimurti@1234";
+    // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
+    // $password = "patu187@";
     $hash = Hash::make($password);
 
     return $hash; 

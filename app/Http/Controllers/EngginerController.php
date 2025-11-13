@@ -148,7 +148,6 @@ class EngginerController extends Controller
                 'milestones.*',
                 'projects.*',
                 'projects_details.*',
-            
             )
             ->orderBy('milestones.project_id', 'desc')
             ->get();
@@ -316,32 +315,7 @@ class EngginerController extends Controller
         }
     }
 
-    // public function uploadBOQ(Request $request)
-    // {
-    //     $request->validate([
-    //         'project_id' => 'required|exists:projects_details,id',
-    //         'files' => 'required|array',
-    //         'files.*' => 'file|mimes:xls,xlsx,csv|max:20480',
-    //     ]);
 
-    //     $file = $request->file('files')[0]; 
-    //     $filePath = $file->store('boq_files', 'public'); 
-
-    //     $get_project_info_id = DB::table('projects_details')
-    //         ->where('id', $request->project_id)
-    //         ->first(); 
-    //     // dd( $get_project_info_id );
-    //     DB::table('projects')
-    //         ->where('user_id', $request->project_id)
-    //         ->update(['engg_boq_status' => 1])
-    //         ->update(['engg_boq_file_uploaded' => $filePath]); 
-
-    //     // DB::table('project_information') 
-    //     //     ->where('id', $get_project_info_id->project_id)
-    //     //     ->update(['boqFile' => $filePath]); 
-
-    //     return response()->json(['message' => 'BOQ file uploaded successfully!', 'path' => $filePath]);
-    // }
     public function uploadBOQ(Request $request)
     {
         // ✅ Step 1: Validate file input
