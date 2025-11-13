@@ -168,9 +168,16 @@ class ProjectController extends Controller
         ]);
 
         // ✅ Handle file uploads
-        $boqPath = $request->hasFile('boq_file')
-            ? $request->file('boq_file')->store('boq_files', 'public')
-            : null;
+        // $boqPath = $request->hasFile('boq_file')
+        //     ? $request->file('boq_file')->store('boq_files', 'public')
+        //     : null;
+
+        $boqPath = [];
+        if ($request->boolean('boq_file') && $request->hasFile('boq_file')) {
+            foreach ($request->file('boq_file') as $file) {
+                $boqPath[] = $file->store('boq_file', 'public');
+            }
+        }
 
         $archPaths = [];
         if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
@@ -204,7 +211,8 @@ class ProjectController extends Controller
             'arch_drawings'     => $request->has('arch_drawings'),
             'struct_drawings'   => $request->has('struct_drawings'),
             'has_boq'           => $request->has('has_boq'),
-            'boq_file'          => $boqPath,
+            // 'boq_file'          => $boqPath,
+            'boq_file'          => !empty($boqPath) ? json_encode($boqPath) : null,
             'expected_start'    => $request->expected_start,
             'project_duration'  => $request->project_duration,
             'budget_range'      => $request->budget_range,
@@ -636,7 +644,8 @@ class ProjectController extends Controller
         }
         elseif($request->type == 'boq') {
             $project->has_boq = 1;
-            $project->boq_file = $path;
+              $project->has_boq = json_encode([$path]);
+            // $project->boq_file = $path;
         }
 
         $project->save();
