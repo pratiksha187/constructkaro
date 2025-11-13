@@ -410,72 +410,132 @@
 
   <!-- ======================== DOCUMENTS TAB ======================== -->
 <div class="mt-10" x-show="tab === 'documents'" x-transition>
-  <h2 class="text-xl font-semibold text-navy mb-4">Uploaded Documents</h2>
+    <h2 class="text-xl font-semibold text-navy mb-4">Uploaded Documents</h2>
 
-  <div class="bg-white rounded-xl border-l-4 border-orange shadow-md p-6 max-w-6xl mx-auto">
+    <div class="bg-white rounded-xl border-l-4 border-orange shadow-md p-6 max-w-6xl mx-auto">
 
-      <!-- Architectural Drawings -->
-      @php $arch = $project->arch_files ? json_decode($project->arch_files, true) : null; @endphp
-      <div class="flex justify-between items-center border-b pb-3 mb-3">
-        <h3 class="font-semibold text-navy">Architectural Drawings</h3>
+        <!-- -------------------------- -->
+        <!-- ARCHITECTURAL DRAWINGS     -->
+        <!-- -------------------------- -->
+        @php 
+            $archFiles = $project->arch_files ? json_decode($project->arch_files, true) : []; 
+        @endphp
 
-        @if($arch)
-          <a href="{{ asset('storage/' . $arch[0]) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
-        @else
-          <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
-            @csrf
-            <input type="hidden" name="type" value="arch">
-            <input type="file" name="file" class="text-sm" required>
-            <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
-          </form>
-        @endif
-      </div>
+        <div class="border-b pb-3 mb-5">
+            <h3 class="font-semibold text-navy mb-3">Architectural Drawings</h3>
 
-      <!-- Structural Drawings -->
-      @php $struct = $project->struct_files ? json_decode($project->struct_files, true) : null; @endphp
-      <div class="flex justify-between items-center border-b pb-3 mb-3">
-        <h3 class="font-semibold text-navy">Structural Drawings</h3>
+            @if(count($archFiles))
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach($archFiles as $file)
+                        <div class="flex justify-between items-center bg-gray-100 p-3 rounded-lg shadow-sm">
+                            <span class="text-sm text-gray-700 truncate">{{ basename($file) }}</span>
 
-        @if($struct)
-          <a href="{{ asset('storage/' . $struct[0]) }}" target="_blank" class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">View</a>
-        @else
-          <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
-            @csrf
-            <input type="hidden" name="type" value="struct">
-            <input type="file" name="file" class="text-sm" required>
-            <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
-          </form>
-        @endif
-      </div>
+                            <div class="flex gap-2">
+                                <a href="{{ asset('storage/'.$file) }}" target="_blank"
+                                   class="bg-navy hover:bg-orange text-white px-3 py-1 text-xs rounded-md">
+                                    View
+                                </a>
+                                <a href="{{ asset('storage/'.$file) }}" download
+                                   class="bg-orange hover:bg-navy text-white px-3 py-1 text-xs rounded-md">
+                                    Download
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <form action="{{ route('project.upload.document', $project->id) }}" 
+                      method="POST" enctype="multipart/form-data" 
+                      class="flex items-center space-x-2">
+                    @csrf
+                    <input type="hidden" name="type" value="arch">
+                    <input type="file" name="file" class="text-sm" required>
+                    <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
+                </form>
+            @endif
+        </div>
 
-      <!-- Customer BOQ File -->
-      <div class="flex justify-between items-center border-b pb-3 mb-3">
-        <h3 class="font-semibold text-navy">Customer BOQ File</h3>
+        <!-- -------------------------- -->
+        <!-- STRUCTURAL DRAWINGS        -->
+        <!-- -------------------------- -->
+        @php 
+            $structFiles = $project->struct_files ? json_decode($project->struct_files, true) : []; 
+        @endphp
 
-        @if($project->boq_file)
-          <a href="{{ asset('storage/' . $project->boq_file) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
-        @else
-          <form action="{{ route('project.upload.document', $project->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
-            @csrf
-            <input type="hidden" name="type" value="boq">
-            <input type="file" name="file" class="text-sm" required>
-            <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
-          </form>
-        @endif
-      </div>
+        <div class="border-b pb-3 mb-5">
+            <h3 class="font-semibold text-navy mb-3">Structural Drawings</h3>
 
-      <!-- Engineer BOQ File -->
-      <div class="flex justify-between items-center">
-        <h3 class="font-semibold text-navy">Engineer BOQ File</h3>
+            @if(count($structFiles))
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach($structFiles as $file)
+                        <div class="flex justify-between items-center bg-gray-100 p-3 rounded-lg shadow-sm">
+                            <span class="text-sm text-gray-700 truncate">{{ basename($file) }}</span>
 
-        @if($project->engg_boq_file_uploaded)
-          <a href="{{ asset('storage/' . $project->engg_boq_file_uploaded) }}" download class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">Download</a>
-        @else
-          <p class="text-gray-500 text-sm">Engineer BOQ not uploaded yet.</p>
-        @endif
-      </div>
+                            <div class="flex gap-2">
+                                <a href="{{ asset('storage/'.$file) }}" target="_blank"
+                                   class="bg-navy hover:bg-orange text-white px-3 py-1 text-xs rounded-md">
+                                    View
+                                </a>
+                                <a href="{{ asset('storage/'.$file) }}" download
+                                   class="bg-orange hover:bg-navy text-white px-3 py-1 text-xs rounded-md">
+                                    Download
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <form action="{{ route('project.upload.document', $project->id) }}" 
+                      method="POST" enctype="multipart/form-data" 
+                      class="flex items-center space-x-2">
+                    @csrf
+                    <input type="hidden" name="type" value="struct">
+                    <input type="file" name="file" class="text-sm" required>
+                    <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
+                </form>
+            @endif
+        </div>
 
-  </div>
+        <!-- -------------------------- -->
+        <!-- CUSTOMER BOQ               -->
+        <!-- -------------------------- -->
+        <div class="border-b pb-3 mb-5">
+            <h3 class="font-semibold text-navy mb-3">Customer BOQ File</h3>
+
+            @if($project->boq_file)
+                <a href="{{ asset('storage/'.$project->boq_file) }}" download
+                   class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">
+                    Download BOQ
+                </a>
+            @else
+                <form action="{{ route('project.upload.document', $project->id) }}" 
+                      method="POST" enctype="multipart/form-data" 
+                      class="flex items-center space-x-2">
+                    @csrf
+                    <input type="hidden" name="type" value="boq">
+                    <input type="file" name="file" class="text-sm" required>
+                    <button class="bg-orange hover:bg-navy text-white px-3 py-1 text-sm rounded-lg">Upload</button>
+                </form>
+            @endif
+        </div>
+
+        <!-- -------------------------- -->
+        <!-- ENGINEER BOQ               -->
+        <!-- -------------------------- -->
+        <div>
+            <h3 class="font-semibold text-navy mb-3">Engineer BOQ File</h3>
+
+            @if($project->engg_boq_file_uploaded)
+                <a href="{{ asset('storage/'.$project->engg_boq_file_uploaded) }}" download
+                   class="bg-navy hover:bg-orange text-white px-4 py-1 rounded-lg text-sm">
+                    Download Engineer BOQ
+                </a>
+            @else
+                <p class="text-gray-500 text-sm">Engineer BOQ not uploaded yet.</p>
+            @endif
+        </div>
+
+    </div>
 </div>
 
 
