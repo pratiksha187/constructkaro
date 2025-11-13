@@ -172,12 +172,17 @@ class ProjectController extends Controller
         //     ? $request->file('boq_file')->store('boq_files', 'public')
         //     : null;
 
-        $boqPath = [];
-        if ($request->boolean('boq_file') && $request->hasFile('boq_file')) {
-            foreach ($request->file('boq_file') as $file) {
-                $boqPath[] = $file->store('boq_file', 'public');
+        // $boqPath = [];
+        // if ($request->boolean('boq_file') && $request->hasFile('boq_file')) {
+        //     foreach ($request->file('boq_file') as $file) {
+        //         $boqPath[] = $file->store('boq_file', 'public');
+        //     }
+        // }
+        $boqPath = null;
+            if ($request->hasFile('boq_file')) {
+                $boqPath = $request->file('boq_file')->store('boq_files', 'public');
             }
-        }
+
 
         $archPaths = [];
         if ($request->boolean('arch_drawings') && $request->hasFile('arch_files')) {
@@ -211,8 +216,9 @@ class ProjectController extends Controller
             'arch_drawings'     => $request->has('arch_drawings'),
             'struct_drawings'   => $request->has('struct_drawings'),
             'has_boq'           => $request->has('has_boq'),
-            // 'boq_file'          => $boqPath,
-            'boq_file'          => !empty($boqPath) ? json_encode($boqPath) : null,
+            'boq_file'          => $boqPath,
+            // 'boq_file'          => !empty($boqPath) ? json_encode($boqPath) : null,
+            
             'expected_start'    => $request->expected_start,
             'project_duration'  => $request->project_duration,
             'budget_range'      => $request->budget_range,
@@ -423,7 +429,7 @@ class ProjectController extends Controller
                 ->where('monthly_bills.user_id', $cust_details->id)
                 ->orderBy('bill_month', 'asc')
                 ->get();
-            dd($projects);
+            // dd($projects);
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',
