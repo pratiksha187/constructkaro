@@ -629,35 +629,80 @@ class ProjectController extends Controller
         return view('web.customer_agreement',compact('user'));
     }
 
-    public function uploadDocument(Request $request, $id)
-    {
-        $project = Project::findOrFail($id);
+    // public function uploadDocument(Request $request, $id)
+    // {
+    //     $project = Project::findOrFail($id);
 
-        $request->validate([
-            'type' => 'required',   // arch / struct / boq
-            'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
-        ]);
+    //     $request->validate([
+    //         'type' => 'required',   // arch / struct / boq
+    //         'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
+    //     ]);
 
-        $path = $request->file('file')->store($request->type . '_drawings');
+    //     $path = $request->file('file')->store($request->type . '_drawings');
 
-        if($request->type == 'arch') {
-            $project->arch_drawings = 1;
-            $project->arch_files = json_encode([$path]);
-        }
-        elseif($request->type == 'struct') {
-            $project->struct_drawings = 1;
-            $project->struct_files = json_encode([$path]);
-        }
-        elseif($request->type == 'boq') {
-            $project->has_boq = 1;
-              $project->boq_file = json_encode([$path]);
-            // $project->boq_file = $path;
-        }
+    //     if($request->type == 'arch') {
+    //         $project->arch_drawings = 1;
+    //         $project->arch_files = json_encode([$path]);
+    //     }
+    //     elseif($request->type == 'struct') {
+    //         $project->struct_drawings = 1;
+    //         $project->struct_files = json_encode([$path]);
+    //     }
+    //     elseif($request->type == 'boq') {
+    //         $project->has_boq = 1;
+    //           $project->boq_file = json_encode([$path]);
+    //         // $project->boq_file = $path;
+    //     }
 
-        $project->save();
-        return back()->with('success', 'Document Uploaded Successfully!');
+    //     $project->save();
+    //     return back()->with('success', 'Document Uploaded Successfully!');
+    // }
+
+public function uploadDocument(Request $request, $id)
+{
+    $project = Project::findOrFail($id);
+
+    $request->validate([
+        'type' => 'required|in:arch,struct,boq',
+        'file' => 'required|mimes:pdf,jpg,jpeg,png,xls,xlsx|max:20480'
+    ]);
+
+    // Correct folder names
+    $folder = match ($request->type) {
+        'arch'   => 'arch_drawings',
+        'struct' => 'struct_drawings',
+        'boq'    => 'boq_files',
+    };
+
+    // Store file
+    $path = $request->file('file')->store($folder, 'public');
+
+    if ($request->type === 'arch') {
+        $existing = json_decode($project->arch_files, true) ?? [];
+        $existing[] = $path;
+
+        $project->arch_drawings = 1;
+        $project->arch_files    = json_encode($existing);
     }
 
+    elseif ($request->type === 'struct') {
+        $existing = json_decode($project->struct_files, true) ?? [];
+        $existing[] = $path;
+
+        $project->struct_drawings = 1;
+        $project->struct_files    = json_encode($existing);
+    }
+
+    elseif ($request->type === 'boq') {
+        // BOQ is a SINGLE file — not multiple
+        $project->has_boq  = 1;
+        $project->boq_file = $path;  // store simple string
+    }
+
+    $project->save();
+
+    return back()->with('success', 'Document Uploaded Successfully!');
+}
 
 
 }
