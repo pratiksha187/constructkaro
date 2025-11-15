@@ -570,11 +570,25 @@ class VendorController extends Controller
         // Join projects, details, tenders, and budget_range tables
         $project_details = DB::table('projects')
             ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
+              ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
             ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
             ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id') // 👈 JOIN budget_range table
+              ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
+                ->leftJoin('states', 'states.id', '=', 'customer_basic_info.state')
+            ->leftJoin('regions', 'regions.id', '=', 'customer_basic_info.region')
+            ->leftJoin('cities', 'cities.id', '=', 'customer_basic_info.city')
+            ->leftJoin('work_types', 'work_types.id', '=', 'projects.work_type')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
+            ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
+            ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
+            ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
             ->where('projects_details.tender_status', 1)
             ->where('projects_details.boq_status', 1)
             ->select(
+                 'states.name as statesname',
+                'cities.name as citiesname'  ,
+                'regions.name as regionsname',
+                    'expected_timeline.timeline as timeline',
                 'projects.id as project_id',
                 'projects.land_location',
                 'projects.land_type',
@@ -606,7 +620,25 @@ class VendorController extends Controller
                 'tenders.contract_type',
                 'tenders.location as tender_location',
                 'tenders.bid_submission_end',
-                'tenders.published_date'
+                'tenders.published_date',
+                'work_types.work_type as work_types',
+                'work_subtypes.work_subtype as work_subtype_name',
+                'suggested_vendor_types.vendor_type as suggested_vendor_types',
+                'vendor_subcategories.vendor_subcategory as vendor_subcategories',
+                'customer_basic_info.id as customer_id',
+                'customer_basic_info.full_name',
+                'customer_basic_info.phone_number',
+                'customer_basic_info.email',
+                'customer_basic_info.password',
+                'customer_basic_info.gender',
+                'customer_basic_info.role_id',
+                'role.role as role_name',
+                'customer_basic_info.state',
+                'customer_basic_info.region',
+                'customer_basic_info.city',
+                'customer_basic_info.created_at as customer_created_at',
+                'customer_basic_info.updated_at as customer_updated_at',
+
             )
             ->orderByDesc('projects_details.id')
             ->get();

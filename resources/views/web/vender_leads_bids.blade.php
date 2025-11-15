@@ -84,54 +84,144 @@
                   @csrf
                   <input type="hidden" name="project_id" value="{{ $project->project_id }}">
 
-                  <div class="modal-body px-4">
-                    <div class="row g-4">
-                      <!-- Tender Info -->
-                      <div class="col-md-6">
-                        <h6 class="text-primary mb-3">Tender Details</h6>
-                        @if($project->contract_type)
-                          <div class="border rounded p-3 mb-3 bg-light">
-                            <p><strong>Contract Type:</strong> {{ $project->contract_type }}</p>
-                            <p><strong>Value:</strong> ₹{{ $project->tender_value }}</p>
-                            <p><strong>Location:</strong> {{ $project->land_location }}</p>
-                            <p><strong>Published:</strong> {{ $project->published_date ? \Carbon\Carbon::parse($project->published_date)->format('d M Y') : 'N/A' }}</p>
-                            <p><strong>Bid End Date:</strong> {{ $project->bid_submission_end ? \Carbon\Carbon::parse($project->bid_submission_end)->format('d M Y') : 'N/A' }}</p>
-                          </div>
-                        @else
-                          <p class="text-muted">No tender details available.</p>
-                        @endif
+                 <div class="modal-body px-4">
 
-                        <div class="mb-3">
-                          <label class="form-label">Your Bid Amount (₹)</label>
-                          <input type="number" name="bid_amount" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                          <label class="form-label">Remarks (optional)</label>
-                          <textarea name="remarks" class="form-control" rows="3"></textarea>
-                        </div>
-                      </div>
+    <!-- Project Info Section -->
+    <div class="border rounded p-3 mb-4 bg-light">
+        <h6 class="text-primary mb-3">Project Information</h6>
 
-                      <!-- BOQ Info -->
-                      <div class="col-md-6">
-                        <h6 class="text-primary mb-3">BOQ Details</h6>
-                        <div class="boq-section">
-                          @if($project->boq_file)
-                            <p><i class="bi bi-file-earmark-text me-2"></i>
-                              <strong>Client BOQ File:</strong>
-                              <a href="{{ asset('storage/' . $project->boq_file) }}" target="_blank">View / Download</a>
-                            </p>
-                          @else
-                            <p class="text-muted mb-2">No client BOQ file uploaded.</p>
-                          @endif
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <p><strong>Project Name:</strong> {{ $project->project_name }}</p>
+            </div>
 
-                          <div class="mb-2">
-                            <label class="form-label mb-1">Upload Your BOQ File</label>
-                            <input type="file" name="boq_file" class="form-control" accept=".pdf,.xlsx,.xls,.doc,.docx" required>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <div class="col-md-6 mb-2">
+                <p><strong>Project Description:</strong> {{ $project->project_description ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>State:</strong> {{ $project->statesname }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Region:</strong> {{ $project->regionsname }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>City:</strong> {{ $project->citiesname }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Land Location:</strong> {{ $project->land_location }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Land Type:</strong> {{ ucfirst($project->land_type) }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Timeline:</strong> {{ $project->timeline ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Construction Vendor:</strong> {{ $project->work_types ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Project Type:</strong> {{ $project->work_subtype_name ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Work/Service Model:</strong> {{ $project->suggested_vendor_types ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Work/Service Category:</strong> {{ $project->vendor_subcategories ?? 'N/A' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Payment Preference:</strong> {{ ucfirst($project->payment_preference) }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Quality Preference:</strong> {{ ucfirst($project->quality_preference) }}</p>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <p><strong>Vendor Preference:</strong> {{ ucfirst($project->vendor_preference) }}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Customer Info -->
+    <div class="border rounded p-3 mb-4 bg-white">
+        <h6 class="text-primary mb-3">Customer Information</h6>
+        <p><strong>Name:</strong> {{ $project->full_name }}</p>
+        <p><strong>Email:</strong> {{ $project->email }}</p>
+        <p><strong>Phone:</strong> {{ $project->phone_number }}</p>
+        <p><strong>Customer Role:</strong> {{ $project->role_name }}</p>
+        <p><strong>Registered On:</strong> {{ $project->customer_created_at }}</p>
+    </div>
+
+
+    <!-- Tender Info -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <h6 class="text-primary mb-2">Tender Details</h6>
+
+            @if($project->contract_type)
+                <div class="border rounded p-3 bg-light">
+                    <p><strong>Contract Type:</strong> {{ $project->contract_type }}</p>
+                    <p><strong>Tender Value:</strong> ₹{{ $project->tender_value }}</p>
+                    <p><strong>Location:</strong> {{ $project->tender_location ?? $project->land_location }}</p>
+                    <p><strong>Published:</strong>
+                        {{ $project->published_date ? \Carbon\Carbon::parse($project->published_date)->format('d M Y') : 'N/A' }}
+                    </p>
+                    <p><strong>Bid Submission End:</strong>
+                        {{ $project->bid_submission_end ? \Carbon\Carbon::parse($project->bid_submission_end)->format('d M Y') : 'N/A' }}
+                    </p>
+                </div>
+            @else
+                <p class="text-muted">No tender details available.</p>
+            @endif
+
+            <div class="mt-3">
+                <label class="form-label">Your Bid Amount (₹)</label>
+                <input type="number" name="bid_amount" class="form-control" required>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label">Remarks (Optional)</label>
+                <textarea name="remarks" class="form-control" rows="3"></textarea>
+            </div>
+
+        </div>
+
+        <!-- BOQ -->
+        <div class="col-md-6">
+            <h6 class="text-primary mb-2">BOQ Information</h6>
+            <div class="boq-section">
+                @if($project->boq_file)
+                    <p><i class="bi bi-file-earmark-text me-2"></i>
+                        <strong>Client BOQ:</strong>
+                        <a href="{{ asset('storage/' . $project->boq_file) }}" target="_blank">View / Download</a>
+                    </p>
+                @else
+                    <p class="text-muted">No BOQ uploaded by client.</p>
+                @endif
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Your BOQ File</label>
+                    <input type="file" name="boq_file" class="form-control"
+                           accept=".pdf,.xlsx,.xls,.doc,.docx" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
                   <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>

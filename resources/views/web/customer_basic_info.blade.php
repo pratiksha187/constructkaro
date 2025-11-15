@@ -518,8 +518,7 @@
            }
        });
        
-       
-       
+    
            // Send Email OTP
        $('#sendEmailOtpBtn').on('click', function() {
         //   e.preventDefault(); 

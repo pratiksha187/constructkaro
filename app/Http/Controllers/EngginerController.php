@@ -173,9 +173,6 @@ class EngginerController extends Controller
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
             ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
             ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
-
-
-         
             ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
 
             // 🔹 Show only projects that have a submission_id in projects_details

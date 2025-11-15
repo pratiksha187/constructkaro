@@ -213,7 +213,7 @@ Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->n
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    // $password = "patu187@";
+    $password = "123456789";
     $hash = Hash::make($password);
 
     return $hash; 
