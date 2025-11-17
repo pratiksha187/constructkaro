@@ -135,19 +135,31 @@
   <div class="ck-card animate-fade-in">
     <div class="ck-card-header">
       <h2 class="ck-title">Vendor List</h2>
-     
+      <form method="GET" class="d-flex flex-wrap gap-3 px-3 py-3">
+          <!-- Search -->
+          <div>
+              <input type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    class="form-control"
+                    placeholder="Search Vendor..."
+                    style="min-width:200px;">
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+              <button type="submit" class="btn btn-primary">Apply</button>
+              <a href="{{ url()->current() }}" class="btn btn-secondary">Reset</a>
+          </div>
+
+      </form>
+
     </div>
 
     {{-- flash --}}
     @if(session('success'))
       <div class="alert alert-success m-3 mb-0">{{ session('success') }}</div>
     @endif
-    <div class="d-flex justify-content-end px-3 pb-2">
-      <input type="text" id="vendorSearch" class="form-control" 
-            placeholder="🔍 Search Vendor..." 
-            style="max-width: 300px; border-radius:8px;">
-    </div>
-
+   
     <div class="table-responsive p-3 pt-2">
       <table class="table table-hover align-middle ck-table">
         <thead class="table-light">

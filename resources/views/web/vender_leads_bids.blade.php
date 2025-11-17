@@ -157,12 +157,79 @@
     <!-- Customer Info -->
     <div class="border rounded p-3 mb-4 bg-white">
         <h6 class="text-primary mb-3">Customer Information</h6>
-        <p><strong>Name:</strong> {{ $project->full_name }}</p>
-        <p><strong>Email:</strong> {{ $project->email }}</p>
-        <p><strong>Phone:</strong> {{ $project->phone_number }}</p>
+        <p><strong>Customer Id:</strong> {{ $project->submission_id }}</p>
+        <!-- <p><strong>Email:</strong> {{ $project->email }}</p>
+        <p><strong>Phone:</strong> {{ $project->phone_number }}</p> -->
         <p><strong>Customer Role:</strong> {{ $project->role_name }}</p>
         <p><strong>Registered On:</strong> {{ $project->customer_created_at }}</p>
     </div>
+<!-- Uploaded Project Files -->
+<div class="mb-4 border rounded p-3 bg-white">
+    <h6 class="text-primary mb-3">Client Uploaded Documents</h6>
+
+    {{-- ARCHITECTURAL FILES --}}
+    <div class="mb-3">
+        <strong>Architectural Drawings:</strong>
+        @if(!empty($project->arch_files))
+            @foreach($project->arch_files as $file)
+                <div class="mt-2">
+                    <a href="{{ asset('storage/' . $file) }}" target="_blank"
+                       class="btn btn-sm btn-outline-primary me-2">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    <a href="{{ asset('storage/' . $file) }}" download
+                       class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </div>
+            @endforeach
+        @else
+            <p class="text-muted mb-0">No Architectural Files uploaded.</p>
+        @endif
+    </div>
+
+    {{-- STRUCTURAL FILES --}}
+    <div class="mb-3">
+        <strong>Structural Drawings:</strong>
+        @if(!empty($project->struct_files))
+            @foreach($project->struct_files as $file)
+                <div class="mt-2">
+                    <a href="{{ asset('storage/' . $file) }}" target="_blank"
+                       class="btn btn-sm btn-outline-primary me-2">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    <a href="{{ asset('storage/' . $file) }}" download
+                       class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </div>
+            @endforeach
+        @else
+            <p class="text-muted mb-0">No Structural Files uploaded.</p>
+        @endif
+    </div>
+
+    {{-- CLIENT BOQ FILE --}}
+    <div class="mb-3">
+        <strong>Client BOQ File:</strong>
+        @if(!empty($project->client_boq_files))
+            @foreach($project->client_boq_files as $file)
+                <div class="mt-2">
+                    <a href="{{ asset('storage/' . $file) }}" target="_blank"
+                       class="btn btn-sm btn-outline-primary me-2">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    <a href="{{ asset('storage/' . $file) }}" download
+                       class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </div>
+            @endforeach
+        @else
+            <p class="text-muted mb-0">No BOQ uploaded by client.</p>
+        @endif
+    </div>
+</div>
 
 
     <!-- Tender Info -->
@@ -220,7 +287,10 @@
         </div>
     </div>
 
-</div>
+    
+
+  </div>
+  
 
 
                   <div class="modal-footer justify-content-between">
