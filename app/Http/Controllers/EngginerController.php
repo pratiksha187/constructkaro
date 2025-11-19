@@ -631,7 +631,7 @@ class EngginerController extends Controller
         $tend_proj_id = $project_id->project_id;
 //  dd($tend_proj_id);
         DB::table('tenders')
-        ->where('id', $tend_proj_id)
+        ->where('project_id', $tend_proj_id)
         ->update([
             'expired_project_date' => $request->expiry_date
         ]);

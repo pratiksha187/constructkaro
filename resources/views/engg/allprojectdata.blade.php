@@ -123,7 +123,7 @@
             })
             .then(() => {
                 alert('Expiry Date Updated Successfully!');
-              
+                location.reload();
             });
         },
 
