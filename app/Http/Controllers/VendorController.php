@@ -6,7 +6,7 @@ use App\Models\ServiceProvider;
 use App\Models\BusinessRegistration;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ProjectDetails;
-use App\Models\BoqEntry;
+use App\Models\BOQEntry;
 use Illuminate\Support\Facades\Storage;
 use App\Models\AgencyService;
 use App\Models\TenderDocument;
@@ -822,7 +822,7 @@ public function vender_leads_bids()
         $filePath = $request->file('boq_file')->store('boq_files', 'public');
 
         // Insert into boq_entries table
-        BoqEntry::create([
+        BOQEntry::create([
             'project_id' => $request->project_id,
             'vendor_id' => $vendor_id,
 
