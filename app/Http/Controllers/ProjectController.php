@@ -167,17 +167,7 @@ class ProjectController extends Controller
             'sub_vendor_types'=> 'nullable',
         ]);
 
-        // ✅ Handle file uploads
-        // $boqPath = $request->hasFile('boq_file')
-        //     ? $request->file('boq_file')->store('boq_files', 'public')
-        //     : null;
-
-        // $boqPath = [];
-        // if ($request->boolean('boq_file') && $request->hasFile('boq_file')) {
-        //     foreach ($request->file('boq_file') as $file) {
-        //         $boqPath[] = $file->store('boq_file', 'public');
-        //     }
-        // }
+      
         $boqPath = null;
             if ($request->hasFile('boq_file')) {
                 $boqPath = $request->file('boq_file')->store('boq_files', 'public');
@@ -237,7 +227,11 @@ class ProjectController extends Controller
             'sub_vendor_types'  => $subVendorTypes,
             'arch_files'        => !empty($archPaths) ? json_encode($archPaths) : null,
             'struct_files'      => !empty($structPaths) ? json_encode($structPaths) : null,
+           
+
         ]);
+
+        
 
         // ✅ Save project ID in session for next step
         session(['current_project_id' => $project->id]);
@@ -247,6 +241,9 @@ class ProjectController extends Controller
             'redirect' => route('project_details'),
         ]);
     }
+
+
+    
 
     public function project_details()
     {

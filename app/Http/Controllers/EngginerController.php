@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ProjectDetails;
 use Illuminate\Support\Facades\DB;
 use App\Models\BOQEntry;
+use Carbon\Carbon;
 use App\Models\Tender;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -174,6 +175,7 @@ class EngginerController extends Controller
             ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
             ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
             ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
+            ->leftJoin('tenders', 'tenders.project_id', '=', 'projects_details.id')
 
             // 🔹 Show only projects that have a submission_id in projects_details
             ->whereNotNull('projects_details.submission_id')
@@ -210,6 +212,7 @@ class EngginerController extends Controller
                 'projects.work_type',
                 'work_types.work_type as work_types',
                 'projects.work_subtype',
+                'tenders.expired_project_date as expired_project_date',
                 'work_subtypes.work_subtype as work_subtype_name',
                 'suggested_vendor_types.vendor_type as suggested_vendor_types',
                 'projects.vendor_type',
@@ -253,11 +256,22 @@ class EngginerController extends Controller
 
                 'states.name as statesname',
                 'cities.name as citiesname'  ,
-                'regions.name as regionsname'
+                'regions.name as regionsname',
+
+                'tenders.project_id as tender_upload'
             ])
+             ->distinct() 
             ->orderBy('projects.id', 'desc')
             ->paginate(10);
-    // dd($projects);
+//    dd($projects);
+
+        // $expiry_date =   $projects;      
+        // foreach ($projects as $project) {
+        //     $project->expiry_date = Carbon::parse($project->project_created_at)
+        //                                 ->addDays(3);
+        //                                 // ->format('y-m-d');
+        // }
+        // $expiry_date=$project->expiry_date;
         return view('engg.allprojectdata', compact('projects'));
     }
 
@@ -265,6 +279,7 @@ class EngginerController extends Controller
     public function NewProjectBoq(){
         $projects = DB::table('projects_details')
                     ->join('projects', 'projects_details.project_id', '=', 'projects.id')
+                    
                     ->select(
                         'projects.*',
                         'projects_details.*'
@@ -357,6 +372,8 @@ class EngginerController extends Controller
 
     public function storetender(Request $request)
     {
+        
+        $expiredDate = Carbon::now()->addDays(15);
         $validated = $request->validate([
             'project_id' => 'required',
             'tender_value' => 'nullable|numeric',
@@ -373,242 +390,133 @@ class EngginerController extends Controller
             'bid_submission_end' => 'nullable|date',
         ]);
 
-        Tender::create($validated);
+        $validated['expired_project_date'] = $expiredDate;
+        // Tender::create($validated);
+        $tender = Tender::create($validated);
 
         DB::table('projects_details')
             ->where('id', $request->project_id)
             ->update(['tender_status' => 1]); 
 
+      
+
         return response()->json(['success' => true, 'message' => 'Tender saved successfully.']);
     }
 
     
-    // public function get_all_vender_list()
-    // {
-    //     $allvendor = DB::table('service_provider as sp')
-    //         ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
-    //         ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
-    //         ->leftJoin('work_types as wt', 'wt.id', '=', 'br.entity_type')
-    //         ->leftJoin('entity_type as et', 'et.id', '=', 'asv.work_type_id')
-    //         ->leftJoin('account_type as at', 'at.id', '=', 'br.account_type')
-    //         ->leftJoin('experience_years as ey', 'ey.id', '=', 'br.experience_years')
-    //         ->leftJoin('team_size as ts', 'ts.id', '=', 'br.team_size')
+    public function get_all_vender_list(Request $request)
+    {
+        $allvendor = DB::table('service_provider as sp')
+            ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
+            ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'br.entity_type')
+            ->leftJoin('entity_type as et', 'et.id', '=', 'asv.work_type_id')
+            ->leftJoin('account_type as at', 'at.id', '=', 'br.account_type')
+            ->leftJoin('experience_years as ey', 'ey.id', '=', 'br.experience_years')
+            ->leftJoin('team_size as ts', 'ts.id', '=', 'br.team_size')
+            ->leftJoin('vendor_calls as vc', 'vc.vendor_id', '=', 'sp.id')
+            ->select(
+                'sp.id as vendor_id',
+                'sp.name as vendor_name',
+                'sp.mobile as vendor_mobile',
+                'sp.email as vendor_email',
+                'sp.business_name as vendor_business_name',
+                'sp.gst_number as vendor_gst_number',
+                'sp.state as vendor_state',
+                'sp.region as vendor_region',
+                'sp.city as vendor_city',
+                'sp.vendor_code as vendor_code',
+                'asv.id as asv_id',
+                'asv.work_type_id as vendor_work_type_id',
+                'wt.work_type as vendor_work_type_name',
+                'asv.work_subtype_id as vendor_work_subtype_id',
+                'asv.vendor_type_id as vendor_type_id',
+                'asv.sub_vendor_types as sub_vendor_types',
+                'asv.other_service as other_service',
+                'br.company_name as br_company_name',
 
-    //         ->leftJoin('vendor_calls as vc', 'vc.vendor_id', '=', 'sp.id')
-    //         ->select(
-    //             'sp.id as vendor_id',
-    //             'sp.name as vendor_name',
-    //             'sp.mobile as vendor_mobile',
-    //             'sp.email as vendor_email',
-    //             'sp.business_name as vendor_business_name',
-    //             'sp.gst_number as vendor_gst_number',
-    //             'sp.state as vendor_state',
-    //             'sp.region as vendor_region',
-    //             'sp.city as vendor_city',
-    //             'sp.vendor_code as vendor_code',
+                'vc.call_status as call_status',
+                'vc.call_remarks as call_remarks',
 
-    //             'asv.id as asv_id',
-    //             'asv.work_type_id as vendor_work_type_id',
-    //             'wt.work_type as vendor_work_type_name',
-    //             'asv.work_subtype_id as vendor_work_subtype_id',
-    //             'asv.vendor_type_id as vendor_type_id',
-    //             'asv.sub_vendor_types as sub_vendor_types',
-    //             'asv.other_service as other_service',
+                DB::raw("
+                    CASE
+                        WHEN asv.id IS NOT NULL
+                        AND br.id IS NOT NULL
+                        AND sp.name IS NOT NULL
+                        AND sp.mobile IS NOT NULL
+                        AND sp.email IS NOT NULL
+                        THEN 1
+                        ELSE 0
+                    END AS is_profile_complete
+                ")
+            );
 
-    //             'br.company_name as br_company_name',
-    //             'br.entity_type as br_entity_type',
-    //             'et.entity_type as et_entity_type',
-    //             'br.registered_address as br_registered_address',
-    //             'br.phone as br_contact_person_name',
-    //             'br.contact_person_designation as br_contact_person_designation',
+        /**
+         * =======================================
+         *             🔍 FILTERS
+         * =======================================
+         */
 
-    //             'br.gst_number as br_gst_number',
-    //             'br.pan_number as br_pan_number',
-    //             'br.tan_number as br_tan_number',
-    //             'br.esic_number as br_esic_number',
-    //             'br.pf_code as br_pf_code',
-    //             'br.msme_registered as br_msme_registered',
-    //             'br.pan_aadhar_seeded as br_pan_aadhar_seeded',
-
-    //             'br.bank_name as br_bank_name',
-    //             'br.account_number as br_account_number',
-    //             'br.ifsc_code as br_ifsc_code',
-    //             'br.account_type as br_account_type',
-    //             'at.name as at_bank_account_type',
-    //             'br.approved as br_approved',
-    //             'br.call_status as call_status',
-    //             'br.call_remarks as call_remarks',
-
-    //             'br.state as br_state',
-    //             'br.region as br_region',
-    //             'br.city as br_city',
-    //             'br.experience_years as br_experience_years',
-    //             'br.team_size as br_team_size',
-    //             'br.service_coverage_area as br_service_coverage_area',
-    //             'br.min_project_value as br_min_project_value',
-    //             'ey.experiance as ey_experiance',
-    //             'ts.team_size as ts_team_size',
-    //             'vc.call_status as call_status',
-    //             'vc.call_remarks as call_remarks',
-
-    //             DB::raw("
-    //                 CASE
-    //                     WHEN asv.id IS NOT NULL
-    //                     AND br.id IS NOT NULL
-    //                     AND sp.name IS NOT NULL
-    //                     AND sp.mobile IS NOT NULL
-    //                     AND sp.email IS NOT NULL
-    //                     THEN 1
-    //                     ELSE 0
-    //                 END AS is_profile_complete
-    //             ")
-    //         )
-    //         ->orderByDesc('sp.id')
-    //         ->paginate(10);
-
-    //     // ✅ Decode JSON + Fetch names
-    //     foreach ($allvendor as $vendor) {
-    //         $vendor->vendor_work_subtype_id = json_decode($vendor->vendor_work_subtype_id, true);
-    //         $vendor->vendor_type_id = json_decode($vendor->vendor_type_id, true);
-    //         $vendor->sub_vendor_types = json_decode($vendor->sub_vendor_types, true);
-
-    //         // ✅ Fetch Work Subtype Names
-    //         if (!empty($vendor->vendor_work_subtype_id)) {
-    //             $vendor->work_subtype_names = DB::table('work_subtypes')
-    //                 ->whereIn('id', $vendor->vendor_work_subtype_id)
-    //                 ->pluck('work_subtype')
-    //                 ->toArray();
-    //         } else {
-    //             $vendor->work_subtype_names = [];
-    //         }
-
-    //         // ✅ Fetch Vendor Type Names from suggested_vendor_types
-    //         if (!empty($vendor->vendor_work_subtype_id)) {
-    //             $vendor->vendor_type_names = DB::table('suggested_vendor_types')
-    //                 ->whereIn('work_subtype_id', $vendor->vendor_work_subtype_id)
-    //                 ->pluck('vendor_type')
-    //                 ->unique()
-    //                 ->toArray();
-    //         } else {
-    //             $vendor->vendor_type_names = [];
-    //         }
-    //     }
-    //     // dd($allvendor);
-    //     return view('engg.get_all_vender_list', compact('allvendor'));
-    // }
-public function get_all_vender_list(Request $request)
-{
-    $allvendor = DB::table('service_provider as sp')
-        ->leftJoin('agency_services as asv', 'asv.user_id', '=', 'sp.id')
-        ->leftJoin('business_registrations as br', 'br.user_id', '=', 'sp.id')
-        ->leftJoin('work_types as wt', 'wt.id', '=', 'br.entity_type')
-        ->leftJoin('entity_type as et', 'et.id', '=', 'asv.work_type_id')
-        ->leftJoin('account_type as at', 'at.id', '=', 'br.account_type')
-        ->leftJoin('experience_years as ey', 'ey.id', '=', 'br.experience_years')
-        ->leftJoin('team_size as ts', 'ts.id', '=', 'br.team_size')
-        ->leftJoin('vendor_calls as vc', 'vc.vendor_id', '=', 'sp.id')
-        ->select(
-            'sp.id as vendor_id',
-            'sp.name as vendor_name',
-            'sp.mobile as vendor_mobile',
-            'sp.email as vendor_email',
-            'sp.business_name as vendor_business_name',
-            'sp.gst_number as vendor_gst_number',
-            'sp.state as vendor_state',
-            'sp.region as vendor_region',
-            'sp.city as vendor_city',
-            'sp.vendor_code as vendor_code',
-            'asv.id as asv_id',
-            'asv.work_type_id as vendor_work_type_id',
-            'wt.work_type as vendor_work_type_name',
-            'asv.work_subtype_id as vendor_work_subtype_id',
-            'asv.vendor_type_id as vendor_type_id',
-            'asv.sub_vendor_types as sub_vendor_types',
-            'asv.other_service as other_service',
-            'br.company_name as br_company_name',
-
-            'vc.call_status as call_status',
-            'vc.call_remarks as call_remarks',
-
-            DB::raw("
-                CASE
-                    WHEN asv.id IS NOT NULL
-                    AND br.id IS NOT NULL
-                    AND sp.name IS NOT NULL
-                    AND sp.mobile IS NOT NULL
-                    AND sp.email IS NOT NULL
-                    THEN 1
-                    ELSE 0
-                END AS is_profile_complete
-            ")
-        );
-
-    /**
-     * =======================================
-     *             🔍 FILTERS
-     * =======================================
-     */
-
-    // 1️⃣ Work Type
-    if ($request->work_type) {
-        $allvendor->where('asv.work_type_id', $request->work_type);
-    }
-
-    // 2️⃣ City
-    if ($request->city) {
-        $allvendor->where('sp.city', $request->city);
-    }
-
-    // 3️⃣ Call Status
-    if ($request->call_status) {
-        $allvendor->where('vc.call_status', $request->call_status);
-    }
-
-    // 4️⃣ Search (Name, Mobile, Email, Company Names)
-    if ($request->search) {
-        $s = $request->search;
-        $allvendor->where(function ($q) use ($s) {
-            $q->where('sp.name', 'LIKE', "%$s%")
-              ->orWhere('sp.mobile', 'LIKE', "%$s%")
-              ->orWhere('sp.email', 'LIKE', "%$s%")
-              ->orWhere('sp.business_name', 'LIKE', "%$s%");
-        });
-    }
-
-    /**
-     * DO NOT TOUCH THE EXISTING LOGIC BELOW THIS
-     */
-
-    $allvendor = $allvendor->orderByDesc('sp.id')->paginate(10);
-
-    // JSON Decode + Name Mapping (unchanged)
-    foreach ($allvendor as $vendor) {
-        $vendor->vendor_work_subtype_id = json_decode($vendor->vendor_work_subtype_id, true);
-        $vendor->vendor_type_id = json_decode($vendor->vendor_type_id, true);
-        $vendor->sub_vendor_types = json_decode($vendor->sub_vendor_types, true);
-
-        if (!empty($vendor->vendor_work_subtype_id)) {
-            $vendor->work_subtype_names = DB::table('work_subtypes')
-                ->whereIn('id', $vendor->vendor_work_subtype_id)
-                ->pluck('work_subtype')
-                ->toArray();
-        } else {
-            $vendor->work_subtype_names = [];
+        // 1️⃣ Work Type
+        if ($request->work_type) {
+            $allvendor->where('asv.work_type_id', $request->work_type);
         }
 
-        if (!empty($vendor->vendor_work_subtype_id)) {
-            $vendor->vendor_type_names = DB::table('suggested_vendor_types')
-                ->whereIn('work_subtype_id', $vendor->vendor_work_subtype_id)
-                ->pluck('vendor_type')
-                ->unique()
-                ->toArray();
-        } else {
-            $vendor->vendor_type_names = [];
+        // 2️⃣ City
+        if ($request->city) {
+            $allvendor->where('sp.city', $request->city);
         }
-    }
 
-    return view('engg.get_all_vender_list', compact('allvendor'));
-}
+        // 3️⃣ Call Status
+        if ($request->call_status) {
+            $allvendor->where('vc.call_status', $request->call_status);
+        }
+
+        // 4️⃣ Search (Name, Mobile, Email, Company Names)
+        if ($request->search) {
+            $s = $request->search;
+            $allvendor->where(function ($q) use ($s) {
+                $q->where('sp.name', 'LIKE', "%$s%")
+                ->orWhere('sp.mobile', 'LIKE', "%$s%")
+                ->orWhere('sp.email', 'LIKE', "%$s%")
+                ->orWhere('sp.business_name', 'LIKE', "%$s%");
+            });
+        }
+
+        /**
+         * DO NOT TOUCH THE EXISTING LOGIC BELOW THIS
+         */
+
+        $allvendor = $allvendor->orderByDesc('sp.id')->paginate(10);
+
+        // JSON Decode + Name Mapping (unchanged)
+        foreach ($allvendor as $vendor) {
+            $vendor->vendor_work_subtype_id = json_decode($vendor->vendor_work_subtype_id, true);
+            $vendor->vendor_type_id = json_decode($vendor->vendor_type_id, true);
+            $vendor->sub_vendor_types = json_decode($vendor->sub_vendor_types, true);
+
+            if (!empty($vendor->vendor_work_subtype_id)) {
+                $vendor->work_subtype_names = DB::table('work_subtypes')
+                    ->whereIn('id', $vendor->vendor_work_subtype_id)
+                    ->pluck('work_subtype')
+                    ->toArray();
+            } else {
+                $vendor->work_subtype_names = [];
+            }
+
+            if (!empty($vendor->vendor_work_subtype_id)) {
+                $vendor->vendor_type_names = DB::table('suggested_vendor_types')
+                    ->whereIn('work_subtype_id', $vendor->vendor_work_subtype_id)
+                    ->pluck('vendor_type')
+                    ->unique()
+                    ->toArray();
+            } else {
+                $vendor->vendor_type_names = [];
+            }
+        }
+
+        return view('engg.get_all_vender_list', compact('allvendor'));
+    }
 
 
     public function updateVendorCallStatus(Request $request)
@@ -646,43 +554,43 @@ public function get_all_vender_list(Request $request)
     }
 
     public function billverification(){
-           $bills = DB::table('projects')
-                    ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
-                    ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-                    ->leftJoin('monthly_bills', 'monthly_bills.project_id', '=', 'projects_details.project_id')
+        $bills = DB::table('projects')
+                ->leftJoin('projects_details', 'projects_details.project_id', '=', 'projects.id')
+                ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
+                ->leftJoin('monthly_bills', 'monthly_bills.project_id', '=', 'projects_details.project_id')
 
-        // 🔹 Show only projects that have a submission_id in projects_details
-                    ->whereNotNull('projects_details.submission_id')
-                    ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
-                    ->select([
-                        // 🟠 PROJECTS TABLE
-                        'projects.id as project_id',
-                        'projects.user_id',
-                    
+                // 🔹 Show only projects that have a submission_id in projects_details
+                ->whereNotNull('projects_details.submission_id')
+                ->where('projects_details.submission_id', '!=', '') // also avoid empty strings
+                ->select([
+                    // 🟠 PROJECTS TABLE
+                    'projects.id as project_id',
+                    'projects.user_id',
+                
 
-                        // 🔵 PROJECTS_DETAILS TABLE
-                        'projects_details.id as detail_id',
-                        'projects_details.project_name',
-                        'projects_details.project_location',
-                        'projects_details.project_description',
-                        'projects_details.budget_range as detail_budget_range',
-                        'projects_details.expected_timeline',
-                    
-                        // 🟢 CUSTOMER_BASIC_INFO TABLE
-                        'customer_basic_info.id as customer_id',
-                        'customer_basic_info.full_name',
-                        'customer_basic_info.phone_number',
-                        'customer_basic_info.email',
-                        'customer_basic_info.password',
-                        'customer_basic_info.gender',
-                    
-                        'monthly_bills.*'
-                    ])
-                    ->orderBy('projects.id', 'desc')
-                    ->paginate(10);
-                    // dd($projects);
+                    // 🔵 PROJECTS_DETAILS TABLE
+                    'projects_details.id as detail_id',
+                    'projects_details.project_name',
+                    'projects_details.project_location',
+                    'projects_details.project_description',
+                    'projects_details.budget_range as detail_budget_range',
+                    'projects_details.expected_timeline',
+                
+                    // 🟢 CUSTOMER_BASIC_INFO TABLE
+                    'customer_basic_info.id as customer_id',
+                    'customer_basic_info.full_name',
+                    'customer_basic_info.phone_number',
+                    'customer_basic_info.email',
+                    'customer_basic_info.password',
+                    'customer_basic_info.gender',
+                
+                    'monthly_bills.*'
+                ])
+                ->orderBy('projects.id', 'desc')
+                ->paginate(10);
+                // dd($projects);
 
-    return view('engg.billverificationlist', compact('bills'));
+        return view('engg.billverificationlist', compact('bills'));
 
     }
 
@@ -719,6 +627,17 @@ public function get_all_vender_list(Request $request)
         return redirect()
             ->route('billverification')
             ->with('success', 'Bill status updated successfully!');
+    }
+
+    public function updateExpiryDate(Request $request)
+    {
+        DB::table('tenders')
+        ->where('id', $request->project_id)
+        ->update([
+            'expired_project_date' => $request->expiry_date
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
 

@@ -21,6 +21,7 @@ class Tender extends Model
         'bid_opening_date',
         'bid_submission_start',
         'bid_submission_end',
+        'expired_project_date'
 ];
 
 }

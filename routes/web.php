@@ -107,6 +107,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/engineer_dashboard', [EngginerController::class, 'engineer_dashboard'])->name('engineer_dashboard');
 Route::get('/All-New-Project', [EngginerController::class, 'allprojectdata'])->name('NewProject');
+Route::post('/update-expiry-date', [EngginerController::class, 'updateExpiryDate']);
+
 
 // Route::get('add-millstone', [EngginerController::class, 'addmillstone'])->name('addmillstone');
 // Route::post('/engineer/milestones/save', [EngginerController::class, 'storemillstone'])->name('engineer.milestones.store');

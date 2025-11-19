@@ -164,9 +164,17 @@
           <button onclick="document.getElementById('boqInput').click()" class="btn-soft px-4 py-2 rounded-lg flex items-center gap-2">
             <span class="material-icons" style="font-size:18px;">upload_file</span> Upload BOQ
           </button>
-          <button onclick="toggleTenderModal(true)" class="btn-ck px-4 py-2 rounded-lg flex items-center gap-2">
+          <!-- <button onclick="toggleTenderModal(true)" class="btn-ck px-4 py-2 rounded-lg flex items-center gap-2">
             <span class="material-icons" style="font-size:18px;">playlist_add</span> Add Tender
-          </button>
+          </button> -->
+          <button 
+    id="addTenderBtn"
+    class="btn-ck px-4 py-2 rounded-lg flex items-center gap-2"
+>
+    <span class="material-icons" style="font-size:18px;">playlist_add</span>
+    Add Tender
+</button>
+
         </div>
 
         <input type="file" id="boqInput" class="hidden"
@@ -264,6 +272,21 @@
     const boqInputBtn = document.querySelector("button[onclick=\"document.getElementById('boqInput').click()\"]");
     const boqInput = document.getElementById('boqInput');
     const boqUploadSection = boqInputBtn.closest('div.flex');
+    const tenderBtn = document.getElementById("addTenderBtn");
+    // If tender already submitted → disable the button
+    if (project.tender_status == 1) {
+        tenderBtn.disabled = true;
+        tenderBtn.classList.add("opacity-50", "cursor-not-allowed");
+        tenderBtn.onclick = null;
+    } 
+    // If tender not submitted → enable button
+    else {
+        tenderBtn.disabled = false;
+        tenderBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        tenderBtn.onclick = function () {
+            toggleTenderModal(true);
+        };
+    }
 
     filesList.innerHTML = '';
     boqFileList.innerHTML = '';
@@ -332,67 +355,6 @@
     m.classList.remove('hidden');
     m.classList.add('flex');
   }
-
-
-  // function openModal(project) {
-  //   activeProject = project;
-
-  //   // Basic info
-  //   document.getElementById('modalTitle').textContent = project.project_name || 'Project';
-  //   document.getElementById('modalSubmissionId').textContent = project.submission_id || '-';
-  //   document.getElementById('modalDescription').textContent = project.project_description || '-';
-
-  //   // Prepare file sections
-  //   const filesList = document.getElementById('modalFiles');
-  //   const boqFileList = document.getElementById('modalBoqFile');
-
-  //   filesList.innerHTML = '';
-  //   boqFileList.innerHTML = '';
-
-  //   // Parse JSON safely
-  //   const parseJSON = (str) => {
-  //     try { return JSON.parse(str || '[]'); } catch { return []; }
-  //   };
-
-  //   // 🔹 Architectural Files
-  //   const archFiles = parseJSON(project.arch_files);
-  //   if (archFiles.length) {
-  //     filesList.innerHTML += `
-  //       <li class="font-semibold text-gray-800 mb-1">🏗 Architectural Drawings</li>
-  //       ${archFiles.map(file => renderFileItem(file)).join('')}
-  //     `;
-  //   }
-
-  //   // 🔹 Structural Files
-  //   const structFiles = parseJSON(project.struct_files);
-  //   if (structFiles.length) {
-  //     filesList.innerHTML += `
-  //       <li class="font-semibold text-gray-800 mt-3 mb-1">🧱 Structural Drawings</li>
-  //       ${structFiles.map(file => renderFileItem(file)).join('')}
-  //     `;
-  //   }
-
-  //   // 🔹 General Project Files
-  //   const otherFiles = parseJSON(project.file_path);
-  //   if (otherFiles.length) {
-  //     filesList.innerHTML += `
-  //       <li class="font-semibold text-gray-800 mt-3 mb-1">📁 Uploaded Files</li>
-  //       ${otherFiles.map(file => renderFileItem(file)).join('')}
-  //     `;
-  //   }
-
-  //   // 🔹 BOQ File (single)
-  //   if (project.boq_file) {
-  //     boqFileList.innerHTML = renderFileItem(project.boq_file);
-  //   } else {
-  //     boqFileList.innerHTML = `<li class="text-slate-400">No BOQ uploaded.</li>`;
-  //   }
-
-  //   // Show modal
-  //   const m = document.getElementById('projectModal');
-  //   m.classList.remove('hidden');
-  //   m.classList.add('flex');
-  // }
 
   // Helper function to render a file item with View + Download
   function renderFileItem(file) {

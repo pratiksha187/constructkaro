@@ -92,40 +92,71 @@
 }
 
 </style>
-
-<div class="ck-wrap" 
+<div class="ck-wrap"
      x-data="{
         activeProject: null,
         search: '',
+        
+        showExpiryModal: false,
+        updateProjectId: '',
+        newDate: '',
+
+        // OPEN EXPIRY MODAL
+        openExpiryModal(id, oldDate) {
+            this.updateProjectId = id;
+            this.newDate = oldDate;
+            this.showExpiryModal = true;
+        },
+
+        // SUBMIT EXPIRY UPDATE
+        submitExpiryUpdate() {
+            fetch('/update-expiry-date', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    project_id: this.updateProjectId,
+                    expiry_date: this.newDate
+                })
+            })
+            .then(() => {
+                alert('Expiry Date Updated Successfully!');
+                location.reload();
+            });
+        },
+
+        // ENGINEER PROJECT UPDATE
         submitProjectUpdate() {
-          const projectId = this.$refs.projectId.value;
-          const engg_description = this.$refs.remarks.value;
-          const callStatus = this.$refs.callStatus.value;
-          const callRemarks = this.$refs.callRemarks.value;
+            const projectId = this.$refs.projectId.value;
+            const engg_description = this.$refs.remarks.value;
+            const callStatus = this.$refs.callStatus.value;
+            const callRemarks = this.$refs.callRemarks.value;
 
-          if (!engg_description.trim() && !callStatus) {
-            alert('⚠️ Please enter remarks or select a call response.');
-            return;
-          }
-
-          $.ajax({
-            url: '/engineer/project/update-details',
-            type: 'POST',
-            data: {
-              _token: '{{ csrf_token() }}',
-              id: projectId,
-              engg_decription: engg_description,
-              call_status: callStatus,
-              call_remarks: callRemarks
-            },
-            success: () => {
-              alert('✅ Details updated successfully!');
-              this.activeProject = null; // close modal
-            },
-            error: () => {
-              alert('❌ Error occurred while updating details.');
+            if (!engg_description.trim() && !callStatus) {
+                alert('⚠️ Please enter remarks or select a call response.');
+                return;
             }
-          });
+
+            $.ajax({
+                url: '/engineer/project/update-details',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: projectId,
+                    engg_decription: engg_description,
+                    call_status: callStatus,
+                    call_remarks: callRemarks
+                },
+                success: () => {
+                    alert('Details updated successfully!');
+                    this.activeProject = null; 
+                },
+                error: () => {
+                    alert('Error occurred while updating.');
+                }
+            });
         }
      }">
 
@@ -158,7 +189,10 @@
             <th>Budget</th>
             <th>Engineer Remarks</th>
             <th>Call Status</th>
-            <th>Created At</th>
+            <th>Project Upload Date</th>
+            <th>Project Expiry Date</th>
+            <th>Tender Update</th>
+            
             <th class="text-center">Action</th>
           </tr>
         </thead>
@@ -187,7 +221,34 @@
                 @else -
                 @endif
               </td>
-              <td>{{ $p->project_created_at ? \Carbon\Carbon::parse($p->project_created_at)->format('d M Y, h:i A') : '-' }}</td>
+              <td>{{ $p->project_created_at ? \Carbon\Carbon::parse($p->project_created_at)->format('d M Y') : '-' }}</td>
+               <td>
+                    @php
+                        $expiry = \Carbon\Carbon::parse($p->expired_project_date);
+                        $isExpired = $expiry->isPast();
+                    @endphp
+
+                    @if($isExpired)
+                        <span class="text-danger fw-bold">{{ $expiry->format('d M Y') }}</span>
+                        <br>
+                        <button class="btn btn-sm btn-danger mt-1"
+                                @click="openExpiryModal({{ $p->project_id }}, '{{ $p->expired_project_date }}')">
+                            Expired – Update
+                        </button>
+                    @else
+                        <span class="text-success fw-bold">{{ $expiry->format('d M Y') }}</span>
+                    @endif
+                </td>
+
+
+              <td>
+                @if($p->tender_upload)
+                    <span class="text-green-600 font-bold">Tender Uploaded</span>
+                @else
+                    <span class="text-red-600 font-bold">Pending</span>
+                @endif
+              </td>
+
               <td class="text-center">
                 <button @click="activeProject = {{ json_encode($p) }}" class="icon-btn" title="View Details">
                   <span class="material-icons" style="font-size:18px;">visibility</span>
@@ -469,11 +530,61 @@
       </div>
     </div>
   </div>
+
+  <!-- Expiry Update Modal -->
+<div x-show="showExpiryModal"
+     class="ck-backdrop"
+     x-transition>
+    <div class="bg-white p-4 rounded shadow" style="width:350px;">
+        <h5 class="mb-2">Update Expiry Date</h5>
+
+        <label class="form-label">Select New Date</label>
+        <input type="date" class="form-control mb-3" x-model="newDate">
+
+        <div class="text-end">
+            <button class="btn btn-secondary btn-sm" 
+                    @click="showExpiryModal=false">
+                Cancel
+            </button>
+
+            <button class="btn btn-primary btn-sm"
+                    @click="submitExpiryUpdate">
+                Update
+            </button>
+        </div>
+    </div>
+</div>
+
 </div>
 
 {{-- Scripts --}}
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function openExpiryModal(id, oldDate) {
+        this.updateProjectId = id;
+        this.newDate = oldDate;
+        this.showExpiryModal = true;
+    }
+
+    function submitExpiryUpdate() {
+        fetch('/update-expiry-date', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                project_id: this.updateProjectId,
+                expiry_date: this.newDate
+            })
+        })
+        .then(() => {
+            alert("Expiry date updated!");
+            location.reload();
+        });
+    }
+</script>
 
 @endsection
