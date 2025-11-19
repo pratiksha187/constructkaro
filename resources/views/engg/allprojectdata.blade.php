@@ -190,7 +190,8 @@
             <th>Engineer Remarks</th>
             <th>Call Status</th>
             <th>Project Upload Date</th>
-            <th>Project Expiry Date</th>
+            <th>Tender Upload Date</th>
+            <th>Tender Expiry Date</th>
             <th>Tender Update</th>
             
             <th class="text-center">Action</th>
@@ -222,6 +223,8 @@
                 @endif
               </td>
               <td>{{ $p->project_created_at ? \Carbon\Carbon::parse($p->project_created_at)->format('d M Y') : '-' }}</td>
+              <td>{{ $p->bid_submission_start ? \Carbon\Carbon::parse($p->bid_submission_start)->format('d M Y') : '-' }}</td>
+
                <td>
                     @php
                         $expiry = \Carbon\Carbon::parse($p->expired_project_date);

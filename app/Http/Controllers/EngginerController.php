@@ -213,6 +213,8 @@ class EngginerController extends Controller
                 'work_types.work_type as work_types',
                 'projects.work_subtype',
                 'tenders.expired_project_date as expired_project_date',
+                'tenders.bid_submission_start as bid_submission_start',
+
                 'work_subtypes.work_subtype as work_subtype_name',
                 'suggested_vendor_types.vendor_type as suggested_vendor_types',
                 'projects.vendor_type',
