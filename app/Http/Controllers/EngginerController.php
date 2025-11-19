@@ -629,7 +629,7 @@ class EngginerController extends Controller
         $project_id = DB::table('projects_details')
                     ->where('project_id', $request->project_id)->first();
         $tend_proj_id = $project_id->project_id;
-
+ dd($tend_proj_id);
         DB::table('tenders')
         ->where('id', $tend_proj_id)
         ->update([
