@@ -123,7 +123,7 @@
             })
             .then(() => {
                 alert('Expiry Date Updated Successfully!');
-                location.reload();
+              
             });
         },
 
@@ -224,24 +224,29 @@
               </td>
               <td>{{ $p->project_created_at ? \Carbon\Carbon::parse($p->project_created_at)->format('d M Y') : '-' }}</td>
               <td>{{ $p->bid_submission_start ? \Carbon\Carbon::parse($p->bid_submission_start)->format('d M Y') : '-' }}</td>
+              <td>
+                  @php
+                      $expiry = $p->expired_project_date 
+                          ? \Carbon\Carbon::parse($p->expired_project_date) 
+                          : null;
+                  @endphp
 
-               <td>
-                    @php
-                        $expiry = \Carbon\Carbon::parse($p->expired_project_date);
-                        $isExpired = $expiry->isPast();
-                    @endphp
+                  @if($expiry)
+                      @if($expiry->isPast())
+                          <span class="text-danger fw-bold">{{ $expiry->format('d M Y') }}</span>
+                          <br>
+                          <button class="btn btn-sm btn-danger mt-1"
+                              @click="openExpiryModal({{ $p->project_id }}, '{{ $p->expired_project_date }}')">
+                              Expired – Update
+                          </button>
+                      @else
+                          <span class="text-success fw-bold">{{ $expiry->format('d M Y') }}</span>
+                      @endif
+                  @else
+                      -
+                  @endif
+              </td>
 
-                    @if($isExpired)
-                        <span class="text-danger fw-bold">{{ $expiry->format('d M Y') }}</span>
-                        <br>
-                        <button class="btn btn-sm btn-danger mt-1"
-                                @click="openExpiryModal({{ $p->project_id }}, '{{ $p->expired_project_date }}')">
-                            Expired – Update
-                        </button>
-                    @else
-                        <span class="text-success fw-bold">{{ $expiry->format('d M Y') }}</span>
-                    @endif
-                </td>
 
 
               <td>
@@ -585,7 +590,7 @@
         })
         .then(() => {
             alert("Expiry date updated!");
-            location.reload();
+            // location.reload();
         });
     }
 </script>

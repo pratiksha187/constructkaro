@@ -265,15 +265,7 @@ class EngginerController extends Controller
              ->distinct() 
             ->orderBy('projects.id', 'desc')
             ->paginate(10);
-//    dd($projects);
 
-        // $expiry_date =   $projects;      
-        // foreach ($projects as $project) {
-        //     $project->expiry_date = Carbon::parse($project->project_created_at)
-        //                                 ->addDays(3);
-        //                                 // ->format('y-m-d');
-        // }
-        // $expiry_date=$project->expiry_date;
         return view('engg.allprojectdata', compact('projects'));
     }
 
@@ -633,8 +625,13 @@ class EngginerController extends Controller
 
     public function updateExpiryDate(Request $request)
     {
+        //   dd($request->project_id);
+        $project_id = DB::table('projects_details')
+                    ->where('project_id', $request->project_id)->first();
+        $tend_proj_id = $project_id->project_id;
+
         DB::table('tenders')
-        ->where('id', $request->project_id)
+        ->where('id', $tend_proj_id)
         ->update([
             'expired_project_date' => $request->expiry_date
         ]);
