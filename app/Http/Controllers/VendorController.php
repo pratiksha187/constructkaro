@@ -560,222 +560,125 @@ class VendorController extends Controller
         return view('web.venderdetails', compact('vendor_id', 'vendor'));
     }
 
-    // public function vender_leads_bids()
-    // {
-    //     $vendor_id = session('vendor_id');
+    public function vender_leads_bids()
+    {
+        $vendor_id = session('vendor_id');
 
-    //     // Fetch vendor details
-    //     $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
+        $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
 
-    //     // Join projects, details, tenders, and budget_range tables
-    //     $project_details = DB::table('projects')
-    //         ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
-    //         ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-    //         ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
-    //         ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id') // 👈 JOIN budget_range table
-    //         ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
-    //         ->leftJoin('states', 'states.id', '=', 'customer_basic_info.state')
-    //         ->leftJoin('regions', 'regions.id', '=', 'customer_basic_info.region')
-    //         ->leftJoin('cities', 'cities.id', '=', 'customer_basic_info.city')
-    //         ->leftJoin('work_types', 'work_types.id', '=', 'projects.work_type')
-    //         ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
-    //         ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
-    //         ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
-    //         ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
-    //         ->where('projects_details.tender_status', 1)
-    //         ->where('projects_details.boq_status', 1)
-    //         ->select(
-    //             'states.name as statesname',
-    //             'cities.name as citiesname'  ,
-    //             'regions.name as regionsname',
-    //             'expected_timeline.timeline as timeline',
-    //             'projects.id as project_id',
-    //             'projects.land_location',
-    //             'projects.land_type',
-    //             'projects.budget_range as project_budget_range',
-    //             'projects.work_type',
-    //             'projects.work_subtype',
-    //             'projects.vendor_type',
-    //             'projects.sub_vendor_types',
-    //             'projects.payment_preference',
-    //             'projects.quality_preference',
-    //             'projects.vendor_preference',
-    //             'projects.boq_file',
-    //             'projects.arch_files',
-    //             'projects.struct_files',
-                
+        $project_details = DB::table('projects')
+            ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
+            ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
+            ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
+            ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id')
+            ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
+            ->leftJoin('states', 'states.id', '=', 'customer_basic_info.state')
+            ->leftJoin('regions', 'regions.id', '=', 'customer_basic_info.region')
+            ->leftJoin('cities', 'cities.id', '=', 'customer_basic_info.city')
+            ->leftJoin('work_types', 'work_types.id', '=', 'projects.work_type')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
+            ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
+            ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
+            ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
+            ->where('projects_details.tender_status', 1)
+            ->where('projects_details.boq_status', 1)
+            ->select(
+                'states.name as statesname',
+                'cities.name as citiesname',
+                'regions.name as regionsname',
+                'expected_timeline.timeline as timeline',
+                'projects.id as project_id',
+                'projects.land_location',
+                'projects.land_type',
+                'projects.budget_range as project_budget_range',
+                'projects.work_type',
+                'projects.work_subtype',
+                'projects.vendor_type',
+                'projects.sub_vendor_types',
+                'projects.payment_preference',
+                'projects.quality_preference',
+                'projects.vendor_preference',
+                'projects.boq_file',
+                'projects.arch_files',
+                'projects.struct_files',
 
-    //             'projects_details.id as details_id',
-    //             'projects_details.project_name',
-    //             'projects_details.project_description',
-    //             'projects_details.expected_timeline',
-    //             'projects_details.submission_id',
-    //             'projects_details.budget_range as detail_budget_range_id', // keep ID also
-    //             'budget_range.budget_range as detail_budget_range', // 👈 readable text version
-    //             'projects_details.boq_status',
-    //             'projects_details.tender_status',
+                'projects_details.id as details_id',
+                'projects_details.project_name',
+                'projects_details.project_description',
+                'projects_details.expected_timeline',
+                'projects_details.submission_id',
+                'projects_details.budget_range as detail_budget_range_id',
+                'budget_range.budget_range as detail_budget_range',
+                'projects_details.boq_status',
+                'projects_details.tender_status',
 
-    //             'tenders.id as tender_id',
-    //             'tenders.tender_value as tender_value',
-    //             'tenders.product_category',
-    //             'tenders.sub_category',
-    //             'tenders.pincode',
-    //             'tenders.contract_type',
-    //             'tenders.location as tender_location',
-    //             'tenders.bid_submission_end',
-    //             'tenders.published_date',
-    //             'work_types.work_type as work_types',
-    //             'work_subtypes.work_subtype as work_subtype_name',
-    //             'suggested_vendor_types.vendor_type as suggested_vendor_types',
-    //             'vendor_subcategories.vendor_subcategory as vendor_subcategories',
-    //             'customer_basic_info.id as customer_id',
-    //             'customer_basic_info.full_name',
-    //             'customer_basic_info.phone_number',
-    //             'customer_basic_info.email',
-    //             'customer_basic_info.password',
-    //             'customer_basic_info.gender',
-    //             'customer_basic_info.role_id',
-    //             'role.role as role_name',
-    //             'customer_basic_info.state',
-    //             'customer_basic_info.region',
-    //             'customer_basic_info.city',
-    //             'customer_basic_info.created_at as customer_created_at',
-    //             'customer_basic_info.updated_at as customer_updated_at',
+                'tenders.id as tender_id',
+                'tenders.tender_value',
+                'tenders.product_category',
+                'tenders.sub_category',
+                'tenders.pincode',
+                'tenders.contract_type',
+                'tenders.location as tender_location',
+                'tenders.bid_submission_end',
+                'tenders.published_date',
 
-    //         )
-    //         ->orderByDesc('projects_details.id')
-    //         ->get();
+                'work_types.work_type as work_types',
+                'work_subtypes.work_subtype as work_subtype_name',
+                'suggested_vendor_types.vendor_type as suggested_vendor_types',
+                'vendor_subcategories.vendor_subcategory as vendor_subcategories',
 
-    //     // Add vendor bid status
-    //     foreach ($project_details as $project) {
-    //         $existing_bid = DB::table('boq_entries')
-    //             ->where('project_id', $project->project_id)
-    //             ->where('vendor_id', $vendor_id)
-    //             ->first();
+                'customer_basic_info.id as customer_id',
+                'customer_basic_info.full_name',
+                'customer_basic_info.phone_number',
+                'customer_basic_info.email',
+                'customer_basic_info.gender',
+                'customer_basic_info.role_id',
+                'role.role as role_name',
+                'customer_basic_info.state',
+                'customer_basic_info.region',
+                'customer_basic_info.city',
+                'customer_basic_info.created_at as customer_created_at'
+            )
+            ->orderByDesc('projects_details.id')
+            ->get();
 
-    //         $project->already_bid = $existing_bid ? true : false;
-    //     }
-    //     // dd($project_details);
-    //     return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
-    // }
+        // 🔵 Convert JSON to array before using foreach in blade
+        foreach ($project_details as $project) {
 
-public function vender_leads_bids()
-{
-    $vendor_id = session('vendor_id');
+            $project->arch_files = $project->arch_files
+                ? json_decode($project->arch_files, true)
+                : [];
 
-    $vendor = DB::table('service_provider')->where('id', $vendor_id)->first();
+            $project->struct_files = $project->struct_files
+                ? json_decode($project->struct_files, true)
+                : [];
 
-    $project_details = DB::table('projects')
-        ->join('projects_details', 'projects_details.project_id', '=', 'projects.id')
-        ->leftJoin('customer_basic_info', 'customer_basic_info.id', '=', 'projects.user_id')
-        ->leftJoin('tenders', 'tenders.project_id', '=', 'projects.id')
-        ->leftJoin('budget_range', 'projects_details.budget_range', '=', 'budget_range.id')
-        ->leftJoin('expected_timeline', 'expected_timeline.id', '=', 'projects.project_duration')
-        ->leftJoin('states', 'states.id', '=', 'customer_basic_info.state')
-        ->leftJoin('regions', 'regions.id', '=', 'customer_basic_info.region')
-        ->leftJoin('cities', 'cities.id', '=', 'customer_basic_info.city')
-        ->leftJoin('work_types', 'work_types.id', '=', 'projects.work_type')
-        ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'projects.work_subtype')
-        ->leftJoin('suggested_vendor_types', 'suggested_vendor_types.id', '=', 'projects.vendor_type')
-        ->leftJoin('vendor_subcategories', 'vendor_subcategories.id', '=', 'projects.sub_vendor_types')
-        ->leftJoin('role', 'role.id', '=', 'customer_basic_info.role_id')
-        ->where('projects_details.tender_status', 1)
-        ->where('projects_details.boq_status', 1)
-        ->select(
-            'states.name as statesname',
-            'cities.name as citiesname',
-            'regions.name as regionsname',
-            'expected_timeline.timeline as timeline',
-            'projects.id as project_id',
-            'projects.land_location',
-            'projects.land_type',
-            'projects.budget_range as project_budget_range',
-            'projects.work_type',
-            'projects.work_subtype',
-            'projects.vendor_type',
-            'projects.sub_vendor_types',
-            'projects.payment_preference',
-            'projects.quality_preference',
-            'projects.vendor_preference',
-            'projects.boq_file',
-            'projects.arch_files',
-            'projects.struct_files',
+            if ($project->boq_file) {
+                $decoded = json_decode($project->boq_file, true);
+                $project->boq_files = is_array($decoded) ? $decoded : [$project->boq_file];
+            } else {
+                $project->boq_files = [];
+            }
 
-            'projects_details.id as details_id',
-            'projects_details.project_name',
-            'projects_details.project_description',
-            'projects_details.expected_timeline',
-            'projects_details.submission_id',
-            'projects_details.budget_range as detail_budget_range_id',
-            'budget_range.budget_range as detail_budget_range',
-            'projects_details.boq_status',
-            'projects_details.tender_status',
+            // Already bid?
+            $existing_bid = DB::table('boq_entries')
+                ->where('project_id', $project->project_id)
+                ->where('vendor_id', $vendor_id)
+                ->first();
 
-            'tenders.id as tender_id',
-            'tenders.tender_value',
-            'tenders.product_category',
-            'tenders.sub_category',
-            'tenders.pincode',
-            'tenders.contract_type',
-            'tenders.location as tender_location',
-            'tenders.bid_submission_end',
-            'tenders.published_date',
-
-            'work_types.work_type as work_types',
-            'work_subtypes.work_subtype as work_subtype_name',
-            'suggested_vendor_types.vendor_type as suggested_vendor_types',
-            'vendor_subcategories.vendor_subcategory as vendor_subcategories',
-
-            'customer_basic_info.id as customer_id',
-            'customer_basic_info.full_name',
-            'customer_basic_info.phone_number',
-            'customer_basic_info.email',
-            'customer_basic_info.gender',
-            'customer_basic_info.role_id',
-            'role.role as role_name',
-            'customer_basic_info.state',
-            'customer_basic_info.region',
-            'customer_basic_info.city',
-            'customer_basic_info.created_at as customer_created_at'
-        )
-        ->orderByDesc('projects_details.id')
-        ->get();
-
-    // 🔵 Convert JSON to array before using foreach in blade
-    foreach ($project_details as $project) {
-
-        $project->arch_files = $project->arch_files
-            ? json_decode($project->arch_files, true)
-            : [];
-
-        $project->struct_files = $project->struct_files
-            ? json_decode($project->struct_files, true)
-            : [];
-
-        if ($project->boq_file) {
-            $decoded = json_decode($project->boq_file, true);
-            $project->boq_files = is_array($decoded) ? $decoded : [$project->boq_file];
-        } else {
-            $project->boq_files = [];
+            $project->already_bid = $existing_bid ? true : false;
         }
 
-        // Already bid?
-        $existing_bid = DB::table('boq_entries')
-            ->where('project_id', $project->project_id)
-            ->where('vendor_id', $vendor_id)
-            ->first();
-
-        $project->already_bid = $existing_bid ? true : false;
+        return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
     }
-
-    return view('web.vender_leads_bids', compact('vendor_id', 'vendor', 'project_details'));
-}
 
     public function vender_myproject(){
          $vendor_id = session('vendor_id');
          $vendor = DB::table('service_provider')->where('id', $vendor_id)->first(); 
-        //  dd($vendor);
-        return view('web.vender_myproject',compact('vendor_id','vendor'));
+
+         $accepted_bids = DB::table('boq_entries')->where('vendor_id', $vendor->id)->get(); 
+        //  dd($my_project);
+        return view('web.vender_myproject',compact('vendor_id','vendor','accepted_bids'));
     }
 
     public function venderpaynment(){
@@ -825,7 +728,6 @@ public function vender_leads_bids()
         BOQEntry::create([
             'project_id' => $request->project_id,
             'vendor_id' => $vendor_id,
-
             'bid_amount' =>$request->bid_amount,
             'boq_file' => $filePath,
         ]);

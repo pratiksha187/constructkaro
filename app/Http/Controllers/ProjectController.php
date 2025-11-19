@@ -339,7 +339,7 @@ class ProjectController extends Controller
     {
         $user = session('user'); 
         $currentProjectId = session('current_project_id'); 
-
+// dd($currentProjectId);
         // 🧩 Initialize variables
         $cust_details = null;
         $projects = collect();
@@ -407,6 +407,9 @@ class ProjectController extends Controller
                 ];
             }
         }
+
+        $projectid  = $project->id;
+  
         $project_count = count($projects_with_details);
         // ✅ Fetch master data
         $states = DB::table('states')->where('is_active', 1)->get();
@@ -426,7 +429,21 @@ class ProjectController extends Controller
                 ->where('monthly_bills.user_id', $cust_details->id)
                 ->orderBy('bill_month', 'asc')
                 ->get();
-            // dd($projects);
+           
+        // $my_bids  =  DB::table('boq_entries')
+        //         ->where('project_id',  $projectid)
+        //         ->get();   
+        $my_bids = DB::table('boq_entries')
+                    ->leftJoin('service_provider', 'service_provider.id', '=', 'boq_entries.vendor_id')
+                    ->select(
+                        'boq_entries.*',
+                        'service_provider.*'
+                       
+                    )
+                    ->where('boq_entries.project_id', $projectid) // Or by customer id
+                    ->get();
+
+                // dd($my_bids );
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',
@@ -435,7 +452,8 @@ class ProjectController extends Controller
             'states',
             'role_types',
             'company_socials',
-            'bills' 
+            'bills' ,
+            'my_bids'
         ));
     }
 
@@ -674,5 +692,23 @@ class ProjectController extends Controller
         return back()->with('success', 'Document Uploaded Successfully!');
     }
 
+
+    public function acceptBid(Request $request) {
+        // dd($request);
+        //1- acept,2-reject
+        DB::table('boq_entries')
+            ->where('vendor_id', $request->bid_id)
+            ->update(['customer_accept_vender' => 1]);
+
+        return response()->json(['message' => 'Bid Accepted Successfully']);
+    }
+
+    public function rejectBid(Request $request) {
+        DB::table('boq_entries')
+            ->where('vendor_id', $request->bid_id)
+            ->update(['customer_accept_vender' => 2]);
+
+        return response()->json(['message' => 'Bid Rejected Successfully']);
+    }
 
 }

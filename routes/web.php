@@ -211,6 +211,8 @@ Route::post('/billStatus', [ProjectController::class, 'billStatus'])->name('cust
 // Route::get('/billverification', [EngginerController::class, 'billVerification'])->name('engineer.bill.verification');
 Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->name('engineer.bill.show');
 
+Route::post('/customer/bid/accept', [ProjectController::class, 'acceptBid']);
+Route::post('/customer/bid/reject', [ProjectController::class, 'rejectBid']);
 
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

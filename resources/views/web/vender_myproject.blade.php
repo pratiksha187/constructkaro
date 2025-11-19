@@ -26,7 +26,7 @@
   <div class="tab-content" id="projectTabsContent">
     
     <!-- Active Projects -->
-    <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
+    <!-- <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
       <div class="card border-0 shadow-sm rounded-3 p-4">
         <h5 class="fw-semibold mb-3">Active Projects</h5>
 
@@ -36,7 +36,79 @@
           <p class="fw-semibold mb-0">No active projects at the moment.</p>
         </div>
       </div>
-    </div>
+    </div> -->
+    <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
+  <div class="card border-0 shadow-sm rounded-3 p-4">
+
+    <h5 class="fw-semibold mb-3">Active Projects</h5>
+
+    @if(count($accepted_bids) > 0)
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Project ID</th>
+              
+              <th>Bid Amount</th>
+              <th>Submitted On</th>
+              <th>Status</th>
+              <th>BOQ File</th>
+              
+            </tr>
+          </thead>
+
+          <tbody>
+            @foreach($accepted_bids as $bid)
+              <tr>
+                <td class="fw-semibold text-primary">{{ $bid->project_id }}</td>
+
+               
+                <td>₹{{ number_format($bid->bid_amount) }}</td>
+
+                <td>
+                  {{ \Carbon\Carbon::parse($bid->created_at)->format('d M Y') }}
+                </td>
+
+                <!-- Status Badge -->
+                <td>
+                  @if($bid->customer_accept_vender == 1)
+                    <span class="badge bg-success">Accepted</span>
+                  @else
+                    <span class="badge bg-warning">Pending</span>
+                  @endif
+                </td>
+
+                <!-- BOQ File -->
+                <td>
+                  <a href="{{ asset('storage/'.$bid->boq_file) }}" 
+                     target="_blank"
+                     class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> View BOQ
+                  </a>
+                </td>
+
+                
+
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+
+    @else
+
+      {{-- If no projects --}}
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-clipboard-x fs-3 d-block mb-2"></i>
+        <p class="fw-semibold mb-0">No active projects at the moment.</p>
+      </div>
+
+    @endif
+
+  </div>
+</div>
+
 
     <!-- Completed Projects -->
     <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">

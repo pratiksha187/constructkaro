@@ -62,6 +62,7 @@
       {id:'profile', icon:'bi-person-circle', label:'Profile'},
       {id:'documents', icon:'bi-file-earmark-text', label:'Documents'},
       {id:'bill_status', icon:'bi-file-earmark-text', label:'Bill Status'},
+      {id:'my_bids', icon:'bi-file-earmark-text', label:'My Bids'},
 
     ]" :key="item.id">
       <button 
@@ -692,6 +693,149 @@
 </div>
 
 
+<!-- ======================== MY BIDS TAB ======================== -->
+<!-- <div class="mt-10" x-show="tab === 'my_bids'" x-transition>
+    <h2 class="text-xl font-semibold text-navy mb-4">My Bid Submissions</h2>
+
+    @if(count($my_bids) > 0)
+        <div class="grid md:grid-cols-3 gap-6">
+
+            @foreach($my_bids as $bid)
+                <div class="bg-white rounded-xl border-l-4 border-orange shadow-md p-6 hover:shadow-lg transition">
+
+                    <h3 class="font-semibold text-navy mb-2">
+                        Project ID: {{ $bid->project_id }}
+                    </h3>
+
+                    <p class="text-gray-600 text-sm mb-2">
+                        <strong>Bid Amount:</strong> ₹{{ number_format($bid->bid_amount) }}
+                    </p>
+
+                    <p class="text-gray-600 text-sm mb-4 flex items-center gap-2">
+                        <i class="bi bi-calendar"></i>
+                        {{ \Carbon\Carbon::parse($bid->created_at)->format('d M Y') }}
+                    </p>
+
+                    
+                    <div class="bg-gray-100 rounded-lg p-3 flex justify-between items-center">
+                        <span class="text-sm text-gray-700 truncate">
+                            {{ basename($bid->boq_file) }}
+                        </span>
+
+                        <a href="{{ asset('storage/'.$bid->boq_file) }}" 
+                           target="_blank"
+                           class="bg-navy hover:bg-orange text-white px-3 py-1 text-xs rounded-md">
+                            View
+                        </a>
+                    </div>
+
+                </div>
+            @endforeach
+
+        </div>
+
+    @else
+        <div class="text-center text-gray-600 bg-white rounded-xl p-10 shadow-sm">
+            <i class="bi bi-cash-stack text-4xl text-orange mb-3"></i>
+            <p>No bids found.</p>
+        </div>
+    @endif
+</div> -->
+<div class="mt-10" x-show="tab === 'my_bids'" x-transition>
+    <h2 class="text-xl font-semibold text-navy mb-4">My Bid Submissions</h2>
+
+    @if(count($my_bids) > 0)
+
+        <div class="space-y-4">
+
+            @foreach($my_bids as $bid)
+
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition p-5">
+
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+
+                        <!-- LEFT BLOCK -->
+                        <div class="flex-1">
+
+                            <h3 class="font-semibold text-navy text-lg mb-1">
+                                Project ID: {{ $bid->project_id }}
+                            </h3>
+
+                            <!-- Vendor Info -->
+                            <div class="bg-gray-100 rounded-lg px-3 py-2 border w-fit mb-3">
+                                <p class="text-sm text-gray-700">
+                                    <strong class="text-navy">Vendor ID:</strong> 
+                                    {{ $bid->vendor_code ?? $bid->vendor_id }}
+                                </p>
+                            </div>
+
+                            <div class="space-y-1 text-sm text-gray-700">
+
+                                <p>
+                                    <strong class="text-navy">Bid Amount:</strong>
+                                    ₹{{ number_format($bid->bid_amount) }}
+                                </p>
+
+                                <p class="flex items-center gap-1">
+                                    <i class="bi bi-calendar text-gray-500"></i>
+                                    Submitted on: {{ \Carbon\Carbon::parse($bid->created_at)->format('d M Y') }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- MIDDLE BLOCK: BOQ FILE -->
+                        <div class="min-w-[220px] bg-gray-50 border rounded-xl p-4 shadow-sm">
+                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                                BOQ File
+                            </p>
+
+                            <div class="flex items-center gap-2 text-sm text-gray-800 font-medium">
+                                <i class="bi bi-file-earmark-spreadsheet text-xl text-orange"></i>
+                                <span class="truncate">{{ basename($bid->boq_file) }}</span>
+                            </div>
+
+                            <a href="{{ asset('storage/'.$bid->boq_file) }}"
+                               target="_blank"
+                               class="block bg-navy hover:bg-orange text-white text-center mt-3 py-1.5 text-xs rounded-lg transition">
+                                View File
+                            </a>
+                        </div>
+
+                        <!-- RIGHT BLOCK: ACTION BUTTONS -->
+                        <div class="flex flex-col md:flex-row gap-2 w-full md:w-fit">
+
+                            <!-- ACCEPT -->
+                            <button onclick="acceptBid({{ $bid->id }})"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-sm transition">
+                                <i class="bi bi-check-circle"></i> Accept
+                            </button>
+
+                            <!-- REJECT -->
+                            <button onclick="rejectBid({{ $bid->id }})"
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-sm transition">
+                                <i class="bi bi-x-circle"></i> Reject
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+    @else
+        <div class="text-center text-gray-600 bg-white rounded-xl p-10 shadow-sm">
+            <i class="bi bi-cash-stack text-4xl text-orange mb-3"></i>
+            <p>No bids found.</p>
+        </div>
+    @endif
+</div>
+
+
+
 </div>
 
 </div>
@@ -764,6 +908,25 @@ $(document).ready(function() {
         $('#state').trigger('change');
     }
 });
+</script>
+<script>
+function acceptBid(id) {
+    if(!confirm("Accept this bid?")) return;
+
+    $.post("/customer/bid/accept", {
+        _token: "{{ csrf_token() }}",
+        bid_id: id
+    }, res => { alert(res.message); location.reload(); });
+}
+
+function rejectBid(id) {
+    if(!confirm("Reject this bid?")) return;
+
+    $.post("/customer/bid/reject", {
+        _token: "{{ csrf_token() }}",
+        bid_id: id
+    }, res => { alert(res.message); location.reload(); });
+}
 </script>
 
 
