@@ -63,7 +63,7 @@ class LeegalityService
         //     ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
         //     ->json();
       return Http::withHeaders($this->headers())
-                ->withOptions(['verify' => false])  // Disable SSL verify, only for local dev
+                // ->withOptions(['verify' => false])  // Disable SSL verify, only for local dev
                 ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
                 ->json();
 
