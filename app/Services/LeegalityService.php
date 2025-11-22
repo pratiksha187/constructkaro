@@ -66,12 +66,19 @@ class LeegalityService
     //             ->withOptions(['verify' => false])  // Disable SSL verify, only for local dev
     //             ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
     //             ->json();
-return Http::withHeaders($this->headers())
+// return Http::withHeaders($this->headers())
+//     ->withOptions([
+//         'curl' => [
+//             CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2, // force TLS 1.2
+//         ],
+//         'verify' => true, // keep SSL verification enabled on AWS
+//     ])
+//     ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
+//     ->json();
+$response = Http::withHeaders($this->headers())
     ->withOptions([
-        'curl' => [
-            CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2, // force TLS 1.2
-        ],
-        'verify' => true, // keep SSL verification enabled on AWS
+        'verify' => false,
+        'curl' => [CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2]
     ])
     ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
     ->json();
