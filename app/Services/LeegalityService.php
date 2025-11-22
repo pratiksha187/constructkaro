@@ -120,13 +120,11 @@ public function createStaticDocument()
         ]
     ];
 
-    return Http::withHeaders($this->headers())
-        ->withOptions([
-            'verify' => true,
-            // remove CURLOPT_SSLVERSION, let cURL negotiate TLS automatically
-        ])
+    $response = Http::withHeaders($this->headers())
         ->post(env("LEEGALITY_BASE_URL") . "/api/v3/document/create", $payload)
         ->json();
+
+    return $response;
 }
 
 
