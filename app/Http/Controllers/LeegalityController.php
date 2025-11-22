@@ -17,6 +17,15 @@ class LeegalityController extends Controller
     public function staticTest()
     {
         // Step 1 — Create document
+        // $create = $this->api->createStaticDocument();
+
+        // if (!isset($create['documentId'])) {
+        //     return response()->json([
+        //         "error" => "Failed to create document",
+        //         "leegality_response" => $create
+        //     ], 400);
+        // }
+
         $create = $this->api->createStaticDocument();
 
         if (!isset($create['documentId'])) {
