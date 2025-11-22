@@ -339,7 +339,7 @@ class ProjectController extends Controller
     {
         $user = session('user'); 
         $currentProjectId = session('current_project_id'); 
-// dd($currentProjectId);
+        // dd($currentProjectId);
         // 🧩 Initialize variables
         $cust_details = null;
         $projects = collect();
@@ -430,9 +430,7 @@ class ProjectController extends Controller
                 ->orderBy('bill_month', 'asc')
                 ->get();
            
-        // $my_bids  =  DB::table('boq_entries')
-        //         ->where('project_id',  $projectid)
-        //         ->get();   
+       
         $my_bids = DB::table('boq_entries')
                     ->leftJoin('service_provider', 'service_provider.id', '=', 'boq_entries.vendor_id')
                     ->select(
@@ -443,7 +441,7 @@ class ProjectController extends Controller
                     ->where('boq_entries.project_id', $projectid) // Or by customer id
                     ->get();
 
-                // dd($my_bids );
+                // dd($my _bids );
         return view('web.customer_dashboard', compact(
             'projects',
             'projects_with_details',

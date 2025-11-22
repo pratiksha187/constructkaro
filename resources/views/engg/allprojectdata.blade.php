@@ -258,10 +258,25 @@
               </td>
 
               <td class="text-center">
-                <button @click="activeProject = {{ json_encode($p) }}" class="icon-btn" title="View Details">
-                  <span class="material-icons" style="font-size:18px;">visibility</span>
-                </button>
-              </td>
+
+    {{-- View Project Button --}}
+    <button @click="activeProject = {{ json_encode($p) }}" 
+            class="icon-btn" title="View Details">
+        <span class="material-icons" style="font-size:18px;">visibility</span>
+    </button>
+
+    {{-- SIGN AGREEMENT BUTTON --}}
+    <a href="{{ url('/projects/' . $p->project_id . '/sign') }}" 
+       class="btn btn-sm btn-success mt-2">
+        Sign Agreement
+    </a>
+
+    <a href="#" onclick="createAgreement({{ $p->project_id }})" class="btn btn-warning btn-sm">
+    Create Agreement
+</a>
+
+</td>
+
 
             </tr>
           @endforeach
@@ -594,5 +609,17 @@
         });
     }
 </script>
-
+<script>
+function createAgreement(id) {
+    fetch(`/projects/${id}/agreement/create`, {
+        method: "POST",
+        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Agreement created! Now you can sign.");
+        // location.reload();
+    });
+}
+</script>
 @endsection

@@ -13,6 +13,7 @@ use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\CallingController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\LeegalityController;
 use App\Http\Controllers\GeoapifyController;
 
 
@@ -31,8 +32,11 @@ Route::post('/verify-email-otp', [OtpController::class, 'verifyEmailOtp'])->name
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [LocationController::class, 'getCities']);
-// Route::get('/get-regions/{state_id}', [LocationController::class, 'getRegions']);
+
+
 Route::post('/get-cities-by-regions', [LocationController::class, 'getCitiesByRegions']);
+
+
 Route::get('/dropdowns', [DropdownController::class, 'index']);
 Route::get('/get-subtypes/{id}', [DropdownController::class, 'getSubtypes']);
 // Route::get('/get-vendors/{id}', [DropdownController::class, 'getVendors']);
@@ -213,6 +217,27 @@ Route::get('/billverification/{id}', [EngginerController::class, 'showBill'])->n
 
 Route::post('/customer/bid/accept', [ProjectController::class, 'acceptBid']);
 Route::post('/customer/bid/reject', [ProjectController::class, 'rejectBid']);
+
+
+// Show signing page
+Route::get('/projects/{id}/sign', [LeegalityController::class, 'showSignPage'])
+    ->name('project.sign');
+
+// Create agreement
+Route::post('/projects/{id}/agreement/create', [LeegalityController::class, 'createAgreement'])
+    ->name('agreement.create');
+
+// Get signing link for iframe
+Route::get('/projects/{id}/agreement/sign-link', [LeegalityController::class, 'getSigningLink'])
+    ->name('agreement.signlink');
+
+// Leegality webhook (no auth)
+Route::post('/leegality/webhook', [LeegalityController::class, 'webhook']);
+
+
+Route::get('/leegality-test', [LeegalityController::class, 'staticTest']);
+
+
 
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
